@@ -12,6 +12,7 @@ pids
 logs
 results
 config
+files
 
 npm-debug.log
 node_modules

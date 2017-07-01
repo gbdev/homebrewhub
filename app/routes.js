@@ -120,5 +120,6 @@ function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
 
-    res.redirect('/');
+    req.flash('loginMessage', 'Login to use this page')
+    res.redirect('/login');
 }
