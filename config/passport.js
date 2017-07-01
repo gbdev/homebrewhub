@@ -4,22 +4,22 @@ var LocalStrategy    = require('passport-local').Strategy;
 // load up the user model
 var User       = require('../app/models/user');
 
-// load the auth variables
-var configAuth = require('./auth'); // use this one for testing
 var randomstring = require("randomstring");
-
 const nodemailer = require('nodemailer');
 
-// EMAIL CONFIGURATION
+// load the configuration
+var configAuth = require('./auth'); // use this one for testing
+var configEmail = require('./email'); // SMTP server variables
+
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
     //ignoreTLS: true,
-    host: '',
+    host: configEmail.host,
     port: 465,
     secure: true, // secure:true for port 465, secure:false for port 587
     auth: {
-        user: '',
-        pass: ''
+        user: configEmail.user,
+        pass: configEmail.pass
     }
 });
 
@@ -67,7 +67,8 @@ module.exports = function(passport) {
 
                 if (!user.validPassword(password))
                     return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-
+                if (!user.local.verified)
+                    return done(null, false, req.flash('loginMessage', 'Check the email you provided to activate the account. The email may be in the Spam folder.'))
                 // all is well, return user
                 else
                     return done(null, user);
@@ -90,7 +91,7 @@ module.exports = function(passport) {
         if (email)
             email = email.toLowerCase(); // Use lower-case e-mails to avoid case-sensitive e-mail matching
 
-        console.log("Received SIGNUP, EMAIL: "+email+"USERNAME: "+username+"PASSWORD: "+password)
+        //console.log("Received SIGNUP, EMAIL: "+email+"USERNAME: "+username+"PASSWORD: "+password)
         
         
         // asynchronous
@@ -106,9 +107,6 @@ module.exports = function(passport) {
                     if (user) {
                         return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
                     } else {
-
-                        // Change this value according to the environment
-                        var domain = "http://localhost:8080";
 
                         // create the user
                         var newUser            = new User();
@@ -127,7 +125,7 @@ module.exports = function(passport) {
                         newUser.local.verifyToken = verification_token;
 
                         var permalink = req.body.username.toLowerCase().replace(' ', '').replace(/[^\w\s]/gi, '').trim();
-                        activationLink = domain+"/verify/"+permalink+"/"+verification_token;
+                        activationLink = configEmail.domain+"verify/"+permalink+"/"+verification_token;
                         newUser.local.permalink = permalink;
 
                         var htmlEmailBody = 'Click the following link to activate your account: <a href="'+activationLink+'">' + activationLink +"</a>";
@@ -152,7 +150,7 @@ module.exports = function(passport) {
                         newUser.save(function(err) {
                             if (err)
                                 return done(err);
-                            return done(null, newUser);
+                            return done(null, false, req.flash('signupMessage', 'Registration complete, check your email to activate your account.'));
                         });
                     }
 

@@ -1,6 +1,4 @@
-# passport
-package-lock.json
-lib-cov
+# passportlib-cov
 passport
 *.seed
 *.log
@@ -13,13 +11,10 @@ passport
 pids
 logs
 results
+config
 
 npm-debug.log
 node_modules
-
-# config/database.js
-# config/auth.js
-
 
 # Logs
 logs
