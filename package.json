@@ -15,13 +15,14 @@
     "passport": "~0.3.2",
     "passport-facebook": "~2.1.1",
     "passport-google-oauth": "~1.0.0",
-    "passport-local": "github:dmg01/passport-local",
     "passport-twitter": "~1.0.4"
   },
   "devDependencies": {
+    "blueimp-file-upload-node": "^2.1.0",
     "express-fileupload": "^0.1.4",
     "mongodb": "^2.2.29",
     "nodemailer": "^4.0.1",
+    "passport-local": "github:dmg01/passport-local",
     "randomstring": "^1.1.5"
   }
 }
