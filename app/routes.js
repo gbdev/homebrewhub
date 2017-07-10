@@ -155,7 +155,7 @@ module.exports = function(app, passport) {
                     var email = user.local.email
                     var permalink = user.local.permalink
                     var verification_token = randomstring.generate({ length: 64 }); // Generate a new verification token
-                    var resetLink = 'http://' + configEmail.domain + "resetPassword/" + permalink + "/" + verification_token; // Build password reset link
+                    var resetLink = configEmail.domain + "resetPassword/" + permalink + "/" + verification_token; // Build password reset link
 
                     var htmlEmailBody = 'Click the following link to reset your password: <a href="' + resetLink + '">' + resetLink + "</a>"; // Build HTML email body
                     // Send activation email
