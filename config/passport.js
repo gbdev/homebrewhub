@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 
 // load the configuration
 var configAuth = require('./auth'); // use this one for testing
-var configEmail = require('./email'); // SMTP server variables
+var configEmail = require('./email'); // Email configuration
 
 // create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
@@ -145,7 +145,7 @@ module.exports = function(passport) {
                                     // Send activation email
                                     // setup email data with unicode symbols
                                     let mailOptions = {
-                                        from: '"Bar Foo" <no-reply@PLACEHOLDER.com>', // sender address
+                                        from: configEmail.sender, // sender address
                                         to: email, // list of receivers
                                         subject: 'Activate your account', // Subject line
                                         text: 'Activate your account clicking here: ' + activationLink, // plain text body
