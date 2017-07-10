@@ -15,8 +15,14 @@
     <h1><span class="fa fa-sign-in"></span> Login</h1>
 
     <% if (message.length > 0) { %>
+        <% if (type == 1) { %>
         <div class="alert alert-danger"><%= message %></div>
+        <% } else { %>
+        <div class="alert alert-success fade in"><%= message %></div>
+        <% } %>
     <% } %>
+
+
 
     <!-- LOGIN FORM -->
     <form action="/login" method="post">

@@ -21,7 +21,9 @@ module.exports = function(app, passport) {
 
     // show the home page (will also have our login links)
     app.get('/', function(req, res) {
-        res.render('index.ejs')
+        res.render('index.ejs', {
+            user: req.user,
+        })
     });
 
     // PROFILE SECTION =========================
@@ -41,6 +43,7 @@ module.exports = function(app, passport) {
             }
         } else {
             req.flash('loginMessage', 'Login to use this page')
+            req.flash('type', 1)
             res.redirect('/login?r=profile')
 
         }
@@ -100,9 +103,13 @@ module.exports = function(app, passport) {
                     console.log('The user has been verified!');
                 });
                 req.flash('loginMessage', 'Your account has been verified, you can now login')
+                req.flash('type', 2)
                 res.redirect('/login');
             } else {
                 console.log('Activation rejected, token should be: ' + user.local.verifyToken);
+                req.flash('loginMessage', 'Token incorrect, the account wasn\'t activated')
+                req.flash('type', 1)
+                res.redirect('/login');
             }
         });
     });
@@ -126,7 +133,8 @@ module.exports = function(app, passport) {
         // Save the requested resource to allow redirection after the authentication
         req.session.r = req.query.r;
         res.render('login.ejs', {
-            message: req.flash('loginMessage')
+            message: req.flash('loginMessage'),
+            type: req.flash('type')
         });
     });
 
