@@ -20,7 +20,7 @@ Start mongodb server
 ```
 cd showcase
 mkdir database
-mongod --dbpath=databse --port 27018
+mongod --dbpath=database --port 27018
 ```
 
 Node things
