@@ -25,19 +25,40 @@ module.exports = function(app, passport) {
     });
 
     // PROFILE SECTION =========================
-    app.get('/profile', isLoggedIn, function(req, res) {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(req.user));
-        /*res.render('profile.ejs', {
-            user : req.user
-        });*/
+    app.get('/profile', function(req, res) {
+    	if (req.isAuthenticated()){
+    		// Redirect based on the previous requested page
+    		if (!req.session.r || req.session.r == ''){
+    			res.redirect('/');
+    		}
+    		if (!req.session.r || req.session.r == 'profile'){
+    			req.session.r = '';
+    			res.setHeader('Content-Type', 'application/json');
+        		res.send(JSON.stringify(req.user));
+    		}
+    		else {
+    			res.redirect('/'+req.session.r)
+    			req.session.r = '';
+    		}
+    	}
+    	else {
+    		req.flash('loginMessage', 'Login to use this page')
+    		res.redirect('/login?r=profile')
+
+    	}
     });
 
-    app.get('/upload', isLoggedIn, function(req, res) {
-        res.render('upload.ejs', {
+    app.get('/upload', function(req, res) {
+    	if (req.isAuthenticated()){
+    		res.render('upload.ejs', {
             user: req.user,
             message: req.flash('uploadMessage')
-        });
+        })}
+    	else {
+    		req.flash('loginMessage', 'Login to use this page')
+    		res.redirect('/login?r=upload')
+    	}
+
     });
 
     app.post('/upload', function(req, res) {
@@ -104,6 +125,8 @@ module.exports = function(app, passport) {
     // LOGIN ===============================
     // show the login form
     app.get('/login', function(req, res) {
+    	// Save the requested resource to allow redirection after the authentication
+    	req.session.r = req.query.r;
         res.render('login.ejs', {
             message: req.flash('loginMessage')
         });
@@ -114,7 +137,8 @@ module.exports = function(app, passport) {
         successRedirect: '/profile', // redirect to the secure profile section
         failureRedirect: '/login', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
-    }));
+    })
+    );
 
     // SIGNUP =================================
     // show the signup form
@@ -269,6 +293,7 @@ module.exports = function(app, passport) {
     })
 };
 
+// TODO: adapt this to redirects?
 // route middleware to ensure user is logged in
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
