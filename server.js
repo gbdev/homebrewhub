@@ -8,7 +8,6 @@ var port     = process.env.PORT || 8080;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
-const fileUpload = require('express-fileupload');
 
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -41,9 +40,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
-app.use(fileUpload());
-//app.use(express.static('assets'))
-
 
 
 // routes ======================================================================

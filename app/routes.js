@@ -1,5 +1,10 @@
 var randomstring = require("randomstring");
 var configEmail = require('../config/email'); // SMTP server variables
+var fs = require('fs');
+var multer  = require('multer')
+
+var upload = multer({ dest: 'uploads/' })
+
 
 const nodemailer = require('nodemailer');
 // create reusable transporter object using the default SMTP transport
@@ -15,18 +20,18 @@ let transporter = nodemailer.createTransport({
 });
 
 module.exports = function(app, passport) {
+    // Database models
     var User = require('../app/models/user');
-    // normal routes ===============================================================
 
 
-    // show the home page (will also have our login links)
+    // Root
     app.get('/', function(req, res) {
         res.render('index.ejs', {
             user: req.user,
         })
     });
 
-    // PROFILE SECTION =========================
+    // Profile, and some redirection
     app.get('/profile', function(req, res) {
         if (req.isAuthenticated()) {
             // Redirect based on the previous requested page
@@ -49,6 +54,7 @@ module.exports = function(app, passport) {
         }
     });
 
+    // Submit game
     app.get('/upload', function(req, res) {
         if (req.isAuthenticated()) {
             res.render('upload.ejs', {
@@ -57,33 +63,58 @@ module.exports = function(app, passport) {
             })
         } else {
             req.flash('loginMessage', 'Login to use this page')
+            req.flash('type', 1)
             res.redirect('/login?r=upload')
         }
-
     });
 
-    app.post('/upload', function(req, res) {
-        if (!req.files)
-            return res.status(400).send('No files were uploaded.');
 
-        // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file 
-        let sampleFile = req.files.sampleFile;
+app.post('/upload', upload.single('sampleFile'), function (req, res, next) {
+    console.log(req.file)
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+})
 
-        // Use the mv() method to place the file somewhere on your server 
-        sampleFile.mv('files/name.file', function(err) {
-            if (err)
-                return res.status(500).send(err);
 
-            res.send('File uploaded!');
+    // Upload
+    app.post('/upload2', function(req, res) {
+
+        // create an incoming form object
+        var form = new formidable.IncomingForm();
+
+        // specify that we want to allow the user to upload multiple files in a single request
+        form.multiples = true;
+
+        // store all uploads in the /uploads directory
+        form.uploadDir = path.join(__dirname, '/uploads');
+
+        // every time a file has been uploaded successfully,
+        // rename it to it's orignal name
+        form.on('file', function(field, file) {
+            fs.rename(file.path, path.join(form.uploadDir, file.name));
         });
+
+        // log any errors that occur
+        form.on('error', function(err) {
+            console.log('An error has occured: \n' + err);
+        });
+
+        // once all the files have been uploaded, send a response to the client
+        form.on('end', function() {
+            res.end('success');
+        });
+
+        // parse the incoming request containing the form data
+        form.parse(req);
+
     });
 
-    // LOGOUT ==============================
     app.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/');
     });
 
+    // Activation links
     app.get('/verify/:permalink/:token', function(req, res) {
         var permalink = req.params.permalink;
         var token = req.params.token;
@@ -114,7 +145,6 @@ module.exports = function(app, passport) {
         });
     });
 
-    // EDIT THINGS =======================
     app.post('/edit', isLoggedIn, function(req, res) {
         console.log(req.body.a)
         res.render('editDone.ejs');
@@ -122,15 +152,8 @@ module.exports = function(app, passport) {
         req.user.save();
     });
 
-    // =============================================================================
-    // AUTHENTICATE (FIRST LOGIN) ==================================================
-    // =============================================================================
-
-    // locally --------------------------------
-    // LOGIN ===============================
-    // show the login form
     app.get('/login', function(req, res) {
-        // Save the requested resource to allow redirection after the authentication
+        // Save the requested resource (if any) to allow redirection after the authentication
         req.session.r = req.query.r;
         res.render('login.ejs', {
             message: req.flash('loginMessage'),
@@ -145,22 +168,19 @@ module.exports = function(app, passport) {
         failureFlash: true // allow flash messages
     }));
 
-    // SIGNUP =================================
-    // show the signup form
     app.get('/signup', function(req, res) {
         res.render('signup.ejs', {
             message: req.flash('signupMessage')
         });
     });
 
-    // process the signup form
+    // Process the signup form
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/profile', // redirect to the secure profile section
         failureRedirect: '/signup', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }));
 
-    // FORGOT... =================================
     // Password recovery
     app.get('/forgotPassword', function(req, res) {
         res.render('forgotPassword.ejs', {
@@ -186,12 +206,12 @@ module.exports = function(app, passport) {
             }, function(err, user) {
                 if (user) {
                     // Set up some values
-                    if (user.local.verified){
-	                    req.flash('message', 'The account is already activated, just login.')
-	                    res.render('forgotPassword.ejs', {
-	                        message: req.flash('message'),
-	                        resetRequestStatus: 'success'
-	                    }) 
+                    if (user.local.verified) {
+                        req.flash('message', 'The account is already activated, just login.')
+                        res.render('forgotPassword.ejs', {
+                            message: req.flash('message'),
+                            resetRequestStatus: 'success'
+                        })
                     }
                     var email = user.local.email
                     var permalink = user.local.permalink
