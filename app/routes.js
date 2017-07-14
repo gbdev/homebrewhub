@@ -1,9 +1,11 @@
 var randomstring = require("randomstring");
 var configEmail = require('../config/email'); // SMTP server variables
 var fs = require('fs');
-var multer  = require('multer')
+var multer = require('multer')
 
-var upload = multer({ dest: 'uploads/' })
+var upload = multer({
+    dest: 'uploads/'
+})
 
 
 const nodemailer = require('nodemailer');
@@ -22,6 +24,8 @@ let transporter = nodemailer.createTransport({
 module.exports = function(app, passport) {
     // Database models
     var User = require('../app/models/user');
+    var Game = require('../app/models/game');
+    var File = require('../app/models/file')
 
 
     // Root
@@ -69,45 +73,12 @@ module.exports = function(app, passport) {
     });
 
 
-app.post('/upload', upload.single('sampleFile'), function (req, res, next) {
-    console.log(req.file)
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-})
-
-
-    // Upload
-    app.post('/upload2', function(req, res) {
-
-        // create an incoming form object
-        var form = new formidable.IncomingForm();
-
-        // specify that we want to allow the user to upload multiple files in a single request
-        form.multiples = true;
-
-        // store all uploads in the /uploads directory
-        form.uploadDir = path.join(__dirname, '/uploads');
-
-        // every time a file has been uploaded successfully,
-        // rename it to it's orignal name
-        form.on('file', function(field, file) {
-            fs.rename(file.path, path.join(form.uploadDir, file.name));
-        });
-
-        // log any errors that occur
-        form.on('error', function(err) {
-            console.log('An error has occured: \n' + err);
-        });
-
-        // once all the files have been uploaded, send a response to the client
-        form.on('end', function() {
-            res.end('success');
-        });
-
-        // parse the incoming request containing the form data
-        form.parse(req);
-
-    });
+    app.post('/upload', upload.single('sampleFile'), function(req, res, next) {
+        console.log(req.file)
+        console.log(req.body["title"])
+            // req.file is the `avatar` file
+            // req.body will hold the text fields, if there were any
+    })
 
     app.get('/logout', function(req, res) {
         req.logout();
