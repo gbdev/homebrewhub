@@ -25,7 +25,7 @@ module.exports = function(app, passport) {
     // Database models
     var User = require('../app/models/user');
     var Game = require('../app/models/game');
-    var File = require('../app/models/file')
+    var File = require('../app/models/file');
 
 
     // Root
@@ -73,9 +73,47 @@ module.exports = function(app, passport) {
     });
 
 
-    app.post('/upload', upload.single('sampleFile'), function(req, res, next) {
-        console.log(req.file)
+    var mulconf = upload.fields([{
+        name: 'sampleFile',
+        maxCount: 5
+    }])
+    app.post('/upload', mulconf, function(req, res, next) {
         console.log(req.body["title"])
+        console.log(req.files)
+
+        var gameFilesArray = new Array();
+        for (var i = 0; i < req.files.sampleFile.length; i++) {
+
+            // Restore original name
+            fs.mkdir(req.files.sampleFile[i].destination + "/" + req.body["title"], function() {
+                console.log("Mh")
+            })
+            fs.rename(req.files.sampleFile[i].destination + req.files.sampleFile[i].filename, req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname)
+
+            var gameFile = new File({
+                data: {
+                    fslocation: req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname,
+                    description: req.body["description"]
+                }
+            })
+            gameFile.save()
+            gameFilesArray.push(gameFile.id)
+
+        }
+
+        var game = new Game({
+            data: {
+                title: req.body["title"],
+                developer: req.body["developer"],
+                repository: req.body["repository"],
+                tags: req.body["tags"],
+                files: gameFilesArray
+            }
+        })
+        game.save();
+
+        //console.log(req.files.sampleFile.length)
+            //console.log(req.body["title"])
             // req.file is the `avatar` file
             // req.body will hold the text fields, if there were any
     })
