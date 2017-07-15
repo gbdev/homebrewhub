@@ -1,0 +1,56 @@
+<div class="container">
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded" style="background-color: #e3f2fd;">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">Homebrew Hub</a>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Gallery</a>
+      </li>
+            <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Tags
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" href="#">Open Source</a>
+          <a class="dropdown-item" href="#">RPG</a>
+          <a class="dropdown-item" href="#">Arcade</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Submit game</a>
+      </li>
+
+
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+
+    	<i class="fa fa-search" aria-hidden="true"></i>
+    	&nbsp;
+      <input class="form-control mr-sm-2" type="text" placeholder="Search">
+
+ 	</a>
+    </form>
+              <% if (user) { %>
+              <span class="navbar-text">
+      
+    	 &nbsp;
+        <a href="/profile"> <%= user.local.username %> </a> - <a href="/logout"> <i class="fa fa-sign-out" aria-hidden="true"></i>
+ 	</a>
+    </span>
+    <% } else { %>
+    <span class="navbar-text">
+    	&nbsp;
+    	<a href="/login"> Login </a>
+    </span>
+    <% } %>
+  </div>
+</nav>
+</div>

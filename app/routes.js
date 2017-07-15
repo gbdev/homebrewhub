@@ -9,9 +9,9 @@ var upload = multer({
 
 
 const nodemailer = require('nodemailer');
-// create reusable transporter object using the default SMTP transport
+// Create reusable transporter object using the default SMTP transport
 let transporter = nodemailer.createTransport({
-    //ignoreTLS: true,
+    // ignoreTLS: true,
     host: configEmail.host,
     port: configEmail.port,
     secure: configEmail.secure, // secure:true for port 465, secure:false for port 587
@@ -54,11 +54,9 @@ module.exports = function(app, passport) {
             req.flash('loginMessage', 'Login to use this page')
             req.flash('type', 1)
             res.redirect('/login?r=profile')
-
         }
     });
 
-    // Submit game
     app.get('/upload', function(req, res) {
         if (req.isAuthenticated()) {
             res.render('upload.ejs', {
@@ -80,11 +78,11 @@ module.exports = function(app, passport) {
     app.post('/upload', mulconf, function(req, res, next) {
         console.log(req.body["title"])
         console.log(req.files)
-
+        // TODO: generate permalink from game title
         var gameFilesArray = new Array();
         for (var i = 0; i < req.files.sampleFile.length; i++) {
 
-            // Restore original name
+            // Restore original name and move to game subfolder
             fs.mkdir(req.files.sampleFile[i].destination + "/" + req.body["title"], function() {
                 console.log("Mh")
             })
@@ -98,7 +96,6 @@ module.exports = function(app, passport) {
             })
             gameFile.save()
             gameFilesArray.push(gameFile.id)
-
         }
 
         var game = new Game({

@@ -2,24 +2,72 @@
 <html>
 <head>
     <title>Showcase</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <style>
-        body         { padding-top:80px; }
-    </style>
+    <% include head.html %>   
 </head>
 <body>
+     <% include header.ejs %>
 <div class="container">
-<div class="col-sm-6 col-sm-offset-3">
-	<h1> Homebrew Hub </h1>
-    <% if (user) { %>
-        <%= user.local.username %> - <a href="/logout"> Logout </a>
-    <% } %>
-    <h2> <a href="/login"> Login </a> </h2>
-    <h2> <a href="/signup"> Signup </a> </h2>	
-	<h2> <a href="/profile"> Profile </a> </h2>
-    <h2> <a href="/upload"> Upload </a> </h2>
-    <h2> <a href="/forgotPassword"> Account Recovery </a> </h2>
+<br>
+<div class="row ">
+    <%
+        
+    %>
+
+    
+  <div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
+<div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
+  <div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
+    <div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
+    <div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
+    <div class="col-sm-6 col-md-4">
+<div class="card">
+  <img class="card-img-top" src="..." alt="Card image cap">
+  <div class="card-block">
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  </div>
+</div>
+
+  </div>
 </div>
 </div>
 </body>
