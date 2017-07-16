@@ -28,12 +28,24 @@ module.exports = function(app, passport) {
     var File = require('../app/models/file');
 
 
-    // Root
     app.get('/', function(req, res) {
-        res.render('index.ejs', {
-            user: req.user,
+        res.render('landing.ejs', {
+            req: req
         })
     });
+
+    app.get('/disclaimer', function(req, res) {
+        res.render('disclaimer.ejs', {
+            req: req
+        })
+    });
+
+    app.get('/games', function(req, res) {
+        res.render('index.ejs', {
+            req: req,
+        })
+    });
+
 
     // Profile, and some redirection
     app.get('/profile', function(req, res) {
@@ -60,7 +72,7 @@ module.exports = function(app, passport) {
     app.get('/upload', function(req, res) {
         if (req.isAuthenticated()) {
             res.render('upload.ejs', {
-                user: req.user,
+                req: req,
                 message: req.flash('uploadMessage')
             })
         } else {
