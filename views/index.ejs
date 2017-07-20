@@ -10,6 +10,14 @@
 <br>
 <div class="row ">
     <%
+    Game.find({}, function (err, game) {
+      console.log(game.data.title)
+      %>
+
+      <%= game.data.title %>
+
+<%
+    })
         
     %>
 
