@@ -41,9 +41,11 @@ module.exports = function(app, passport) {
     });
 
     app.get('/games', function(req, res) {
-        res.render('index.ejs', {
-            req: req,
-            Game: Game
+        Game.find({}, function (err, games) {
+            res.render('index.ejs', {
+                req: req,
+                games: games
+            })
         })
     });
 

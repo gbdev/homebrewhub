@@ -9,19 +9,12 @@
 <div class="container">
 <br>
 <div class="row ">
-    <%
-    Game.find({}, function (err, game) {
-      console.log(game.data.title)
-      %>
 
-      <%= game.data.title %>
+    <% games.forEach( function(element){ %>
+      <%= element.data.title %>
+    <% }) %>
 
-<%
-    })
-        
-    %>
-
-    
+    <!--
   <div class="col-sm-6 col-md-4">
 <div class="card">
   <img class="card-img-top" src="..." alt="Card image cap">
@@ -74,6 +67,7 @@
     <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
   </div>
 </div>
+-->
 
   </div>
 </div>
