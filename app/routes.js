@@ -1,5 +1,6 @@
-var randomstring = require("randomstring");
 var configEmail = require('../config/email'); // SMTP server variables
+
+var randomstring = require("randomstring");
 var fs = require('fs');
 var multer = require('multer')
 
@@ -89,14 +90,41 @@ module.exports = function(app, passport) {
     var mulconf = upload.fields([{
         name: 'sampleFile',
         maxCount: 5
+    },
+    {
+        name: 'screenshots',
+        maxCount: 5
     }])
+
     app.post('/upload', mulconf, function(req, res, next) {
         console.log(req.body["title"])
         console.log(req.files)
+        // TODO: prevalidation
+        //  Redirect back to upload with flashing errors
+        if (!req.files.screenshots)
+            
         // TODO: generate permalink from game title
         var gameFilesArray = new Array();
-        for (var i = 0; i < req.files.sampleFile.length; i++) {
+        var screenshotsFilesArray = new Array();
 
+        req.files.screenshots.forEach( function(element, index) {
+            fs.mkdir(element.destination + "/" + req.body["title"], function() {
+                console.log("Mh")
+            })
+            fs.rename(element.destination + element.filename, element.destination + req.body["title"] + "/" + element.originalname)
+            var screenshotFile = new File({
+                data: {
+                    fslocation: req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname,
+                    description: "Screenshot "+ index,
+                    game: req.body["title"];
+                }
+            })
+            screenshotFile.save();
+            screenshotsFilesArray.push(screenshotFile.id);
+
+        });
+
+        for (var i = 0; i < req.files.sampleFile.length; i++) {
             // Restore original name and move to game subfolder
             fs.mkdir(req.files.sampleFile[i].destination + "/" + req.body["title"], function() {
                 console.log("Mh")
@@ -106,7 +134,8 @@ module.exports = function(app, passport) {
             var gameFile = new File({
                 data: {
                     fslocation: req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname,
-                    description: req.body["description"]
+                    description: req.body["description"],
+                    game: req.body["title"];
                 }
             })
             gameFile.save()
@@ -119,7 +148,8 @@ module.exports = function(app, passport) {
                 developer: req.body["developer"],
                 repository: req.body["repository"],
                 tags: req.body["tags"],
-                files: gameFilesArray
+                files: gameFilesArray,
+                screenshots: screenshotsFilesArray;
             }
         })
         game.save();

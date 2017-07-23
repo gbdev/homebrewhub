@@ -5,7 +5,8 @@ var mongoose = require('mongoose');
 var fileSchema = mongoose.Schema({
     data             : {
         fslocation   : String,
-        description  : String
+        description  : String,
+        game         : String
     }
 });
 
