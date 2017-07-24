@@ -42,11 +42,36 @@ module.exports = function(app, passport) {
     });
 
     app.get('/games', function(req, res) {
-        Game.find({}, function (err, games) {
-            res.render('index.ejs', {
-                req: req,
-                games: games
-            })
+        var gamesArray = new Array();
+
+        Game.find({}, function(err, games) {
+            var total = games.length;
+            var i = 0;
+            games.forEach(function(game, index) {
+                var gameData = new Object();
+                console.log(game.data.title);
+                gameData.title = game.data.title;
+
+                File.findOne({
+                    '_id': game.data.screenshots[0]
+                }, function(err, image) {
+                    if (image)
+                        gameData.thumbnail = image.data.fslocation;
+                    else
+                        gameData.thumbnail = "PLACEHOLDER PNG"
+                    gamesArray.push(gameData);
+                    i++;
+                    if (i == total) {
+                        // Do things, finally
+                        console.log("finished");
+                        console.log(gamesArray)
+                        res.render('index.ejs', {
+                            req: req,
+                            games: gamesArray
+                        })
+                    }
+                })
+            });
         })
     });
 
@@ -90,39 +115,39 @@ module.exports = function(app, passport) {
     var mulconf = upload.fields([{
         name: 'sampleFile',
         maxCount: 5
-    },
-    {
+    }, {
         name: 'screenshots',
         maxCount: 5
     }])
 
     app.post('/upload', mulconf, function(req, res, next) {
         console.log(req.body["title"])
-        console.log(req.files)
-        // TODO: prevalidation
-        //  Redirect back to upload with flashing errors
-        if (!req.files.screenshots)
-            
+        console.log(req.files.screenshots)
+            // TODO: prevalidation
+            //  Redirect back to upload with flashing errors
+            // zif (!req.files.screenshots)
+
         // TODO: generate permalink from game title
         var gameFilesArray = new Array();
         var screenshotsFilesArray = new Array();
 
-        req.files.screenshots.forEach( function(element, index) {
-            fs.mkdir(element.destination + "/" + req.body["title"], function() {
+
+        for (var i = 0; i < req.files.screenshots.length; i++) {
+            fs.mkdir(req.files.screenshots[i].destination + "/" + req.body["title"], function() {
                 console.log("Mh")
             })
-            fs.rename(element.destination + element.filename, element.destination + req.body["title"] + "/" + element.originalname)
+            fs.rename(req.files.screenshots[i].destination + req.files.screenshots[i].filename, req.files.screenshots[i].destination + req.body["title"] + "/" + req.files.screenshots[i].originalname)
             var screenshotFile = new File({
                 data: {
                     fslocation: req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname,
-                    description: "Screenshot "+ index,
-                    game: req.body["title"];
+                    description: "Screenshot " + i,
+                    game: req.body["title"]
                 }
             })
             screenshotFile.save();
             screenshotsFilesArray.push(screenshotFile.id);
 
-        });
+        };
 
         for (var i = 0; i < req.files.sampleFile.length; i++) {
             // Restore original name and move to game subfolder
@@ -135,7 +160,7 @@ module.exports = function(app, passport) {
                 data: {
                     fslocation: req.files.sampleFile[i].destination + req.body["title"] + "/" + req.files.sampleFile[i].originalname,
                     description: req.body["description"],
-                    game: req.body["title"];
+                    game: req.body["title"]
                 }
             })
             gameFile.save()
@@ -149,15 +174,15 @@ module.exports = function(app, passport) {
                 repository: req.body["repository"],
                 tags: req.body["tags"],
                 files: gameFilesArray,
-                screenshots: screenshotsFilesArray;
+                screenshots: screenshotsFilesArray
             }
         })
         game.save();
 
         //console.log(req.files.sampleFile.length)
-            //console.log(req.body["title"])
-            // req.file is the `avatar` file
-            // req.body will hold the text fields, if there were any
+        //console.log(req.body["title"])
+        // req.file is the `avatar` file
+        // req.body will hold the text fields, if there were any
     })
 
     app.get('/logout', function(req, res) {

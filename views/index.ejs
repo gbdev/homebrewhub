@@ -1,76 +1,76 @@
 <!doctype html>
 <html>
-<head>
+  <head>
     <title>Showcase</title>
-    <% include head.html %>   
-</head>
-<body>
-     <% include header.ejs %>
-<div class="container">
-<br>
-<div class="row ">
-
-    <% games.forEach( function(element){ %>
-      <%= element.data.title %>
-    <% }) %>
-
-    <!--
-  <div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
-
-  </div>
-<div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
-
-  </div>
-  <div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
-
-  </div>
-    <div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
-
-  </div>
-    <div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
-
-  </div>
-    <div class="col-sm-6 col-md-4">
-<div class="card">
-  <img class="card-img-top" src="..." alt="Card image cap">
-  <div class="card-block">
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-</div>
--->
-
-  </div>
-</div>
-</div>
-</body>
+    <% include head.html %>
+  </head>
+  <body>
+    <% include header.ejs %>
+    <div class="container">
+      <br>
+      <div class="row ">
+        <% games.forEach( function(element){ %>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src=<%= element.thumbnail %> alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text"><%= element.title %></p>
+            </div>
+          </div>
+        </div>
+        
+        <% }) %>
+        <!--
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 col-md-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+          </div>
+          -->
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
