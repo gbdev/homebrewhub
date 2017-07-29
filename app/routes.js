@@ -42,39 +42,14 @@ module.exports = function(app, passport) {
     });
 
     app.get('/games', function(req, res) {
-        var gamesArray = new Array();
-
-        Game.find({}, function(err, games) {
-            var total = games.length;
-            var i = 0;
-            games.forEach(function(game, index) {
-                var gameData = new Object();
-                console.log(game.data.title);
-                gameData.title = game.data.title;
-
-                File.findOne({
-                    '_id': game.data.screenshots[0]
-                }, function(err, image) {
-                    if (image)
-                        gameData.thumbnail = image.data.fslocation;
-                    else
-                        gameData.thumbnail = "PLACEHOLDER PNG"
-                    gamesArray.push(gameData);
-                    i++;
-                    if (i == total) {
-                        // Do things, finally
-                        console.log("finished");
-                        console.log(gamesArray)
-                        res.render('index.ejs', {
-                            req: req,
-                            games: gamesArray
-                        })
-                    }
+        Game.find({})
+            .populate('data.files')
+            .exec(function(err, games) {
+                res.render('element.ejs', {
+                    games: games
                 })
-            });
-        })
+            })
     });
-
 
     // Profile, and some redirection
     app.get('/profile', function(req, res) {

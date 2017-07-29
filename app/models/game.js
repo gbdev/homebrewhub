@@ -8,7 +8,7 @@ var gameSchema = mongoose.Schema({
         developer    : String,
         repository   : String,
         tags         : Array,
-        files        : Array,
+        files        : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
         permalink    : String,
         screenshots  : Array
     }
