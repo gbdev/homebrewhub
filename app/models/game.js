@@ -5,12 +5,12 @@ var mongoose = require('mongoose');
 var gameSchema = mongoose.Schema({
     data             : {
         title        : String,
-        developer    : String,
+        developer    : String, // Should point to user?
         repository   : String,
         tags         : Array,
         files        : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
         permalink    : String,
-        screenshots  : Array
+        screenshots  : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
     }
 });
 

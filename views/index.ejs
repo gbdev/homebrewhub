@@ -9,15 +9,23 @@
     <div class="container">
       <br>
       <div class="row ">
+
         <% games.forEach( function(element){ %>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src=<%= element.thumbnail %> alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text"><%= element.title %></p>
-            </div>
+        <div class="card col-sm-6 col-md-4">
+                      <img class="card-img-top" src=<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
+
+          <div class="card-block">
+            <a href=<%= "game/"+element.data.title %>><h4 class="card-title"> <%= element.data.title %> </h4></a>
+                <p class="card-text">
+                  <small class="text-muted"></small>
+                  <% element.data.tags.forEach( function(tag) { %>
+                  <span class="badge badge-default"><%= tag %></span>
+                  <% }) %>
+                </p>
+
           </div>
         </div>
+
         
         <% }) %>
         <!--
