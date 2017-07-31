@@ -6,16 +6,16 @@
   </head>
   <body>
     <% include header.ejs %>
-    <div class="container">
+    <div class="container col-lg-9">
       <br>
-      <div class="row ">
-
+      <div class="container">
+        <div class="card-deck">
         <% games.forEach( function(element){ %>
-        <div class="card col-sm-6 col-md-4">
-                      <img class="card-img-top" src=<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
+        <div class="card col-lg-3">
+                      <img class="card-img-top" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
 
           <div class="card-block">
-            <a href=<%= "game/"+element.data.title %>><h4 class="card-title"> <%= element.data.title %> </h4></a>
+            <a href=<%= "game/"+element.data.title %>><h3 class="card-title"> <%= element.data.title %> </h3></a>
                 <p class="card-text">
                   <small class="text-muted"></small>
                   <% element.data.tags.forEach( function(tag) { %>
@@ -28,57 +28,11 @@
 
         
         <% }) %>
-        <!--
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6 col-md-4">
-          <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-block">
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            </div>
-          </div>
-          -->
         </div>
       </div>
+      </div>
     </div>
+    <% include footer.html %> 
+
   </body>
 </html>

@@ -13,7 +13,8 @@ var userSchema = mongoose.Schema({
         username     : String,
         verified     : Boolean,
         verifyToken  : String,
-        permalink    : String
+        permalink    : String,
+        role         : Number,
     }
 });
 

@@ -1,32 +1,54 @@
 .card{
-      margin-bottom: 1.36em;
+	margin-bottom: 1.36em;
+}
+.texta {
+	font-size: 18px;
+}
+
+.card img{
+	width: 100%;
+	
+}
+
+.carousel {
+    width: 250px;
+    height: 250px;
+}
+
+.carousel img {
+    width: 250px;
+    height: 250px;
+}
+
+.lead {
+	font-size: 20px;
 }
 body { 
-  padding-top:1em; 
+	padding-top:1em; 
 }
 
 .bd-footer {
-    padding: 0.5rem 0;
-    margin-top: 4rem;
-    font-size: 85%;
-    text-align: center;
-    background-color: #f7f7f7;
-    text-decoration: none;
+		padding: 0.5rem 0;
+		margin-top: 4rem;
+		font-size: 85%;
+		text-align: center;
+		background-color: #f7f7f7;
+		text-decoration: none;
 }
 
 .bd-footer-links {
-  display: block;
-    padding-left: 0;
-    margin-bottom: 0rem;
-    text-decoration: none;
+	display: block;
+		padding-left: 0;
+		margin-bottom: 0rem;
+		text-decoration: none;
 }
 
 .list-inline-item {
-  text-decoration: none;
+	text-decoration: none;
 }
 
 .footer-item {
-  font-weight: bold;
-  text-decoration: none !important; 
-  color: gray;
+	font-weight: bold;
+	text-decoration: none !important; 
+	color: gray;
 }

@@ -6,25 +6,34 @@
 </head>
 <body>
      <% include header.ejs %>
-<div class="container col-sm-8 col-md-10 col-lg-6">
+     <div class="flex-row">
+<div class="texta container col-lg-9">
 <br>
-<h1> Oh hey, welcome! </h1>
-This project aims to collect, archive and save every unofficial game, homebrew, patch, hackrom for Game Boy (Color) produced by the community through years of passionate work.
-<br>
-You'll be able to vote, share and submit games, search for tags and play them directly here, in your browser.
+    <% if (message) { %>
+        <% if (type == 1) { %>
+        <div class="alert alert-danger"><%= message %></div>
+        <% } else { %>
+        <div class="alert alert-success fade in"><%= message %></div>
+        <% } %>
+    <% } %>
+<h1>Oh hey, welcome!</h1>
+<p class="lead">This project aims to collect, archive and save every unofficial game, homebrew, patch, hackrom for Game Boy (Color) produced by the community through years of passionate work.
+</p><p class="lead">
+You'll be able to <b>vote</b>, share and submit games, search for tags and <b>play</b> them directly here, in your browser.</p>
 
-<br> <br>
 <h2> Support </h2>
-You can help in a number of ways, we really appreciate:
-<br>
-<b>Spread</b> the word with friends and on socials, share the <a href="https://gbhh.avivace.com/"> link</a> to this site.
-<br>
-<b> Write code</b>: the entire development of the project is done on <a href="https://github.com/dmg01/homebrewhub">GitHub</a> and everyone can contribute! Code licensed GPLv3.
-<br>
-<b> Donate</b>: Hosting and bandwidth isn't free - and we won't add flashing banners - if you like the project, please considering <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6H2NAG2PPS4VQ"> donating</a>.
-<br>
-<b> Submit games and help testing</b>: currently, only approved contributors can add or edit entries, <a href="https://discord.gg/gpBxq85">get in touch </a> to help us with the submissions.
+<p>
+You can help in a number of ways, we really appreciate:</p>
+<p>
+<b>Spread</b> the word with friends and on socials, share the <a href="https://gbhh.avivace.com/"> link</a> to this site.</p>
 
+<p> <b>Write code</b>: the entire development of the project is done on <a href="https://github.com/dmg01/homebrewhub">GitHub</a> and everyone can contribute! Code licensed GPLv3. </p>
+
+<p> <b> Donate</b>: Hosting and bandwidth isn't free - and we won't add flashing banners - if you like the project, please considering <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6H2NAG2PPS4VQ"> donating</a>. </p>
+
+<p><b> Submit games and help testing</b>: currently, only approved contributors can add or edit entries, <a href="https://discord.gg/gpBxq85">get in touch </a> to help us with the submissions. </p>
+
+</div>
 </div>
 <% include footer.html %> 
 </body>

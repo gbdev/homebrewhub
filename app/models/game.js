@@ -6,8 +6,11 @@ var gameSchema = mongoose.Schema({
     data             : {
         title        : String,
         developer    : String, // Should point to user?
+        description  : String,
+        platform     : String,
         repository   : String,
-        tags         : Array,
+        license      : String,
+        tags         : [String],
         files        : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
         permalink    : String,
         screenshots  : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],

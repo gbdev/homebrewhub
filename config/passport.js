@@ -128,6 +128,7 @@ module.exports = function(passport) {
                                     newUser.local.email = email;
                                     newUser.local.password = newUser.generateHash(password);
                                     newUser.local.verified = false;
+                                    newUser.local.role = 0;
 
                                     // defaults
                                     newUser.data.test = "default value";

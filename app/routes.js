@@ -31,7 +31,9 @@ module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
 		res.render('landing.ejs', {
-			req: req
+			req: req,
+			message: req.flash('loginMessage'),		// Show permission problems
+			type: req.flash('type')
 		})
 	});
 
@@ -40,6 +42,13 @@ module.exports = function(app, passport) {
 			req: req
 		})
 	});
+
+	app.get('/credits', function(req, res) {
+		res.render('credits.ejs', {
+			req: req
+		})
+	});
+
 
 	app.get('/games', function(req, res) {
 		Game.find({})
@@ -53,6 +62,21 @@ module.exports = function(app, passport) {
 				})
 			})
 	});
+
+	app.get('/games/:tag', function(req, res) {
+		Game.find({
+			'data.tags' : {'$all': req.params.tag}
+		})
+			.populate('data.files')
+			.populate('data.screenshots')
+			.exec(function(err, games){
+				console.log(games)
+				res.render('index.ejs', {
+					req: req,
+					games: games
+				})
+			})
+	})
 
 	// Profile, and some redirection
 	app.get('/profile', function(req, res) {
@@ -78,10 +102,18 @@ module.exports = function(app, passport) {
 
 	app.get('/upload', function(req, res) {
 		if (req.isAuthenticated()) {
-			res.render('upload.ejs', {
-				req: req,
-				message: req.flash('uploadMessage')
-			})
+			if (req.user.local.role == 1){
+				res.render('upload.ejs', {
+					req: req,
+					message: req.flash('loginMessage')
+				})
+			}
+			else {
+				req.flash('loginMessage', 'Not allowed to do that, sorry')
+				req.flash('type', 1)
+				res.redirect('/')
+			}
+
 		} else {
 			req.flash('loginMessage', 'Login to use this page')
 			req.flash('type', 1)
@@ -145,6 +177,7 @@ module.exports = function(app, passport) {
 		var game = new Game({
 			data: {
 				title: req.body["title"],
+				description: req.body["description"],
 				developer: req.body["developer"],
 				repository: req.body["repository"],
 				tags: req.body["tags"],
@@ -168,8 +201,6 @@ module.exports = function(app, passport) {
 
 	app.get('/game/:gameID', function(req, res) {
 		console.log(req.params.gameID)
-		if (req.params.gameID == '')
-			res.redirect('/games');
 		Game.find({
 			'data.title' : req.params.gameID
 		})
