@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Showcase</title>
+    <% include head_min.html %>
+    <style>
+    #mainCanvas {
+    width: 320px;
+    height: 288px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid rgba(24, 53, 66, 0.5);
+    box-shadow: 0px 2px 7px rgba(24, 53, 66, 0.5);
+    border-radius: 4px;
+    }
+    #gamepadCanvas {
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid rgba(24, 53, 66, 0.5);
+    box-shadow: 0px 2px 7px rgba(24, 53, 66, 0.5);
+    border-radius: 4px;
+    }
+    </style>
+    <script src="/gbjs/player.js"></script>
+    <script src="/gbjs/other/base64.js"></script>
+    <script src="/gbjs/other/json2.js"></script>
+    <script src="/gbjs/other/swfobject.js"></script>
+    <script src="/gbjs/other/resampler.js"></script>
+    <script src="/gbjs/other/XAudioServer.js"></script>
+    <script src="/gbjs/other/resize.js"></script>
+    <script src="/gbjs/GameBoyCore.js"></script>
+    <script src="/gbjs/GameBoyIO.js"></script>
+    <script src="/gbjs/gamepad.js"></script>
+    <script type="text/javascript">
+    var gamepad = null;
+    var DEBUG_MESSAGES = false;
+    var DEBUG_WINDOWING = false;
+    window.onload = function () {
+      mainCanvas = document.getElementById("mainCanvas");
+    
+      var request = new XMLHttpRequest();
+      request.open("GET", "/<%= game[0].data.files[0].data.fslocation %>", true);
+      request.responseType = "blob";
+    
+      request.onload = function(event) {
+        startGame(new Blob([this.response], { type: "text/plain" }));
+      };
+    
+
+    
+      gamepad = new GamePad(document.getElementById("gamepadCanvas"));
+      gamepad.supportsDiagonal = false;
+    
+      request.send(null);
+    }
+    </script>
+  </head>
+  <body>
+    <br>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-sm-6 col-md-6 col-lg-5">
+          
+          <!-- <img src=<%= "/" +game[0].data.screenshots[0].data.fslocation %> > -->
+          
+          
+          <div class="box">
+            <h4>Play Online</h4>            
+            <canvas id="mainCanvas"></canvas>
+            <canvas id="gamepadCanvas" width="320" height="128"></canvas>
+          </div>
+          
+        </div>
+      </div>
+
+    </div>
+
+
+  </body>
+</html>

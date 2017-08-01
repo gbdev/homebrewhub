@@ -39,24 +39,27 @@
     var DEBUG_MESSAGES = false;
     var DEBUG_WINDOWING = false;
     window.onload = function () {
-    mainCanvas = document.getElementById("mainCanvas");
+      mainCanvas = document.getElementById("mainCanvas");
     
-    var request = new XMLHttpRequest();
-    request.open("GET", "/<%= game[0].data.files[0].data.fslocation %>", true);
-    request.responseType = "blob";
+      var request = new XMLHttpRequest();
+      request.open("GET", "/<%= game[0].data.files[0].data.fslocation %>", true);
+      request.responseType = "blob";
     
-    request.onload = function(event) {
-    startGame(new Blob([this.response], { type: "text/plain" }));
-    };
+      request.onload = function(event) {
+        startGame(new Blob([this.response], { type: "text/plain" }));
+      };
     
-    if(("ontouchstart" in document.documentElement) == true) {
-    document.getElementById("controls-instructions-container").style.display = "none";
-    }
+      if(("ontouchstart" in document.documentElement) == true) {
+        document.getElementById("controls-instructions-container").style.display = "none";
+        document.getElementById("mainCanvas").style.display = "none";
+        document.getElementById("redirmobile").style.display = "initial";
+
+      }
     
-    gamepad = new GamePad(document.getElementById("gamepadCanvas"));
-    gamepad.supportsDiagonal = false;
+      gamepad = new GamePad(document.getElementById("gamepadCanvas"));
+      gamepad.supportsDiagonal = false;
     
-    request.send(null);
+      request.send(null);
     }
     </script>
   </head>
@@ -111,8 +114,8 @@
           
           <div class="box">
             <h4>Play Online</h4>
+            <div id="redirmobile" style="display: none"> To play online on a touchscreen, click <a href=/game_mobile/<%= game[0].data.title %>> here </a></div>
             <canvas id="mainCanvas"></canvas>
-            <canvas id="gamepadCanvas" width="320" height="128"></canvas>
             <div id="controls-instructions-container">
               <br>
               <h5>Controls</h5>

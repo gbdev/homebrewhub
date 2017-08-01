@@ -18,6 +18,11 @@
 .carousel img {
     width: 250px;
     height: 250px;
+    image-rendering: pixelated;
+}
+
+img {
+	image-rendering: pixelated;
 }
 
 .lead {

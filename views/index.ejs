@@ -15,7 +15,15 @@
                       <img class="card-img-top" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
 
           <div class="card-block">
-            <a href=<%= "game/"+element.data.title %>><h3 class="card-title"> <%= element.data.title %> </h3></a>
+            <a href=<%= "game/"+element.data.title %>><h3 class="card-title"> <%= element.data.title %> </a>
+
+              <% if (element.data.typetag == "game") { %>
+              <span style="float:right; font-size: 0.7em" class="fa fa-gamepad"></span></h3>
+              <% } else if (element.data.typetag == "demo") { %>
+              <span style="float:right; font-size: 0.5em" class="fa fa-cubes"></span></h3>
+              <% } else { %>
+              <span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
+              <% } %>
                 <p class="card-text">
                   <small class="text-muted"></small>
                   <% element.data.tags.forEach( function(tag) { %>

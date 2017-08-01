@@ -65,7 +65,7 @@ module.exports = function(app, passport) {
 
 	app.get('/games/:tag', function(req, res) {
 		Game.find({
-			'data.tags' : {'$all': req.params.tag}
+			'data.tags' : {'$all': 'req.params.tag'}
 		})
 			.populate('data.files')
 			.populate('data.screenshots')
@@ -186,6 +186,9 @@ module.exports = function(app, passport) {
 			}
 		})
 		game.save();
+		req.flash('loginMessage', 'Upload successful')
+		req.flash('type', 2)
+		res.redirect('/')
 
 		//console.log(req.files.sampleFile.length)
 		//console.log(req.body["title"])
@@ -209,6 +212,22 @@ module.exports = function(app, passport) {
 			.exec(function(err, game) {
 				console.log(game)
 				res.render('game.ejs', {
+					req: req,
+					game: game
+				})
+			})
+	})
+
+	app.get('/game_mobile/:gameID', function(req, res) {
+		console.log(req.params.gameID)
+		Game.find({
+			'data.title' : req.params.gameID
+		})
+			.populate('data.files')
+			.populate('data.screenshots')
+			.exec(function(err, game) {
+				console.log(game)
+				res.render('game_min.ejs', {
 					req: req,
 					game: game
 				})

@@ -6,10 +6,11 @@
 </head>
 <body>
      <% include header.ejs %>
-     <div class="flex-row">
-<div class="texta container col-lg-9">
-<br>
-    <% if (message) { %>
+<div class="flex-row">
+<div class="texta container col-md-11 col-lg-9">
+    <br>
+
+    <% if (message.length > 0) { %>
         <% if (type == 1) { %>
         <div class="alert alert-danger"><%= message %></div>
         <% } else { %>
@@ -26,6 +27,7 @@ You'll be able to <b>vote</b>, share and submit games, search for tags and <b>pl
 You can help in a number of ways, we really appreciate:</p>
 <p>
 <b>Spread</b> the word with friends and on socials, share the <a href="https://gbhh.avivace.com/"> link</a> to this site.</p>
+<p> <b>Report bugs and send feedback</b>: send an email to <code>admin (at) avivace.com</code>, connect with us on Discord or fill an Issue on the GitHub repo.</p>
 
 <p> <b>Write code</b>: the entire development of the project is done on <a href="https://github.com/dmg01/homebrewhub">GitHub</a> and everyone can contribute! Code licensed GPLv3. </p>
 
