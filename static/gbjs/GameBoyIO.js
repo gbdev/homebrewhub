@@ -5,7 +5,7 @@ var settings = [						//Some settings.
 	true, 								//Turn on sound.
 	true,								//Boot with boot ROM first?
 	false,								//Give priority to GameBoy mode
-	1,									//Volume level set.
+	0,									//Volume level set.
 	true,								//Colorize GB mode?
 	false,								//Disallow typed arrays?
 	8,									//Interval for the emulator loop.
