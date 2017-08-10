@@ -13,44 +13,14 @@
     <script src="/gbjs/GameBoyCore.js"></script>
     <script src="/gbjs/GameBoyIO.js"></script>
     <script src="/gbjs/gamepad.js"></script>
+    <script src="/audioControl.js"></script>
     <script type="text/javascript">
-    var muted = 1;
-    var old_vol = 0.5;
 
-    function toggleAudio() {
-      var p = document.getElementById("audioRange")
-      if (muted) {
-        document.getElementById("audiostatus").innerHTML = '<i class="fa fa-2x fa-volume-up" aria-hidden="true"></i>'
-        if (old_vol == 0)
-          old_vol = 0.1
-        XAudioJSVolume = old_vol;
-        p.value = XAudioJSVolume;
-        muted = 0;
-
-
-      } else {
-        document.getElementById("audiostatus").innerHTML = '<i class="fa fa-2x fa-volume-off" aria-hidden="true"></i>'
-        old_vol = XAudioJSVolume;
-        XAudioJSVolume = 0;
-        p.value = 0;
-        muted = 1;
-      }
-
-    }
     var gamepad = null;
     var DEBUG_MESSAGES = false;
     var DEBUG_WINDOWING = false;
     window.onload = function () {
-      var p = document.getElementById("audioRange")
-      p.addEventListener("input", function() {
-        XAudioJSVolume = p.value;
-        muted = 0;
-        document.getElementById("audiostatus").innerHTML = '<i class="fa fa-2x fa-volume-up" aria-hidden="true"></i>'
-        if (p.value == 0) {
-          document.getElementById("audiostatus").innerHTML = '<i class="fa fa-2x fa-volume-off" aria-hidden="true"></i>'
-        }
-      }, false); 
-
+      audioRangeHandler();
       mainCanvas = document.getElementById("mainCanvas");
     
       var request = new XMLHttpRequest();
@@ -61,19 +31,18 @@
         startGame(new Blob([this.response], { type: "text/plain" }));
       };
       
+      // If the device has a touch input, hide everything and show the redirect to the minimal mobile page
       if(("ontouchstart" in document.documentElement) == true) {
         document.getElementById("controls-instructions-container").style.display = "none";
         document.getElementById("mainCanvas").style.display = "none";
+        document.getElementById("audioRange").style.display = "none";
         document.getElementById("redirmobile").style.display = "initial";
-
       }
     
       gamepad = new GamePad(document.getElementById("gamepadCanvas"));
       gamepad.supportsDiagonal = false;
       
       request.send(null);
-
-
     }
 
     </script>
@@ -123,16 +92,16 @@
       <br>
       <div class="row justify-content-center">
         <div class="col-sm-6 col-md-6 col-lg-5">
-          
+           
           <!-- <img src=<%= "/" +game[0].data.screenshots[0].data.fslocation %> > -->
           
           
           <div class="box">
             <h4>Play Online</h4>
             <input type="range" id="audioRange" step="0.005" min="0" max="1" value="0"> <a href="javascript:void(0)" id="audiostatus" onClick="toggleAudio()"> <i class="fa fa-2x fa-volume-off" aria-hidden="true"></i> </a>
-            <div id="redirmobile" style="display: none"> To play online on a touchscreen, click <a href=/game_mobile/<%= game[0].data.title %>> here </a></div>
-            <canvas id="mainCanvas"></canvas>
-            <canvas id="gamepadCanvas" style="display: none"></canvas>
+            <div id="redirmobile" style="display: none"> <h5>To play online on a touchscreen device, click <a href=/game_mobile/<%= game[0].data.title %>> here </a></h5></div>
+            <canvas class="reset-this" id="mainCanvas"></canvas>
+            <canvas id="gamepadCanvas"></canvas>
             <div id="controls-instructions-container">
               <br>
               <h5>Controls</h5>

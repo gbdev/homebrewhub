@@ -4,9 +4,18 @@ var randomstring = require("randomstring");
 var fs = require('fs');
 var multer = require('multer')
 
+// Multer Upload configuration
 var upload = multer({
 	dest: 'uploads/'
 })
+
+var mulconf = upload.fields([{
+	name: 'ssFiles',
+	maxCount: 5
+}, {
+	name: 'gameFiles',
+	maxCount: 5
+}])
 
 
 const nodemailer = require('nodemailer');
@@ -32,7 +41,7 @@ module.exports = function(app, passport) {
 	app.get('/', function(req, res) {
 		res.render('landing.ejs', {
 			req: req,
-			message: req.flash('loginMessage'),		// Show permission problems
+			message: req.flash('loginMessage'), // Show permission problems
 			type: req.flash('type')
 		})
 	});
@@ -55,7 +64,6 @@ module.exports = function(app, passport) {
 			.populate('data.files')
 			.populate('data.screenshots')
 			.exec(function(err, games) {
-				console.log(games)
 				res.render('index.ejs', {
 					req: req,
 					games: games
@@ -65,12 +73,13 @@ module.exports = function(app, passport) {
 
 	app.get('/games/:tag', function(req, res) {
 		Game.find({
-			'data.tags' : {'$all': 'req.params.tag'}
-		})
+				'data.tags': {
+					'$all': 'req.params.tag'
+				}
+			})
 			.populate('data.files')
 			.populate('data.screenshots')
-			.exec(function(err, games){
-				console.log(games)
+			.exec(function(err, games) {
 				res.render('index.ejs', {
 					req: req,
 					games: games
@@ -102,13 +111,12 @@ module.exports = function(app, passport) {
 
 	app.get('/upload', function(req, res) {
 		if (req.isAuthenticated()) {
-			if (req.user.local.role == 1){
+			if (req.user.local.role == 1) {
 				res.render('upload.ejs', {
 					req: req,
 					message: req.flash('loginMessage')
 				})
-			}
-			else {
+			} else {
 				req.flash('loginMessage', 'Not allowed to do that, sorry')
 				req.flash('type', 1)
 				res.redirect('/')
@@ -120,15 +128,6 @@ module.exports = function(app, passport) {
 			res.redirect('/login?r=upload')
 		}
 	});
-
-
-	var mulconf = upload.fields([{
-		name: 'ssFiles',
-		maxCount: 5
-	}, {
-		name: 'gameFiles',
-		maxCount: 5
-	}])
 
 	app.post('/upload', mulconf, function(req, res, next) {
 		console.log(req.body["title"])
@@ -159,8 +158,7 @@ module.exports = function(app, passport) {
 
 		for (var i = 0; i < req.files.gameFiles.length; i++) {
 			// Restore original name and move to game subfolder
-			fs.mkdir(req.files.gameFiles[i].destination + "/" + req.body["title"], function() {
-			})
+			fs.mkdir(req.files.gameFiles[i].destination + "/" + req.body["title"], function() {})
 			fs.rename(req.files.gameFiles[i].destination + req.files.gameFiles[i].filename, req.files.gameFiles[i].destination + req.body["title"] + "/" + req.files.gameFiles[i].originalname)
 
 			var gameFile = new File({
@@ -205,8 +203,8 @@ module.exports = function(app, passport) {
 	app.get('/game/:gameID', function(req, res) {
 		console.log(req.params.gameID)
 		Game.find({
-			'data.title' : req.params.gameID
-		})
+				'data.title': req.params.gameID
+			})
 			.populate('data.files')
 			.populate('data.screenshots')
 			.exec(function(err, game) {
@@ -221,8 +219,8 @@ module.exports = function(app, passport) {
 	app.get('/game_mobile/:gameID', function(req, res) {
 		console.log(req.params.gameID)
 		Game.find({
-			'data.title' : req.params.gameID
-		})
+				'data.title': req.params.gameID
+			})
 			.populate('data.files')
 			.populate('data.screenshots')
 			.exec(function(err, game) {
