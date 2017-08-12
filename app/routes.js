@@ -134,7 +134,7 @@ module.exports = function(app, passport) {
 		console.log(req.files.screenshots)
 			// TODO: prevalidation
 			//  Redirect back to upload with flashing errors
-			// zif (!req.files.screenshots)
+			//  if (!req.files.screenshots)
 
 		// TODO: generate permalink from game title
 		var gameFilesArray = new Array();
@@ -203,7 +203,7 @@ module.exports = function(app, passport) {
 	app.get('/game/:gameID', function(req, res) {
 		console.log(req.params.gameID)
 		Game.find({
-				'data.title': req.params.gameID
+				'data.permalink': req.params.gameID
 			})
 			.populate('data.files')
 			.populate('data.screenshots')

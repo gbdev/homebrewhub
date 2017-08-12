@@ -6,28 +6,28 @@
   </head>
   <body>
     <% include header.ejs %>
-    <div class="container col-lg-9">
+    <div class="container">
       <br>
       <div class="container">
-        <div class="card-deck">
+        <div class="card-columns">
         <% games.forEach( function(element){ %>
-        <div class="card col-lg-3">
-                      <img class="card-img-top" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
+        <div class="card">
+                      <img class="card-img-top img-fluid" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
 
-          <div class="card-block">
-            <a href=<%= "game/"+element.data.title %>><h3 class="card-title"> <%= element.data.title %> </a>
+          <div class="card-body">
+            <a href=<%= "game/"+element.data.permalink %>><h3 class="card-title"> <%= element.data.title %> </a>
 
               <% if (element.data.typetag == "game") { %>
               <span style="float:right; font-size: 0.7em" class="fa fa-gamepad"></span></h3>
               <% } else if (element.data.typetag == "demo") { %>
-              <span style="float:right; font-size: 0.5em" class="fa fa-cubes"></span></h3>
+              <span style="float:right; font-size: 0.7em" class="fa fa-cubes"></span></h3>
               <% } else { %>
               <span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
               <% } %>
                 <p class="card-text">
                   <small class="text-muted"></small>
                   <% element.data.tags.forEach( function(tag) { %>
-                  <span class="badge badge-default"><%= tag %></span>
+                  <span class="badge badge-secondary"><%= tag %></span>
                   <% }) %>
                 </p>
 
@@ -36,6 +36,7 @@
 
         
         <% }) %>
+
         </div>
       </div>
       </div>

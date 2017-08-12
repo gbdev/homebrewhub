@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var gameSchema = mongoose.Schema({
     data             : {
         title        : String,
+        permalink    : String,
         developer    : String, // Should point to user?
         typetag      : String,
         description  : String,
@@ -13,7 +14,6 @@ var gameSchema = mongoose.Schema({
         license      : String,
         tags         : [String],
         files        : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
-        permalink    : String,
         screenshots  : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
 
     }
