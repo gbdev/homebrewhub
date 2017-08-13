@@ -175,6 +175,7 @@ module.exports = function(app, passport) {
 		var game = new Game({
 			data: {
 				title: req.body["title"],
+				permalink: req.body["permalink"],
 				description: req.body["description"],
 				developer: req.body["developer"],
 				repository: req.body["repository"],

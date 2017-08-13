@@ -7,16 +7,25 @@
   <body>
     <% include header.ejs %>
     <div class="container">
+      <% if (games.length == 0) { %>
+      <br>
+      <div class="row">
+      <div class="col-lg-3"></div>
+          <div class="col-lg-6 alert alert-danger" role="alert">
+            <h4 class="alert-heading">Wooops, nothing found!</h4>
+            <p>Nothing matches the provided query.</p>
+          </div>
+        </div>
+          <% } %>
       <br>
       <div class="container">
         <div class="card-columns">
-        <% games.forEach( function(element){ %>
-        <div class="card">
-                      <img class="card-img-top img-fluid" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
-
-          <div class="card-body">
-            <a href=<%= "game/"+element.data.permalink %>><h3 class="card-title"> <%= element.data.title %> </a>
-
+          
+          <% games.forEach( function(element){ %>
+          <div class="card">
+            <img class="card-img-top img-fluid" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap">
+            <div class="card-body">
+              <a href=<%= "game/"+element.data.permalink %>><h4 class="card-title"> <%= element.data.title %> </a>
               <% if (element.data.typetag == "game") { %>
               <span style="float:right; font-size: 0.7em" class="fa fa-gamepad"></span></h3>
               <% } else if (element.data.typetag == "demo") { %>
@@ -24,24 +33,24 @@
               <% } else { %>
               <span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
               <% } %>
-                <p class="card-text">
-                  <small class="text-muted"></small>
-                  <% element.data.tags.forEach( function(tag) { %>
-                  <span class="badge badge-secondary"><%= tag %></span>
-                  <% }) %>
-                </p>
-
+              <p class="card-text">
+                <small class="text-muted"></small>
+                <% element.data.tags.forEach( function(tag) { %>
+                <span class="badge badge-secondary"><%= tag %></span>
+                <% }) %>
+              </p>
+            </div>
           </div>
-        </div>
-
-        
-        <% }) %>
-
+          
+          <% }) %>
         </div>
       </div>
-      </div>
+          Legend: <i class="fa fa-gamepad"></i> Game, <i class="fa fa-cubes"></i> Demo, <i class="fa fa-microchip"></i> Homebrew. 
+
     </div>
-    <% include footer.html %> 
 
-  </body>
+  </div>
+
+  <% include footer.html %>
+</body>
 </html>
