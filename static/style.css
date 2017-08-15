@@ -1,15 +1,12 @@
 .card-title {
-    overflow: hidden; /* to hide anything that doesn't fit in the containing element. */
-    white-space: nowrap; /* to make sure the line doesn't break when it is longer than the containing div. */
-    text-overflow: ellipsis; /* to do what you want. */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
-
-
 
 .texta {
 	font-size: 18px;
 }
-
 
 .carousel {
     width: 300px;

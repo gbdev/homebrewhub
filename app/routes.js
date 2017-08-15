@@ -71,12 +71,11 @@ module.exports = function(app, passport) {
 			})
 	});
 
-	app.get('/games/:tag', function(req, res) {
+	// Categories - friendly URLs
+	app.get('/games/opensource', function(req, res) {
 		Game.find({
-				'data.tags': {
-					'$all': 'req.params.tag'
-				}
-			})
+					'data.tags' : 'Open Source'
+				})
 			.populate('data.files')
 			.populate('data.screenshots')
 			.exec(function(err, games) {
@@ -86,6 +85,50 @@ module.exports = function(app, passport) {
 				})
 			})
 	})
+
+	app.get('/games/arcade', function(req, res) {
+		Game.find({
+					'data.tags' : 'Arcade'
+				})
+			.populate('data.files')
+			.populate('data.screenshots')
+			.exec(function(err, games) {
+				res.render('index.ejs', {
+					req: req,
+					games: games
+				})
+			})
+	})
+
+	app.get('/games/rpg', function(req, res) {
+		Game.find({
+					'data.tags' : 'RPG'
+				})
+			.populate('data.files')
+			.populate('data.screenshots')
+			.exec(function(err, games) {
+				res.render('index.ejs', {
+					req: req,
+					games: games
+				})
+			})
+	})
+
+	// General category matching
+	app.get('/games/:tag', function(req, res) {
+		Game.find({
+					'data.tags' : req.params.tag
+				})
+			.populate('data.files')
+			.populate('data.screenshots')
+			.exec(function(err, games) {
+				res.render('index.ejs', {
+					req: req,
+					games: games
+				})
+			})
+	})
+
 
 	// Profile, and some redirection
 	app.get('/profile', function(req, res) {
@@ -179,7 +222,7 @@ module.exports = function(app, passport) {
 				description: req.body["description"],
 				developer: req.body["developer"],
 				repository: req.body["repository"],
-				tags: req.body["tags"],
+				tags: req.body["tags"].split(),
 				files: gameFilesArray,
 				screenshots: screenshotsFilesArray
 			}
