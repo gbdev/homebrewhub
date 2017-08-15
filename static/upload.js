@@ -7,24 +7,17 @@ function handleFiles(obj) {
   }
 }
 
+var osCategoryFlag = document.getElementById("oscategory");
+var langdiv = document.getElementById('language');
+inputElement.addEventListener("click", toggleLanguage, false);
+function toggleLanguage(obj){
+	if (osCategoryFlag.checked)
+		langdiv.style.display = "block"
+	else
+		langdiv.style.display = "none"
+}
+
+
 function handleSS(obj) {
 	console.log("Screenshots selected")
 }
-
-var tags = new Awesomplete('input[data-multiple]', {
-	minChars: 0,
-	filter: function(text, input) {
-		return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
-	},
-
-	item: function(text, input) {
-		return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
-	},
-
-	replace: function(text) {
-		var before = this.input.value.match(/^.+,\s*|/)[0];
-		this.input.value = before + text + ", ";
-	}
-});
-
-tags.open();

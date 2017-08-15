@@ -1,67 +1,66 @@
 <!doctype html>
 <html>
-<head>
-    <title>HHub - Login</title>
-<% include head.html %>   
-</head>
-<body>
-     <% include header.ejs %>
-<div class="container">
-<div class="col-sm-6 col-sm-offset-3">
-
-    <h1><span class="fa fa-sign-in"></span> Submit game</h1>
-
-    <% if (message.length > 0) { %>
-        <% if (type == 1) { %>
-        <div class="alert alert-danger"><%= message %></div>
-        <% } else { %>
-        <div class="alert alert-success fade in"><%= message %></div>
-        <% } %>
-    <% } %>
-
-
-
-    <!-- LOGIN FORM -->
-    <form enctype=multipart/form-data action="/upload" method="post">
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" class="form-control" name="title">
-            <br>
-             <label>Permalink</label>
-            <input type="text" class="form-control" name="permalink">
-            <br>
-            <label>Description</label>
-            <textarea class="form-control" name="Text1" rows="5"></textarea>
-            <br><label>Developer</label>
-            <input type="text" class="form-control" name="developer">
-            <br><label>Repository</label>
-            <br>Adding a repository will automatically tag the game as Open Source
-            <input type="text" class="form-control" name="repository">
-            
-            <br> <label>Tags</label>
-            <br>
-            <input id="tags" name="tags" type="text" class="form-control" data-list="Demo, RPG, Arcade, Platform" data-multiple />
-            <br>
-            
-            <br> <label>Screenshots</label>
-            <input id="filePick1" type="file" multiple name="ssFiles" onchange="handleSS(this)">
-            <br>
-    
-            <br> <label>Game Files</label>
-            <input id="filePick2" type="file" multiple name="gameFiles" onchange="handleFiles(this)">
-            <br>
-            <div id="fdesc"></div>
-            <br>
-            <button class="btn btn-warning btn-lg">Upload</button>
-
+    <head>
+        <title>HHub - Upload</title>
+        <% include head.html %>
+    </head>
+    <body>
+        <% include header.ejs %>
+        <div class="container">
+            <div class="col-sm-6 col-sm-offset-3">
+                <br>
+                <h1><span class="fa fa-sign-in"></span> Submit game</h1>
+                <% if (message.length > 0) { %>
+                <% if (type == 1) { %>
+                <div class="alert alert-danger"><%= message %></div>
+                <% } else { %>
+                <div class="alert alert-success fade in"><%= message %></div>
+                <% } %>
+                <% } %>
+                <!-- LOGIN FORM -->
+                <form enctype=multipart/form-data action="/upload" method="post">
+                    <div class="form-group">
+                        <br>
+                        <h5><label>Title</label></h5>
+                        <input type="text" class="form-control" name="title">
+                        <br>
+                        <h5><label>Permalink</label></h5>
+                        <input type="text" class="form-control" name="permalink">
+                        <br>
+                        <h5><label>Description</label></h5>
+                        <textarea class="form-control" name="Text1" rows="5"></textarea>
+                        <br><h5><label>Developer</label></h5>
+                        <input type="text" class="form-control" name="developer">
+                        <br><h5><label>Repository</label></h5>
+                        <input type="text" class="form-control" name="repository">
+                        
+                        <br> <h5><label>Tags</label></h5>
+                        <input type="checkbox" name="rpg" value="rpg">RPG<br>
+                        <input type="checkbox" onchange="toggleLanguage()" id="oscategory" value="opensource">Open Source<br>
+                        <input type="checkbox" name="platform" value="platform">Platform<br>
+                        <input type="checkbox" name="arcade" value="arcade">Arcade<br>
+                        <br>
+                        <div id="language" style="display: none">
+                            <h5><label>Language</label></h5>
+                            <input type="radio" name="language" value="c"> C<br>
+                            <input type="radio" name="language" value="asm"> ASM<br>
+                        </div>
+                        <br> <label>Screenshots</label>
+                        <input id="filePick1" type="file" multiple name="ssFiles" onchange="handleSS(this)">
+                        <br>
+                        
+                        <br> <label>Game Files</label>
+                        <input id="filePick2" type="file" multiple name="gameFiles" onchange="handleFiles(this)">
+                        <br>
+                        <div id="fdesc"></div>
+                        <br>
+                        <button class="btn btn-warning btn-lg">Upload</button>
+                    </div>
+                </form>
+                
+                <hr>
+            </div>
         </div>
-      </form>
-
-
-        
-    <hr>
-</div>
-</div>
-<script src="upload.js" type="text/javascript"></script>
-</body>
+        <script src="upload.js" type="text/javascript"></script>
+    </body>
 </html>
