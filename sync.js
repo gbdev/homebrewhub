@@ -9,18 +9,43 @@ dbOptions = {
 mongoose.connect(dbURL, dbOptions)
 
 var Game = require('./app/models/game');
-games.forEach(function(element)  {
-	Game.findOne({
-			'data.permalink': element["name"]
+games.forEach(function(element, index)  {
+	Game.findOneAndUpdate({
+			'data.permalink': element["permalink"]
+		}, 
+		// Find the matching entry and update it
+		{
+			'data.title' : element["title"],
+			'data.permalink' : element["permalink"],
+			'data.developer' : element["developer"],
+			'data.typetag' : element["typetag"],
+			'data.description' : element["description"],
+			'data.repository' : element["repository"],
+			'data.license' : element["license"],
+			'data.tags' : element["tags"]
 		}, function(err, result) {
-			if (!result) {
-				// Create the game
+			if (err) {
+				console.log("Error", err)
+			}
+			else if (!result) {
+				// No game with that permalink, create a new entry
+				var game = new Game({
+					data: {
+						title: element["title"],
+						permalink: element["permalink"],
+						description: element["description"],
+						developer: element["developer"],
+						repository: element["repository"],
+						license : element["license"],
+						tags: element["tags"],
+						typetag : element["typetag"]
+					}
+				})
+				game.save();
+				console.log("Added", element["title"])
 			}
 			else {
-				console.log(element["name"])
-				//console.log(result)		
+				console.log("Updated", element["title"])
 			}
 		})
 })
-
-mongoose.disconnect()
