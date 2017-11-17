@@ -18,6 +18,7 @@
     "passport-twitter": "~1.0.4"
   },
   "devDependencies": {
+    "child_process": "^1.0.2",
     "mongodb": "^2.2.29",
     "multer": "^1.3.0",
     "nodegit": "^0.20.3",
