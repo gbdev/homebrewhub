@@ -222,7 +222,7 @@ module.exports = function(app, passport) {
 				description: req.body["description"],
 				developer: req.body["developer"],
 				repository: req.body["repository"],
-				tags: req.body["tags"].split(),
+				//tags: req.body["tags"].split(),
 				files: gameFilesArray,
 				screenshots: screenshotsFilesArray
 			}

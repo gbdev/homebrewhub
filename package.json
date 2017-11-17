@@ -20,6 +20,7 @@
   "devDependencies": {
     "mongodb": "^2.2.29",
     "multer": "^1.3.0",
+    "nodegit": "^0.20.3",
     "nodemailer": "^4.0.1",
     "passport-local": "github:dmg01/passport-local",
     "randomstring": "^1.1.5"
