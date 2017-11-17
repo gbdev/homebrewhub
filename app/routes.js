@@ -435,6 +435,7 @@ module.exports = function(app, passport) {
 					var htmlEmailBody = 'Click the following link to reset your password: <a href="' + resetLink + '">' + resetLink + "</a>"; // Build HTML email body
 					// Send activation email
 					// setup email data with unicode symbols
+					// Let the mailer 
 					let mailOptions = {
 						from: configEmail.sender, // sender address
 						to: email, // list of receivers

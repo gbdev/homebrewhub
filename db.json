@@ -1,5 +1,21 @@
 [
-		{
-			"name": "ucity2"
-		}
-	]
+	{
+		"title": "uCity",
+		"permalink": "ucity",
+		"license": "GPLv4",
+		"developer": "AntsonioND",
+		"repository": "https://github.com/AntonioND/ucity",
+		"platform": "GBC",
+		"typetag": "game",
+		"description" : "A description",
+		"tags": [ "Open Source", "RPG", "Adventure" ]
+	},
+	{
+		"title": "Game Test",
+		"permalink" : "test"
+	},
+	{
+		"title": "Game Test",
+		"permalink" : "test2"
+	}
+]
