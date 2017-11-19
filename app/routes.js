@@ -259,10 +259,8 @@ module.exports = function(app, passport) {
 	app.get('/game_mobile/:gameID', function(req, res) {
 		console.log(req.params.gameID)
 		Game.find({
-				'data.title': req.params.gameID
+				'data.permalink': req.params.gameID
 			})
-			.populate('data.files')
-			.populate('data.screenshots')
 			.exec(function(err, game) {
 				console.log(game)
 				res.render('game_min.ejs', {
