@@ -37,7 +37,8 @@
           
           <% games.forEach( function(element){ %>
           <div class="card">
-            <a href=<%= "game/"+element.data.permalink %>><img class="card-img-top img-fluid" src=/<%= element.data.screenshots[0].data.fslocation %> alt="Card image cap"></a>
+
+            <img class="card-img-top img-fluid" src=/<%= "database/" + element.data.permalink + "/" + element.data.screenshots[0] %> alt="Card image cap">
             <div class="card-body">
               <a href=<%= "game/"+element.data.permalink %>><h4 class="card-title"> <%= element.data.title %> </a>
               <% if (element.data.typetag == "game") { %>

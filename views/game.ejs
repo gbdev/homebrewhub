@@ -24,7 +24,7 @@
       mainCanvas = document.getElementById("mainCanvas");
     
       var request = new XMLHttpRequest();
-      request.open("GET", "/<%= game[0].data.files[0].data.fslocation %>", true);
+      request.open("GET", "/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>", true);
       request.responseType = "blob";
     
       request.onload = function(event) {
@@ -70,11 +70,11 @@
               <% game[0].data.screenshots.forEach( function (element, index) { %>
               <% if (index == 0) { %>
               <div class="carousel-item active">
-                <img class="d-block img-fluid" src=/<%= element.data.fslocation %>>
+                <img class="d-block img-fluid" src=/<%= "database/" + game[0].data.permalink + "/" + element %>>
               </div>
               <% } else { %>
               <div class="carousel-item">
-                <img class="d-block img-fluid" src=/<%= element.data.fslocation %>>
+                <img class="d-block img-fluid" src=/<%= "database/" + game[0].data.permalink + "/" + element %>>
               </div>
               <% }})%>
             </div>
@@ -93,7 +93,7 @@
       <div class="row justify-content-center">
         <div class="col-sm-6 col-md-6 col-lg-5">
            
-          <!-- <img src=<%= "/" +game[0].data.screenshots[0].data.fslocation %> > -->
+          <!-- <img src=<%= // "/" +game[0].data.screenshots[0].data.fslocation %> > -->
           
           
           <div class="box">

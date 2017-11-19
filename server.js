@@ -24,6 +24,7 @@ app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs'); // set up ejs for templating
 app.use('/', express.static('static'))
+app.use('/database', express.static('database'))
 app.use('/uploads', express.static('uploads'))
 
 // Passport session
