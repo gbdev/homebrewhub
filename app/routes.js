@@ -61,8 +61,6 @@ module.exports = function(app, passport) {
 
 	app.get('/games', function(req, res) {
 		Game.find({})
-			.populate('data.files')
-			.populate('data.screenshots')
 			.exec(function(err, games) {
 				res.render('index.ejs', {
 					req: req,
@@ -249,8 +247,6 @@ module.exports = function(app, passport) {
 		Game.find({
 				'data.permalink': req.params.gameID
 			})
-			.populate('data.files')
-			.populate('data.screenshots')
 			.exec(function(err, game) {
 				console.log(game)
 				res.render('game.ejs', {

@@ -13,8 +13,8 @@ var gameSchema = mongoose.Schema({
         repository   : String,
         license      : String,
         tags         : [String],
-        files        : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
-        screenshots  : [{ type: mongoose.Schema.Types.ObjectId, ref: 'File' }],
+        rom          : String,
+        screenshots  : [String],
 
     }
 });

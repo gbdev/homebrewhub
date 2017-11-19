@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var fs = require('fs');
-var games = JSON.parse(fs.readFileSync('database/gameList.json', 'utf8'));
+var games = JSON.parse(fs.readFileSync('database/gamesList.json', 'utf8'));
 
 dbURL = 'mongodb://localhost:27018/passport'
 dbOptions = {
@@ -18,13 +18,15 @@ games.forEach(function(permalink, index) {
 		// Find the matching entry and update it
 		{
 			'data.title' : game["title"],
-			'data.permalink' : game["permalink"],
+			'data.permalink' : game["slug"],
 			'data.developer' : game["developer"],
 			'data.typetag' : game["typetag"],
 			'data.description' : game["description"],
 			'data.repository' : game["repository"],
 			'data.license' : game["license"],
-			'data.tags' : game["tags"]
+			'data.tags' : game["tags"],
+			'data.screenshots' : game["screenshots"],
+			'data.rom' : game["rom"]
 		}, function(err, result) {
 			if (err) {
 				console.log("Error", err)
@@ -34,13 +36,15 @@ games.forEach(function(permalink, index) {
 				var newGame = new Game({
 					data: {
 						title: game["title"],
-						permalink: game["permalink"],
+						permalink: game["slug"],
 						description: game["description"],
 						developer: game["developer"],
 						repository: game["repository"],
 						license : game["license"],
 						tags: game["tags"],
-						typetag : game["typetag"]
+						typetag : game["typetag"],
+						screenshots : game["screenshots"],
+						rom : game["rom"]
 					}
 				})
 				newGame.save();
