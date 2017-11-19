@@ -36,6 +36,7 @@ module.exports = function(app, passport) {
 	var User = require('../app/models/user');
 	var Game = require('../app/models/game');
 	var File = require('../app/models/file');
+	var Comment = require('../app/models/comment');
 
 
 	app.get('/', function(req, res) {
@@ -249,12 +250,50 @@ module.exports = function(app, passport) {
 			})
 			.exec(function(err, game) {
 				console.log(game)
-				res.render('game.ejs', {
-					req: req,
-					game: game
+
+				Comment.find({ 'data.game' : game[0]._id }, function (err, comments) {
+
+						var commentsCount = comments.length
+
+						res.render('game.ejs', {
+						req: req,
+						game: game,
+						commentsCount: commentsCount
+					})
 				})
 			})
 	})
+
+	app.post('/game/:gameID', function(req, res) {
+
+		Game.findOne({ 'data.permalink' : req.params.gameID }, function(err,game){
+			var parent = req.body["parent-comment"] || null
+			var user = req.user;
+			var message = req.body["comment-text"];
+			var posted = Date.now();
+
+			var comment = new Comment({
+				data: {
+					game 		: 	game._id,
+					parent		: 	parent,
+					author		: 	user._id,
+					slug		: 	"slugDiProva",
+					fullSlug	:   "fullSlugDiProva",
+					text 		:  	message,
+					posted		:   posted,
+				}
+			});
+
+			comment.save();
+			console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
+			console.log("Saved comment from", user.local.username + ":")
+			console.log("\"" + message + "\"")
+
+			req.flash('loginMessage', 'Your comment has been saved!')
+			req.flash('type', 2)
+			res.redirect('/game/' + req.params.gameID);
+		});
+	});
 
 	app.get('/game_mobile/:gameID', function(req, res) {
 		console.log(req.params.gameID)
