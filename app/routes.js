@@ -36,6 +36,7 @@ module.exports = function(app, passport) {
 	var User = require('../app/models/user');
 	var Game = require('../app/models/game');
 	var File = require('../app/models/file');
+	var Comment = require('../app/models/comment');
 
 
 	app.get('/', function(req, res) {
@@ -259,6 +260,35 @@ module.exports = function(app, passport) {
 				})
 			})
 	})
+
+	app.post('/game/:gameID', function(req, res) {
+
+		console.log('Trying to post comment:', req.body["comment-text"], "by", req.user.local.username)
+		var username = req.user.local.username;
+		var message = req.body["comment-text"];
+		var posted = Date.now();
+		var comment = new Comment({
+			data: {
+				game 		: 	req.params.gameID,
+				author		: 	username,
+				slug		: 	"slugDiProva",
+				fullSlug	:   "fullSlugDiProva",
+				text 		:  	message,
+				posted		:   posted,
+
+			}
+		});
+
+		console.log("Trying to save:")
+		console.log(comment)
+
+		comment.save();
+		console.log("Saved comment from", username, "!")
+
+		req.flash('loginMessage', 'Your comment has been saved!')
+		req.flash('type', 2)
+		res.redirect('/game/' + req.params.gameID);
+	});
 
 	app.get('/game_mobile/:gameID', function(req, res) {
 		console.log(req.params.gameID)
