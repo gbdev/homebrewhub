@@ -3,6 +3,8 @@ var configEmail = require('../config/email'); // SMTP server variables
 var randomstring = require("randomstring");
 var fs = require('fs');
 var multer = require('multer')
+var bcrypt = require('bcrypt-nodejs')
+var dateFormat = require('dateformat')
 
 // Multer Upload configuration
 var upload = multer({
@@ -271,27 +273,42 @@ module.exports = function(app, passport) {
 			var user = req.user;
 			var message = req.body["comment-text"];
 			var posted = Date.now();
+			var slug;
+			var fullSlug;
+			var commentDataToHash = posted.toString() + user._id.toString() + message.replace(/\W+/g,'');
 
-			var comment = new Comment({
-				data: {
-					game 		: 	game._id,
-					parent		: 	parent,
-					author		: 	user._id,
-					slug		: 	"slugDiProva",
-					fullSlug	:   "fullSlugDiProva",
-					text 		:  	message,
-					posted		:   posted,
-				}
-			});
-
-			comment.save();
 			console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
-			console.log("Saved comment from", user.local.username + ":")
+			console.log("Saving comment from", user.local.username + ":")
 			console.log("\"" + message + "\"")
 
-			req.flash('loginMessage', 'Your comment has been saved!')
-			req.flash('type', 2)
-			res.redirect('/game/' + req.params.gameID);
+			bcrypt.hash(commentDataToHash, null, null, function(err, hash) {
+				//console.log("Hashing string", commentDataToHash)
+				//console.log("Full hash:", hash)
+				hash = encodeURIComponent(hash);
+				slug = hash.slice(40,45);
+				fullSlug = dateFormat(posted, 'yyyy.mm.dd.HH.MM.ss', true) + ':' + slug;
+				//console.log("Generating comment unique slug:", slug)
+
+				var comment = new Comment({
+					data: {
+						game 		: 	game._id,
+						parent		: 	parent,
+						author		: 	user._id,
+						slug		: 	slug,
+						fullSlug	:   fullSlug,
+						text 		:  	message,
+						posted		:   posted,
+					}
+				});
+
+				comment.save();
+				console.log("Comment saved")
+				
+				req.flash('loginMessage', 'Your comment has been saved!')
+				req.flash('type', 2)
+				res.redirect('/game/' + req.params.gameID);
+
+			});
 		});
 	});
 
