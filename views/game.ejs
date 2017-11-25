@@ -123,10 +123,11 @@
       <div class="row justify-content-center">
           <div class="col-sm-10">
               <hr>
-              <section>
+              <section id="comments">
                 <header>
-                  <h3>Comments (<%= commentsCount %>)</h3>
+                  <h3>Comments (<%= comments.length %>)</h3>
                 </header>
+                <div id="leave-a-comment">
                   <% if (req.user) { %>
                       <br>
                       Hi <%= req.user.local.username %>,<br>
@@ -138,9 +139,29 @@
                         <br>
                         <input type="submit" value="Send" class="btn btn-warning btn-lg text-right">
                       </form>
+                      <br>
                   <% } else { %>
+                      <br>
                       You have to be logged in to leave a comment
+                      <br><br>
                   <% } %>
+                </div>
+                <div class="comments-list">
+                  <hr>
+                <% comments.forEach(function(comment) { %>
+
+                  <div class="comment">
+                     <%= comment.data.posted %>
+                     <br>
+                     <%= comment.data.author[0].local.username %>
+                     <br>
+                     <%= comment.data.text %>
+                  </div>
+                  <hr>
+
+                  <% }); %>
+                </div>
+
               </section>
           </div>
       </div>

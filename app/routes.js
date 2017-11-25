@@ -248,22 +248,23 @@ module.exports = function(app, passport) {
 	app.get('/game/:gameID', function(req, res) {
 		console.log(req.params.gameID)
 		Game.find({
-				'data.permalink': req.params.gameID
-			})
-			.exec(function(err, game) {
-				console.log(game)
+		        'data.permalink': req.params.gameID
+		    })
+		    .exec(function(err, game) {
+		        console.log(game)
 
-				Comment.find({ 'data.game' : game[0]._id }, function (err, comments) {
+		        Comment.find({ 'data.game': game[0]._id })
+		        	.sort({ 'data.fullSlug': 1 })
+		            .populate('data.author')
+		            .exec(function(err, comments) {
 
-						var commentsCount = comments.length
-
-						res.render('game.ejs', {
-						req: req,
-						game: game,
-						commentsCount: commentsCount
-					})
-				})
-			})
+		                res.render('game.ejs', {
+		                    req: req,
+		                    game: game,
+		                    comments: comments
+		                })
+		            })
+		    })
 	})
 
 	app.post('/game/:gameID', function(req, res) {
