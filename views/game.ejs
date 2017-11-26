@@ -151,7 +151,7 @@
                 <% comments.forEach(function(comment) { %>
 
                   <div class="comment">
-                     <%= comment.data.posted %>
+                     <%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %>
                      <br>
                      <%= comment.data.author[0].local.username %>
                      <br>

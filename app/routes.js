@@ -4,7 +4,7 @@ var randomstring = require("randomstring");
 var fs = require('fs');
 var multer = require('multer')
 var bcrypt = require('bcrypt-nodejs')
-var dateFormat = require('dateformat')
+var moment = require('moment')
 
 // Multer Upload configuration
 var upload = multer({
@@ -261,6 +261,7 @@ module.exports = function(app, passport) {
 		                res.render('game.ejs', {
 		                    req: req,
 		                    game: game,
+		                    moment: moment,
 		                    comments: comments
 		                })
 		            })
@@ -287,7 +288,7 @@ module.exports = function(app, passport) {
 				//console.log("Full hash:", hash)
 				hash = encodeURIComponent(hash);
 				slug = hash.slice(40,45);
-				fullSlug = dateFormat(posted, 'yyyy.mm.dd.HH.MM.ss', true) + ':' + slug;
+				fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
 				//console.log("Generating comment unique slug:", slug)
 
 				var comment = new Comment({
