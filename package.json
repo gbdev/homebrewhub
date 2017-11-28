@@ -16,7 +16,8 @@
     "passport": "~0.3.2",
     "passport-facebook": "~2.1.1",
     "passport-google-oauth": "~1.0.0",
-    "passport-twitter": "~1.0.4"
+    "passport-twitter": "~1.0.4",
+    "sha1": "^1.1.1"
   },
   "devDependencies": {
     "child_process": "^1.0.2",

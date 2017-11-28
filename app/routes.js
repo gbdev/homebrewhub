@@ -4,6 +4,7 @@ var randomstring = require("randomstring");
 var fs = require('fs');
 var multer = require('multer')
 var bcrypt = require('bcrypt-nodejs')
+var sha1 = require('sha1')
 var moment = require('moment')
 
 // Multer Upload configuration
@@ -283,34 +284,33 @@ module.exports = function(app, passport) {
 			console.log("Saving comment from", user.local.username + ":")
 			console.log("\"" + message + "\"")
 
-			bcrypt.hash(commentDataToHash, null, null, function(err, hash) {
-				//console.log("Hashing string", commentDataToHash)
-				//console.log("Full hash:", hash)
-				hash = encodeURIComponent(hash).toLowerCase();
-				slug = hash.slice(40,45);
-				fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
-				//console.log("Generating comment unique slug:", slug)
+			var hash = sha1(commentDataToHash)
 
-				var comment = new Comment({
-					data: {
-						game 		: 	game._id,
-						parent		: 	parent,
-						author		: 	user._id,
-						slug		: 	slug,
-						fullSlug	:   fullSlug,
-						text 		:  	message,
-						posted		:   posted,
-					}
-				});
+			//console.log("Hashing string", commentDataToHash)
+			//console.log("Full hash:", hash)
+			slug = hash.slice(16,22);
+			fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
+			//console.log("Generating comment unique slug:", slug)
 
-				comment.save();
-				console.log("Comment saved")
-				
-				req.flash('loginMessage', 'Your comment has been saved!')
-				req.flash('type', 2)
-				res.redirect('/game/' + req.params.gameID);
-
+			var comment = new Comment({
+				data: {
+					game 		: 	game._id,
+					parent		: 	parent,
+					author		: 	user._id,
+					slug		: 	slug,
+					fullSlug	:   fullSlug,
+					text 		:  	message,
+					posted		:   posted,
+				}
 			});
+
+			comment.save();
+			console.log("Comment saved")
+			
+			req.flash('loginMessage', 'Your comment has been saved!')
+			req.flash('type', 2)
+			res.redirect('/game/' + req.params.gameID);
+			
 		});
 	});
 

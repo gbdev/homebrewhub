@@ -1,6 +1,6 @@
 /** 
  *
- * Simple scripto with frontend Commenting System utilities
+ * Game View: Commenting System behavior
  *
  */
 
