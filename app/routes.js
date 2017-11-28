@@ -286,7 +286,7 @@ module.exports = function(app, passport) {
 			bcrypt.hash(commentDataToHash, null, null, function(err, hash) {
 				//console.log("Hashing string", commentDataToHash)
 				//console.log("Full hash:", hash)
-				hash = encodeURIComponent(hash);
+				hash = encodeURIComponent(hash).toLowerCase();
 				slug = hash.slice(40,45);
 				fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
 				//console.log("Generating comment unique slug:", slug)

@@ -134,8 +134,9 @@
                       if you want you can leave a comment
                       <br><br>
                       <!-- Some kind of control for permalink format? -->
-                      <form class="text-center" method="post" action="/game/<%= game[0].data.permalink %>">
+                      <form id="comment-form" class="text-center" method="post" action="/game/<%= game[0].data.permalink %>">
                         <textarea name="comment-text" class="form-control" placeholder="Insert your message here" required=""></textarea>
+                        <input id="parent-id" name="parent" type="text" hidden value="">
                         <br>
                         <input type="submit" value="Send" class="btn btn-warning btn-lg text-right">
                       </form>
@@ -150,12 +151,16 @@
                   <hr>
                 <% comments.forEach(function(comment) { %>
 
-                  <div class="comment">
+                  <div id="cm-<%= comment.data.slug %>" class="comment">
                      <%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %>
                      <br>
                      <%= comment.data.author[0].local.username %>
                      <br>
                      <%= comment.data.text %>
+                     <br>
+                     <span class="comment-actions">
+                        <span class="action reply" data-action="reply">Reply</span>
+                     </span>
                   </div>
                   <hr>
 
@@ -169,6 +174,6 @@
     </div>
 
     <% include footer.html %> 
-
+    <script src="/js/commenting-system.js"></script>
   </body>
 </html>
