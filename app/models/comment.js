@@ -5,8 +5,8 @@ var mongoose = require('mongoose');
 var commentSchema = mongoose.Schema({
     data             : {
         game         : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
-        parent       : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
         author       : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+        parent       : [String],
         slug         : String,
         fullSlug     : String,
         text         : String,

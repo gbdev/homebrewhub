@@ -47,13 +47,13 @@ var bringCommentFormIn = function(commentId) {
 // Given current comment id attribute (which contains comment unique slug)
 // retrieve parent id and use it as value for form parent field
 var setCommentParent = function(commentId) {
-	var parentId = getCommentParent(commentId) // Retrieve parent id...
+    var parentId = getCommentParent(commentId) // Retrieve parent id...
     parentField.attr('value', parentId); // ...and you use it as form parent field value 
 }
 // Retrieve parent comment and, if it exists,
 // get its id (from id attribute), cut off comment suffix to get 
 var getCommentParent = function(commentId) {
-	var comment = $('#' + commentId) // Build jQuery selector
-	var parentId = comment.closest('.comment').attr('id').replace(commentSuffix,'') // Extract parent id 
-	return parentId || '' // Return parent id if existing
+    var comment = $('#' + commentId) // Build jQuery selector
+    var parentId = comment.closest('.comment').attr('id').replace(commentSuffix, '') // Extract parent id 
+    return parentId || '' // Return parent id if existing
 }

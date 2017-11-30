@@ -272,7 +272,7 @@ module.exports = function(app, passport) {
 	app.post('/game/:gameID', function(req, res) {
 
 		Game.findOne({ 'data.permalink' : req.params.gameID }, function(err,game){
-			var parent = req.body["parent-comment"] || null
+			var parent;
 			var user = req.user;
 			var message = req.body["comment-text"];
 			var posted = Date.now();
@@ -288,8 +288,9 @@ module.exports = function(app, passport) {
 
 			//console.log("Hashing string", commentDataToHash)
 			//console.log("Full hash:", hash)
-			slug = hash.slice(16,22);
+			slug = hash.slice(15,22);
 			fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
+			parent = req.body["parent-comments"] || slug
 			//console.log("Generating comment unique slug:", slug)
 
 			var comment = new Comment({
