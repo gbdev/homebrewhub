@@ -272,46 +272,53 @@ module.exports = function(app, passport) {
 	app.post('/game/:gameID', function(req, res) {
 
 		Game.findOne({ 'data.permalink' : req.params.gameID }, function(err,game){
-			var parent;
-			var user = req.user;
-			var message = req.body["comment-text"];
-			var posted = Date.now();
-			var slug;
-			var fullSlug;
-			var commentDataToHash = posted.toString() + user._id.toString() + message.replace(/\W+/g,'');
+			Comment.findOne({ 'data.slug': req.body['parent-comment']}, function(err,parentComment) {
 
-			console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
-			console.log("Saving comment from", user.local.username + ":")
-			console.log("\"" + message + "\"")
+				console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
+				console.log("Saving comment from", req.user.local.username + ":")
+				console.log("\"" + req.body["comment-text"] + "\"")
 
-			var hash = sha1(commentDataToHash)
+				var parent;
+				var user = req.user;
+				var message = req.body["comment-text"];
+				var posted = Date.now();
+				var slug;
+				var fullSlug;
+				var commentDataToHash = posted.toString() + user._id.toString() + message.replace(/\W+/g,'');
+				var hash = sha1(commentDataToHash)
+				//console.log("Hashing string", commentDataToHash)
+				//console.log("Full hash:", hash)
+				slug = hash.slice(15,22);
+				fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
+				//console.log("Generating comment unique slug:", slug)
 
-			//console.log("Hashing string", commentDataToHash)
-			//console.log("Full hash:", hash)
-			slug = hash.slice(15,22);
-			fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
-			parent = req.body["parent-comments"] || slug
-			//console.log("Generating comment unique slug:", slug)
-
-			var comment = new Comment({
-				data: {
-					game 		: 	game._id,
-					parent		: 	parent,
-					author		: 	user._id,
-					slug		: 	slug,
-					fullSlug	:   fullSlug,
-					text 		:  	message,
-					posted		:   posted,
+				if (parentComment)
+				{
+					parentComment.data.parent.push(slug)
+					parent = parentComment.data.parent
 				}
-			});
+				else
+					parent = [slug]
 
-			comment.save();
-			console.log("Comment saved")
-			
-			req.flash('loginMessage', 'Your comment has been saved!')
-			req.flash('type', 2)
-			res.redirect('/game/' + req.params.gameID);
-			
+				var comment = new Comment({
+					data: {
+						game 		: 	game._id,
+						parent		: 	parent,
+						author		: 	user._id,
+						slug		: 	slug,
+						fullSlug	:   fullSlug,
+						text 		:  	message,
+						posted		:   posted,
+					}
+				});
+
+				comment.save();
+				console.log("Comment saved")
+				
+				req.flash('loginMessage', 'Your comment has been saved!')
+				req.flash('type', 2)
+				res.redirect('/game/' + req.params.gameID);
+			});
 		});
 	});
 
