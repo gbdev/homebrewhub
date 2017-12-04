@@ -5,7 +5,8 @@
  */
 
 // SOME DECLARATIONS
-var commentForm = $('#comment-form')
+var commentBasePosition = $('#leave-a-comment')
+var commentForm = $('#comment-form-container')
 var parentField = $('#parent-id')
 var commentSuffix = 'cm-'
 
@@ -33,6 +34,11 @@ $(function() {
                 console.log("Commenting system action with no behavior:", action)
         }
     });
+    // Handler to abort reply, reset default status
+    // (comment form position e parent value)
+    $('.close-reply').click(function(e) {
+        abortReply()
+    });
 
 });
 
@@ -45,10 +51,16 @@ var bringCommentFormIn = function(commentId) {
     commentForm.appendTo(appendTarget) // Append comment form to current comment
     setCommentParent(commentId) // Set form parent field to current comment parent id
 }
+// Move comment form to default position
+// and empty its parent field value
+var abortReply = function() {
+    commentForm.appendTo(commentBasePosition)
+    setCommentParent()
+}
 // Given current comment id attribute (which contains comment unique slug)
 // retrieve parent id and use it as value for form parent field
 var setCommentParent = function(commentId) {
-    var parentId = getCommentParent(commentId) // Retrieve parent id...
+    var parentId = commentId ? getCommentParent(commentId) : '' // Retrieve parent id (or set an empty string)...
     parentField.attr('value', parentId); // ...and you use it as form parent field value 
 }
 // Retrieve parent comment and, if it exists,
