@@ -125,7 +125,7 @@
               <hr>
               <section id="comments">
                 <header>
-                  <h3>Comments (<%= comments.length %>)</h3>
+                  <h3>Comments (<%= commentsCount %>)</h3>
                 </header>
                 <div id="leave-a-comment">
                   <% if (req.user) { %>
@@ -147,26 +147,14 @@
                       <br><br>
                   <% } %>
                 </div>
+                <% if (commentsCount) { %>
+                <hr>
                 <div class="comments-list">
-                  <hr>
-                <% comments.forEach(function(comment) { %>
-
-                  <div id="cm-<%= comment.data.slug %>" class="comment">
-                     <%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %>
-                     <br>
-                     <%= comment.data.author[0].local.username %>
-                     <br>
-                     <%= comment.data.text %>
-                     <br>
-                     <span class="comment-actions">
-                        <span class="action reply" data-action="reply">Reply</span>
-                     </span>
-                  </div>
-                  <hr>
-
+                  <% rootComments.forEach(function(comment) { %>
+                  <%- include('comments.ejs', { comment: comment }) %>
                   <% }); %>
                 </div>
-
+                <% } %>
               </section>
           </div>
       </div>

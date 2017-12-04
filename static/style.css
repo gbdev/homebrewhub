@@ -81,6 +81,9 @@ body {
 	color: black;
 }
 
+/* === GAME VIEW: COMMENTING SYSTEM === */
+.replies { padding-left: 45px; }
+.comment { margin-bottom: 20px; }
 
 .reset-this {
 	image-rendering: -moz-crisp-edges;

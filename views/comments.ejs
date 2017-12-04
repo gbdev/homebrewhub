@@ -1,0 +1,23 @@
+
+  <div id="cm-<%= comment.data.slug %>" class="comment">
+    <div class="comment-body">
+     <%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %>
+     <br>
+     <%= comment.data.author[0].local.username %>
+     <br>
+     <%= comment.data.text %>
+     <br>
+     <span class="comment-actions">
+        <span class="action reply" data-action="reply">Reply</span>
+     </span>
+    </div>
+      <% if (comment.data.replies) { %>
+      <hr>
+        <div class="replies">
+          <% comment.data.replies.forEach(function(reply) { %>
+          <%- include('comments.ejs', { comment: reply }) %>
+          <% }) %>
+        </div>
+      <% } %>
+  </div>
+

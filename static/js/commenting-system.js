@@ -22,7 +22,7 @@ $(function() {
         switch (action) {
             // REPLY:
             case 'reply':
-                // Bring the comment form from "root" level
+                // Bring the comment form from previous level
                 // to current DOM position for the reply
                 bringCommentFormIn(commentId);
                 break;
@@ -41,7 +41,8 @@ $(function() {
 // position in DOM given current comment id attribute.
 // Useful for comment reply.
 var bringCommentFormIn = function(commentId) {
-    commentForm.appendTo('#' + commentId) // Append comment form to current comment
+    appendTarget = $('#' + commentId).find('> .comment-body') // Specific part of comment to place reply form in
+    commentForm.appendTo(appendTarget) // Append comment form to current comment
     setCommentParent(commentId) // Set form parent field to current comment parent id
 }
 // Given current comment id attribute (which contains comment unique slug)

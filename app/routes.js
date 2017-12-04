@@ -247,23 +247,59 @@ module.exports = function(app, passport) {
 
 
 	app.get('/game/:gameID', function(req, res) {
+
+		var sort = function(a, b) {
+		    if (a.data.parent.length < b.data.parent.length) {
+		        return 1;
+		    }
+		    if (a.data.parent.length > b.data.parent.length) {
+		        return -1;
+		    }
+		    // a must be equal to b
+		    return 0;
+		};
+
 		console.log(req.params.gameID)
 		Game.find({
 		        'data.permalink': req.params.gameID
 		    })
 		    .exec(function(err, game) {
-		        console.log(game)
+		        //console.log(game)
 
 		        Comment.find({ 'data.game': game[0]._id })
 		        	.sort({ 'data.fullSlug': 1 })
 		            .populate('data.author')
+		            .lean()
 		            .exec(function(err, comments) {
+
+						//comments.sort(sort);
+
+		            	comments.forEach(function(comment)
+		            	{
+		            		var parents = comment.data.parent
+		            		if (parents.length > 1)
+		            		{
+		            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
+
+		            			if (parentComment)
+		            			{
+		            				if (!parentComment.data.replies)
+		            				{
+		            					parentComment.data.replies = [];
+		            				}
+		            				parentComment.data.replies.push(comment)
+		            			}
+		            		}
+		            	})
+
+		            	var rootComments = comments.filter(comment => comment.data.parent.length == 1)
 
 		                res.render('game.ejs', {
 		                    req: req,
 		                    game: game,
 		                    moment: moment,
-		                    comments: comments
+		                    commentsCount: comments.length,
+		                    rootComments: rootComments
 		                })
 		            })
 		    })
