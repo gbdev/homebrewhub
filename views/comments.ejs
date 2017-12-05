@@ -3,7 +3,7 @@
     <div class="comment-body">
      <%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %>
      <br>
-     <%= comment.data.author[0].local.username %>
+     <%= comment.data.author.local.username %>
      <br>
      <%= comment.data.text %>
      <br>
