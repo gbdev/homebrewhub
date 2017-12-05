@@ -4,8 +4,8 @@ var mongoose = require('mongoose');
 // define the schema for our comment model
 var commentSchema = mongoose.Schema({
     data             : {
-        game         : [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
-        author       : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+        game         : { type: mongoose.Schema.Types.ObjectId, ref: 'Game' },
+        author       : { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         parent       : [String],
         slug         : String,
         fullSlug     : String,
