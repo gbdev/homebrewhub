@@ -1,6 +1,16 @@
 # [Homebrew Hub](https://gbhh.avivace.com)
 
-## Work on the project
+Contribute to the games database [here](https://github.com/dmg01/database)
+
+## Features Roadmap
+
+- [x] Account System 
+- [x] Submission/Contribution
+- [x] Comment
+- [ ] Search, Filtering, Sorting
+- [ ] 
+
+## Deploy
 
 ### Backend
 **Requisites**: node, mongodb
@@ -14,7 +24,6 @@ Edit the configuration
 
 - `config/database.js` mongodb instance details
 ```javascript
-// Example database.js configuration file
 module.exports = {
     'url' : 'mongodb://localhost:27018/database'
 };
@@ -22,7 +31,6 @@ module.exports = {
 
 - `config/email.js` SMTP email server configuration
 ```javascript
-// Example email.js configuration file
 module.exports = {
     // Email
     'host' : '',
@@ -52,4 +60,5 @@ npm start
 Your instance is live at `localhost:8080/`
 
 ### Frontend
-`views` folder. Based on Bootstrap 4 alpha 6.
+
+`views` folder. Based on Bootstrap `v4.0.0-beta.2`.

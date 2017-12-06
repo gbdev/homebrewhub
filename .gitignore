@@ -1,5 +1,6 @@
 # passportlib-cov
 passport
+db
 *.seed
 *.log
 *.csv
