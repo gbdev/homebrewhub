@@ -8,7 +8,7 @@ Contribute to the games database [here](https://github.com/dmg01/database)
 - [x] Submission/Contribution
 - [x] Comment
 - [ ] Search, Filtering, Sorting
-- [ ] 
+
 
 ## Deploy
 
