@@ -13,9 +13,9 @@
 
     <% if (message.length > 0) { %>
         <% if (type == 1) { %>
-        <div class="alert alert-danger"><%= message %></div>
+        <div class="alert alert-warning" role="alert"<%= message %></div>
         <% } else { %>
-        <div class="alert alert-success fade in"><%= message %></div>
+        <div class="alert alert-info" role="alert"><%= message %></div>
         <% } %>
     <% } %>
 
