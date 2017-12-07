@@ -50,6 +50,21 @@
   <body>
     <% include header.ejs %>
     <br>
+
+    <% if (message.length > 0) { %>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-10">
+      <% if (flashType == 1) { %>
+        <div class="alert alert-warning" role="alert"<%= message %></div>
+      <% } else { %>
+        <div class="alert alert-info" role="alert"><%= message %></div>
+      <% } %>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
     <div class="container">
       <div class="row justify-content-center">
         

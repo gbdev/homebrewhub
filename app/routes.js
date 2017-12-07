@@ -297,6 +297,8 @@ module.exports = function(app, passport) {
 		                res.render('game.ejs', {
 		                    req: req,
 		                    game: game,
+		                    message: req.flash('message'),
+		                    flashType: req.flash('type'),
 		                    moment: moment,
 		                    commentsCount: comments.length,
 		                    rootComments: rootComments
@@ -351,7 +353,7 @@ module.exports = function(app, passport) {
 				comment.save();
 				console.log("Comment saved")
 				
-				req.flash('loginMessage', 'Your comment has been saved!')
+				req.flash('message', 'Your comment has been saved!')
 				req.flash('type', 2)
 				res.redirect('/game/' + req.params.gameID);
 			});
