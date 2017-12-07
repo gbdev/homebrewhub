@@ -297,6 +297,8 @@ module.exports = function(app, passport) {
 		                res.render('game.ejs', {
 		                    req: req,
 		                    game: game,
+		                    message: req.flash('message'),
+		                    flashType: req.flash('type'),
 		                    moment: moment,
 		                    commentsCount: comments.length,
 		                    rootComments: rootComments
