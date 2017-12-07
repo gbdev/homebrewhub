@@ -2,14 +2,6 @@
 
 Contribute to the games database [here](https://github.com/dmg01/database)
 
-## Features Roadmap
-
-- [x] Account System 
-- [x] Submission/Contribution
-- [x] Comment
-- [ ] Search, Filtering, Sorting
-
-
 ## Deploy
 
 ### Backend
