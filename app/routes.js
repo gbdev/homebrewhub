@@ -265,45 +265,49 @@ module.exports = function(app, passport) {
 		    })
 		    .exec(function(err, game) {
 		        //console.log(game)
+		        if (game == null || game.length == 0) {
+		        	// TODO: Render error page with details and send 404
+		        	res.send("No game found")
+		        } else {
+			        Comment.find({ 'data.game': game[0]._id })
+			        	.sort({ 'data.fullSlug': 1 })
+			            .populate('data.author')
+			            .lean()
+			            .exec(function(err, comments) {
 
-		        Comment.find({ 'data.game': game[0]._id })
-		        	.sort({ 'data.fullSlug': 1 })
-		            .populate('data.author')
-		            .lean()
-		            .exec(function(err, comments) {
+							//comments.sort(sort);
 
-						//comments.sort(sort);
+			            	comments.forEach(function(comment)
+			            	{
+			            		var parents = comment.data.parent
+			            		if (parents.length > 1)
+			            		{
+			            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
 
-		            	comments.forEach(function(comment)
-		            	{
-		            		var parents = comment.data.parent
-		            		if (parents.length > 1)
-		            		{
-		            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
+			            			if (parentComment)
+			            			{
+			            				if (!parentComment.data.replies)
+			            				{
+			            					parentComment.data.replies = [];
+			            				}
+			            				parentComment.data.replies.push(comment)
+			            			}
+			            		}
+			            	})
 
-		            			if (parentComment)
-		            			{
-		            				if (!parentComment.data.replies)
-		            				{
-		            					parentComment.data.replies = [];
-		            				}
-		            				parentComment.data.replies.push(comment)
-		            			}
-		            		}
-		            	})
+			            	var rootComments = comments.filter(comment => comment.data.parent.length == 1)
 
-		            	var rootComments = comments.filter(comment => comment.data.parent.length == 1)
-
-		                res.render('game.ejs', {
-		                    req: req,
-		                    game: game,
-		                    message: req.flash('message'),
-		                    flashType: req.flash('type'),
-		                    moment: moment,
-		                    commentsCount: comments.length,
-		                    rootComments: rootComments
-		                })
-		            })
+			                res.render('game.ejs', {
+			                    req: req,
+			                    game: game,
+			                    message: req.flash('message'),
+			                    flashType: req.flash('type'),
+			                    moment: moment,
+			                    commentsCount: comments.length,
+			                    rootComments: rootComments
+			                })
+			            })
+		        }   
 		    })
 	})
 
@@ -313,11 +317,16 @@ module.exports = function(app, passport) {
 				'data.permalink': req.params.gameID
 			})
 			.exec(function(err, game) {
-				console.log(game)
-				res.render('game_min.ejs', {
-					req: req,
-					game: game
-				})
+				if (game == null || game.length == 0) {
+					// TODO: Render error page with details and send 404
+					res.send("No game found")
+				} else {
+					console.log(game)
+					res.render('game_min.ejs', {
+						req: req,
+						game: game
+					})
+				}
 			})
 	})
 
