@@ -10,7 +10,7 @@ Each entry can be voted, shared, discussed and played online.
 ### Contribute
 
 We'd love to have your help, bug reports, or simply feedback:
-If you want to deploy an instance and start hacking, the [wiki](wiki) has got you covered: you'll find deploy instructions, detailed explanations on how we implemented features, technicalities and documentation.
+If you want to deploy an instance and start hacking, the [wiki](https://github.com/dmg01/homebrewhub/wiki) has got you covered: you'll find deploy instructions, detailed explanations on how we implemented features, technicalities and documentation.
 You're welcome to open an Issue or send a Pull Request, we're looking forward to hear from you!
 
 The **database** is community mantained too: everyone can contribute adding entries and fixing or improving the existing ones: take a look at [this](https://github.com/dmg01/database) repository, it's really easy!
