@@ -14,6 +14,7 @@ module.exports = function(app, passport) {
 	var File = require('../app/models/file');
 	var Comment = require('../app/models/comment');
 
+	// COMMENT APIs
 	app.post('/game/:gameID', function(req, res) {
 
 		Game.findOne({ 'data.permalink' : req.params.gameID }, function(err,game){
@@ -54,6 +55,8 @@ module.exports = function(app, passport) {
 						fullSlug	:   fullSlug,
 						text 		:  	message,
 						posted		:   posted,
+						published	:   true,
+						deleted		:   false,
 					}
 				});
 
@@ -65,5 +68,44 @@ module.exports = function(app, passport) {
 				res.redirect('/game/' + req.params.gameID);
 			});
 		});
+	});
+
+	// COMMENT APIs: DELETE METHOD
+	app.get('/comment/delete/:commentSlug', function(req, res) {
+		var slug = req.params.commentSlug;
+		// Check for user authentication
+		if (req.user) {
+			// Ok we hava a user logged in,
+			// let's search db for a comment with passed slug
+			Comment.findOne({ 'data.slug' : slug })
+					.populate('data.author')
+					.exec(function(err,comment) {
+						// If no comment with that slug can be found
+						// respond with an error
+						if (!comment)
+							res.status(500).send('Cannot find any comment with that slug!')
+						// If current user is not the owner of the comment
+						// we want to delete, or it has no superpowers,
+						// respond with an error
+						else if (comment.data.author.local.username != req.user.local.username && req.user.local.role == 0)
+							res.status(500).send('Sorry, you\'re not allowed to delete this comment')
+						// If, instead, user is the owner of the comemnt or he has
+						// some higher privileges let's go on and delete the comment
+						else
+							Comment.update({ 'data.slug' : slug }, { 'data.deleted' : true }, function(err, raw) {
+								if (err)
+									res.status(500).send('Whoopss, something went wrong, here\'s some info:\n' + err)
+								else {
+									console.log("Raw mongo response:", raw)
+									res.status(200).send('OK')
+								}
+							})
+					})
+		}
+		// If user is not authenticated we cannot proceed to comment deletion
+		// Let's respond with an error explaining this
+		else
+			res.status(500).send('Error: Unauthenticated user, cannot delete comment')
+		
 	});
 }

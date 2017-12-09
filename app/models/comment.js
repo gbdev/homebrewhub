@@ -11,6 +11,8 @@ var commentSchema = mongoose.Schema({
         fullSlug     : String,
         text         : String,
         posted       : Date,
+        published	 : Boolean,
+        deleted		 : Boolean
     }
 });
 
