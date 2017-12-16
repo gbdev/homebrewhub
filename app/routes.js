@@ -248,17 +248,6 @@ module.exports = function(app, passport) {
 
 	app.get('/game/:gameID', function(req, res) {
 
-		var sort = function(a, b) {
-		    if (a.data.parent.length < b.data.parent.length) {
-		        return 1;
-		    }
-		    if (a.data.parent.length > b.data.parent.length) {
-		        return -1;
-		    }
-		    // a must be equal to b
-		    return 0;
-		};
-
 		console.log(req.params.gameID)
 		Game.find({
 		        'data.permalink': req.params.gameID
@@ -274,28 +263,24 @@ module.exports = function(app, passport) {
 			            .populate('data.author')
 			            .lean()
 			            .exec(function(err, comments) {
+			            	var rootComments
+			            	var disabledComments = 0
 
-							//comments.sort(sort);
+			            	buildTree(comments)
 
-			            	comments.forEach(function(comment)
-			            	{
-			            		var parents = comment.data.parent
-			            		if (parents.length > 1)
-			            		{
-			            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
-
-			            			if (parentComment)
-			            			{
-			            				if (!parentComment.data.replies)
-			            				{
-			            					parentComment.data.replies = [];
-			            				}
-			            				parentComment.data.replies.push(comment)
-			            			}
-			            		}
+			            	rootComments = comments.filter(comment => comment.data.parent.length == 1)
+			            
+			            	rootComments.forEach(function(comment) {
+			            		removeDeletedComments(comment)
 			            	})
 
-			            	var rootComments = comments.filter(comment => comment.data.parent.length == 1)
+			            	breakDownTree(comments)
+			            	
+			            	buildTree(comments)
+
+			            	rootComments = []
+			            	rootComments = comments.filter(comment => comment.data.parent.length == 1)
+
 
 			                res.render('game.ejs', {
 			                    req: req,
@@ -303,9 +288,83 @@ module.exports = function(app, passport) {
 			                    message: req.flash('message'),
 			                    flashType: req.flash('type'),
 			                    moment: moment,
-			                    commentsCount: comments.length,
+			                    commentsCount: comments.length - disabledComments,
 			                    rootComments: rootComments
 			                })
+
+			                function breakDownTree(comments) {
+			                	comments.forEach(function(comment) {
+			            			if (comment.data.replies)
+			            				comment.data.replies = ''
+			            		})
+			                }
+
+			                function buildTree(comments) {
+			                	comments.forEach(function(comment) {
+				            		var parents = comment.data.parent
+				            		if (parents.length > 1)
+				            		{
+				            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
+
+				            			if (parentComment)
+				            			{
+				            				if (!parentComment.data.replies)
+				            				{
+				            					parentComment.data.replies = [];
+				            				}
+				            				parentComment.data.replies.push(comment)
+				            			}
+				            		}
+				            	})
+			            	}
+
+			            	function removeDeletedComments(comment){
+
+			            		var isDeleted = comment.data.deleted
+			            		var hasChildren = comment.data.replies
+
+			            		if (isDeleted && !hasChildren) {
+			            			if (comments.indexOf(comment) >= 0)
+			            				comments.splice(comments.indexOf(comment), 1)
+			            		}
+			            		
+			            		else if (isDeleted && hasChildren) {
+			            			var nodelineage = []
+			            			var aliveLineage = [];
+
+
+			            			comments.forEach(function(chekcInLineageComment) {
+			            				if (chekcInLineageComment.data.parent.includes(comment.data.slug)) {
+			            					nodelineage.push(chekcInLineageComment)
+			            				}
+			            			})
+
+			            			aliveLineage = nodelineage.filter(toCheckAliveComment => toCheckAliveComment.data.deleted == false)
+
+			            			if (aliveLineage.length == 0) {
+			            				nodelineage.forEach(function(lineageComment) {
+			            					if (comments.indexOf(lineageComment) >= 0) {
+			            						comments.splice(comments.indexOf(lineageComment), 1)
+			            					}
+
+			            				})
+			            				
+			            			} 
+			            			else {
+			            				comment.data.text = "This comment has been deleted"
+			            				disabledComments += 1
+			            				comment.data.replies.forEach(function(reply) {
+			            					removeDeletedComments(reply)
+			            				})
+			            			}
+			            			
+			            		}
+			            		else if (!isDeleted && comment.data.replies) {
+			            			comment.data.replies.forEach(function(reply) {
+			            				removeDeletedComments(reply)
+			            			})
+			            		}
+			            	}
 			            })
 		        }   
 		    })

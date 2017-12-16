@@ -1,5 +1,5 @@
 
-  <div id="cm-<%= comment.data.slug %>" class="comment">
+  <div id="cm-<%= comment.data.slug %>" class="comment<% if (comment.data.deleted) { %> deleted<% } %>">
     <div class="comment-body">
      <span class="comment-date"><%= moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") %></span>
      <br>
@@ -9,10 +9,12 @@
      <br>
      <% if (req.user) { %>
      <span class="comment-actions bg-light">
+      <% if (!comment.data.deleted) { %>
         <span class="action reply" data-action="reply">Reply</span>
         <% if (req.user.local.username == comment.data.author.local.username || req.user.local.role > 0) { %>
         <span class="sep">-</span>
         <span class="action delete text-danger" data-action="delete">Delete</span>
+        <% } %>
         <% } %>
      </span>
      <% } %>

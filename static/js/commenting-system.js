@@ -88,6 +88,15 @@ deleteCommentModal.on('hide.bs.modal', function(e) {
 /**** HELPER FUNCTIONS ****/
 /**************************/
 
+var refreshCommentsCount = function() {
+    var DOMCommentsCountElement = document.querySelector('#comments-count')
+    var comments = document.querySelectorAll('.comments-list .comment')
+    var deletedComments = document.querySelectorAll('.comments-list .comment.deleted')
+
+    commentsCount = comments.length - deletedComments.length
+    DOMCommentsCountElement.innerHTML = commentsCount
+}
+
 /**** REPLY ****/
 // Move Comment Form from "root" level to current comment
 // position in DOM given current comment id attribute.
@@ -147,12 +156,14 @@ var disableComment = function(comment) {
         commentText.html('<em>This comment has been deleted</em>')
         commentActions.html('')
         commentBody.fadeIn('fast')
+        refreshCommentsCount()
     });
 }
 // Actually remove deleted comment
 var destroyComment = function(comment) {
     comment.fadeOut('fast', function() {
         comment.remove()
+        refreshCommentsCount()
     });
 }
 // Check whether the comment has alive children or not
@@ -184,14 +195,14 @@ var isParentAlive = function(comment) {
 var isAlive = function(comment) {
     return comment.hasClass('deleted') ? false : true
 }
-// Look out for the ligneage point of comment tree
+// Look out for the lineage point of comment tree
 // from which all comments have been deleted so
 // we can delete entire branches of deleted comments
 // at once (avoiding entire branches of deleted comments)
-var getPointOfLigneageDeath = function(comment) {
+var getPointOflineageDeath = function(comment) {
     if (!isParentAlive(comment) && !hasAliveRelatives(comment)) {
         comment = comment.parent().closest('.comment')
-        return getPointOfLigneageDeath(comment)
+        return getPointOflineageDeath(comment)
     }
     else
         return comment
@@ -210,7 +221,7 @@ var deleteComment = function(comment) {
     // which all children and grandchildren are dead and 
     // let's destroy that node (could simply be the comment itself)
     else {
-        comment = getPointOfLigneageDeath(comment)
+        comment = getPointOflineageDeath(comment)
         destroyComment(comment)
     }
 }
