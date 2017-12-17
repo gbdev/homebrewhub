@@ -20,7 +20,7 @@ module.exports = function(app, passport) {
 
     // COMMENT APIs - VIEW METHOD:
     // Retrieve comments thread for requested game
-    app.get('/comment/view/:gameID', function(req, res) {
+    app.get('/comment/view/:gameID/:options?', function(req, res) {
         // Let's find game data in db based on 
         // specified game permalink
         Game.find({ 'data.permalink': req.params.gameID }, function(err, game) {
@@ -36,36 +36,148 @@ module.exports = function(app, passport) {
                     .populate('data.author') // fill up author data
                     .lean() // return plain JS objects (not Mongoose schemas)
                     .exec(function(err, comments) {
-                        // For each comment found...
-                        comments.forEach(function(comment) { // Get current comment "parent property" 
-                            // which contains any parents slug as well as
-                            // current comment slug
-                            var parents = comment.data.parent
-                            if (parents.length > 1) // If this is not a root comment (so exclude arrays of length 1 (current comment slug))
-                            { // Get direct parent comment slug form array position "parents.length - 2"
-                                // and prepare to inject its own replies (building the tree from linear array)
-                                var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
-                                if (parentComment) { // If parent comment Object hasn't got a "replies" property yet
-                                    // let's create it...
-                                    if (!parentComment.data.replies) {
-                                        parentComment.data.replies = []; // ...as an empty array
-                                    }
-                                    // Push current comment replies in
-                                    parentComment.data.replies.push(comment)
-                                }
-                            }
-                        })
-                        // Filter from all retrieved comments only root ones
-                        // since they now contain copies of their replies inside 
-                        // them to be rendered recursively
-                        // Done by filtering comments with only their own slug in parent array
-                        var rootComments = comments.filter(comment => comment.data.parent.length == 1)
 
-                        // Return retrieved comments data as JSON
-                        res.json({
-                            commentsCount: comments.length,
-                            rootComments: rootComments
-                        })
+                    	/*--- ROUTE CORE ---*/
+                    	/*------------------*/
+                    	var rootComments
+			            var disabledComments = 0
+			            var hasToBeRendered = req.params.options == 'render' || false
+			            // Build a first raw version of comment tree
+			            // populating for eanch retrieved comment a "replies"
+			            // array with its children comments in it
+			            buildTree(comments)
+			            // Extract from the tree only the root level comments
+		            	rootComments = comments.filter(comment => comment.data.parent.length == 1)
+		            	// Starting from root level comments recursively check
+		            	// for dead comments or branches and, if present, cut them off
+		            	rootComments.forEach(function(comment) {
+		            		removeDeletedComments(comment)
+		            	})
+		            	// Now have have a raw version of the tree which inclueds
+		            	// some unwanted deleted comments survived in it as replies
+		            	// Let's break down the tree so we can rebuild it
+		            	breakDownTree(comments)
+		            	// Rebuild the tree now that we have a starting comments array
+		            	// filled with alive and disabled comments only
+		            	buildTree(comments)
+		            	// Reset root level and recollect root level comments
+		            	// from freshly generated polished tree
+		            	rootComments = []
+		            	rootComments = comments.filter(comment => comment.data.parent.length == 1)
+
+		            	// Now decide how to handle response based on
+		            	// request we received
+		            	if (hasToBeRendered)
+		            	{	// Render approriate template
+		            		// ("internal usage")
+		            		res.render('comments-template.ejs', {
+			                    req: req,
+			                    game: game,
+			                    message: req.flash('message'),
+			                    flashType: req.flash('type'),
+			                    moment: moment,
+			                    commentsCount: comments.length - disabledComments,
+			                    rootComments: rootComments
+	                		})
+		            	}
+		            	else 
+		            	{	// Return retrieved comments data as JSON
+		            		// ("API usage")
+	                        res.json({
+	                            commentsCount: comments.length - disabledComments,
+	                            comments: rootComments,
+	                            game: game
+	                        })
+		            	}
+
+		            	/*--- HELPER FUNCTIONS ---*/
+                    	/*------------------------*/
+						function breakDownTree(comments) {
+							// For eanch comment of the tree...
+						    comments.forEach(function(comment) {
+						        if (comment.data.replies) // ...if it has a replies object property...
+						            comment.data.replies = '' // ... let's empty it
+						    })
+						}
+
+		               function buildTree(comments) {
+		               		// For each comment in the array...
+		                	comments.forEach(function(comment) {
+		                		// ...get current comment "parent property" 
+	                            // which contains any parents slug as well as
+	                            // current comment slug
+			            		var parents = comment.data.parent
+			            		if (parents.length > 1) // If this is not a root comment (so exclude arrays of length 1 (current comment slug))
+				            	{	// Get direct parent comment slug form array position "parents.length - 2"
+	                                // and prepare to inject its own replies (building the tree from linear array)
+			            			var parentComment = comments.filter(comment => comment.data.slug == parents[parents.length - 2])[0]
+			            			if (parentComment)
+			            			{ // If parent comment Object hasn't got a "replies" property yet...
+			            				// ...let's create it...
+			            				if (!parentComment.data.replies)
+			            				{
+			            					parentComment.data.replies = []; // ...as an empty array
+			            				}
+			            				// Push current comment replies in
+			            				parentComment.data.replies.push(comment)
+			            			}
+			            		}
+			            	})
+		            	}
+
+		            	function removeDeletedComments(comment){
+		            		var isDeleted = comment.data.deleted
+		            		var hasChildren = comment.data.replies
+		            		// If current comment has been deleted and
+		            		// has no children comments, let's kill it
+		            		if (isDeleted && !hasChildren) {
+		            			if (comments.indexOf(comment) >= 0)
+		            				comments.splice(comments.indexOf(comment), 1)
+		            		}
+		            		// If, instead, it has been deleted but has children comment
+		            		// we have some dance to do
+		            		else if (isDeleted && hasChildren) {
+		            			var nodelineage = []; // An array to contain current comment family
+		            			var aliveLineage = []; // An array to contain any alive comment descendants
+		            			// Let's check every comment...
+		            			comments.forEach(function(chekcInLineageComment) {
+		            				// ... and push any descendant into specifc array
+		            				if (chekcInLineageComment.data.parent.includes(comment.data.slug)) {
+		            					nodelineage.push(chekcInLineageComment)
+		            				}
+		            			})
+		            			// Extract only alive descendants from comment family array
+		            			aliveLineage = nodelineage.filter(toCheckAliveComment => toCheckAliveComment.data.deleted == false)
+		            			// If we don't have any alive descendants
+		            			// cut the whole family from original comments array
+		            			if (aliveLineage.length == 0) {
+		            				nodelineage.forEach(function(lineageComment) {
+		            					if (comments.indexOf(lineageComment) >= 0) {
+		            						comments.splice(comments.indexOf(lineageComment), 1)
+		            					}
+
+		            				})
+		            				
+		            			} // if we do have alive descendants...
+		            			else {
+		            				comment.data.text = "This comment has been deleted" //... disable this comment
+		            				disabledComments += 1 //...update the count of disable comments (to later subtract to total comments count)
+		            				comment.data.replies.forEach(function(reply) {
+		            					// Recursively analyze every children comment
+		            					removeDeletedComments(reply)
+		            				})
+		            			}
+		            			
+		            		} 
+		            		// And finally, if current comment is alive
+		            		// and has alive children, go on and recursively
+		            		// analize every reply
+		            		else if (!isDeleted && comment.data.replies) {
+		            			comment.data.replies.forEach(function(reply) {
+		            				removeDeletedComments(reply)
+		            			})
+		            		}
+		            	}
                     })
             }
         })

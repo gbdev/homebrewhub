@@ -5,6 +5,7 @@
  */
 
 // SOME DECLARATIONS
+var commentsInjectionPoint = document.querySelector('#comments')
 var commentBasePosition = $('#leave-a-comment')
 var commentForm = $('#comment-form-container')
 var parentField = $('#parent-id')
@@ -12,10 +13,44 @@ var deleteCommentModal = $('#delete-comment-modal')
 var commentSuffix = 'cm-'
 
 /************************/
+/****** PAGE LOAD *******/
+/************************/
+document.addEventListener("DOMContentLoaded", function(){
+    // Retrieve game permalink from current window URL
+    var gamePermalink = window.location.href.match(/\/game\/([-a-zA-Z0-9._~!$&'()*+,;=:@]+)\/?/)[1]
+    // Load comments and populate specific template
+    // Async call to get comments for current game
+    var req = new XMLHttpRequest();
+    req.open("GET", "/comment/view/" + gamePermalink + "/render/", true);
+    req.onreadystatechange = function() {
+        if (this.readyState == 4) {
+        // If we get an "OK" status we should hava the comments
+        // template rendered, let's inject it in the "comments section"
+          if (req.status == 200) {
+            commentsInjectionPoint.innerHTML = req.response
+            commentBasePosition = $('#leave-a-comment')
+            commentForm = $('#comment-form-container')
+            parentField = $('#parent-id')
+            deleteCommentModal = $('#delete-comment-modal')
+
+            deleteCommentModal.on('hide.bs.modal', function(e) {
+                clearDeleteModal()
+            });
+          }
+        // Otherwise alert with some error
+          else {
+            alert("Whooops, something went wrong while loading comments!\n" + "Code " + req.status)
+          }
+        }
+    };
+    req.send(null);
+});
+
+/************************/
 /**** EVENT CATCHING ****/
 /************************/
 // Here's a handler to control single comments actions 
-$('.comment-actions .action').click(function(e) {
+$(document).on('click', '.comment-actions .action', function(e) {
     // Retrieve some basic info for current action
     // and comment
     var action = $(this).attr('data-action') // Selected action from "data-" attribute
@@ -48,13 +83,13 @@ $('.comment-actions .action').click(function(e) {
 
 // Handler to abort reply, reset default status
 // (comment form position e parent value)
-$('.close-reply').click(function(e) {
+$(document).on('click', '.close-reply', function(e) {
     abortReply()
 });
 
 // Handler to delete seletced comment through 
 // async call to delete backend route
-$('#deleteCommentBtn').click(function(e) {
+$(document).on('click', '#deleteCommentBtn', function(e) {
     $(this).removeData('delete') // Clear "cached" data value
     var commentSlug = $(this).data('delete') // Get comment slug
     var comment = $("#" + commentSuffix + commentSlug)
@@ -80,20 +115,16 @@ $('#deleteCommentBtn').click(function(e) {
     req.send(null);
 });
 
-deleteCommentModal.on('hide.bs.modal', function(e) {
-    clearDeleteModal()
-});
-
 /**************************/
 /**** HELPER FUNCTIONS ****/
 /**************************/
 
-var refreshCommentsCount = function() {
+var refreshCommentsCount = function(count) {
     var DOMCommentsCountElement = document.querySelector('#comments-count')
     var comments = document.querySelectorAll('.comments-list .comment')
     var deletedComments = document.querySelectorAll('.comments-list .comment.deleted')
 
-    commentsCount = comments.length - deletedComments.length
+    var commentsCount = count || comments.length - deletedComments.length
     DOMCommentsCountElement.innerHTML = commentsCount
 }
 

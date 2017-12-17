@@ -22,7 +22,7 @@
       <% if (comment.data.replies) { %>
         <div class="replies">
           <% comment.data.replies.forEach(function(reply) { %>
-          <%- include('comments.ejs', { comment: reply }) %>
+          <%- include('comment.ejs', { comment: reply }) %>
           <% }) %>
         </div>
       <% } %>
