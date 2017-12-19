@@ -183,57 +183,77 @@ module.exports = function(app, passport) {
         })
     })
 
-    app.post('/game/:gameID', function(req, res) {
+	// COMMENT APIs - ADD METHOD:
+    // Save a comment to the specified game,
+    // either as "root" comment or as a reply
+    app.post('/comment/add/:gameID/:parentComment?', function(req, res) {
+    	// Let's find game data in db based on 
+        // specified game permalink
+    	Game.findOne({  'data.permalink': req.params.gameID }, function(err, game) {
+			// If no game was found...
+	        if (game == null || game.length == 0) {
+	        	// ...let's repond with an error
+	        	res.status(500).send("Can't find any game with that permalink")
+	        } else {
+       			// Let's search the db for parent comment from post request parent comment slug
+       			// (no results in the case of posting a root comment)
+	            Comment.findOne({ 'data.slug': req.body.parentComment }, function(err, parentComment) {
+	            	// Some logs...
+	                console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
+	                console.log("Saving comment from", req.user.local.username + ":")
+	                console.log("\"" + req.body.message + "\"")
 
-        Game.findOne({  'data.permalink': req.params.gameID }, function(err, game) {
-            Comment.findOne({ 'data.slug': req.body['parent-comment'] }, function(err, parentComment) {
+	                var parent;
+	                var user = req.user; // Current session user, author of current comment
+	                var message = req.body.message; // Actual comment text message
+	                var posted = Date.now(); // Current date and time (UTC) - they will be comment date and time
+	                var slug;
+	                var fullSlug;
+	                // Some combined data from which we will create a hash string
+	                var commentDataToHash = posted.toString() + user._id.toString() + message.replace(/\W+/g, '');
+	                var hash = sha1(commentDataToHash) // Generate a sha1 hash from previous string
 
-                console.log("Game (ID)" + game._id, "(slug)" + game.data.permalink)
-                console.log("Saving comment from", req.user.local.username + ":")
-                console.log("\"" + req.body["comment-text"] + "\"")
+	                // Generatig actual comment unique slug by slicing
+	                // a 7-character-long portion of previous hash
+	                slug = hash.slice(15, 22);
+	                // Generating comment "Full slug" composed of date and time info and newly generated slug
+	                fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
+	                // If we have a parent comment (this is a reply comment)...
+	                if (parentComment) {
+	                	//... push current comment slug in parent comment "parent" array
+	                	// (which contains all of the comment slugs from the "older" ancestor to
+	                	// the prent comment itself, and now also current comment slug at the end).
+	                	// This is useful to build a comment "family tree"
+	                    parentComment.data.parent.push(slug)
+	                    // Now set current comment parent property to that array
+	                    parent = parentComment.data.parent
+	                } else {
+	                	// Otherwise, if this is a root comment, let's set the parent property 
+	                	// to an array containing only current comment slug
+	                    parent = [slug]
+	                }
 
-                var parent;
-                var user = req.user;
-                var message = req.body["comment-text"];
-                var posted = Date.now();
-                var slug;
-                var fullSlug;
-                var commentDataToHash = posted.toString() + user._id.toString() + message.replace(/\W+/g, '');
-                var hash = sha1(commentDataToHash)
-                //console.log("Hashing string", commentDataToHash)
-                //console.log("Full hash:", hash)
-                slug = hash.slice(15, 22);
-                fullSlug = moment(posted).utc().format('YYYY.MM.DD.HH.mm.ss') + ':' + slug;
-                //console.log("Generating comment unique slug:", slug)
-
-                if (parentComment) {
-                    parentComment.data.parent.push(slug)
-                    parent = parentComment.data.parent
-                } else
-                    parent = [slug]
-
-                var comment = new Comment({
-                    data: {
-                        game: game._id,
-                        parent: parent,
-                        author: user._id,
-                        slug: slug,
-                        fullSlug: fullSlug,
-                        text: message,
-                        posted: posted,
-                        published: true,
-                        deleted: false,
-                    }
-                });
-
-                comment.save();
-                console.log("Comment saved")
-
-                req.flash('message', 'Your comment has been saved!')
-                req.flash('type', 2)
-                res.redirect('/game/' + req.params.gameID);
-            });
-        });
+	                // Creating a new Mongo "Commment" document
+	                var comment = new Comment({
+	                    data: {
+	                        game: game._id, // Current Game ID
+	                        parent: parent, // The parent array containing "commente genealogy"
+	                        author: user._id, // Current User ID
+	                        slug: slug, // Previously generetaed "slug"
+	                        fullSlug: fullSlug, // Previously generated "Full slug"
+	                        text: message, // Comment actual text message
+	                        posted: posted, // Date and time comment was posted (UTC)
+	                        published: true, // Default publishing state TRUE, useful for admin/moderators comment managing
+	                        deleted: false // Default alive/deleted state FALSE
+	                    }
+	                });
+	                // Saving Comment document in db
+	                comment.save();
+	                console.log("Comment saved")
+	                res.status(200).send('OK')
+	            });
+        	}
+    	})
     });
 
     // COMMENT APIs - DELETE METHOD:

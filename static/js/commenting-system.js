@@ -8,16 +8,18 @@
 var commentsInjectionPoint = document.querySelector('#comments')
 var commentBasePosition = $('#leave-a-comment')
 var commentForm = $('#comment-form-container')
+var submitBtn = document.querySelector('#submitCommentBtn')
 var parentField = $('#parent-id')
 var deleteCommentModal = $('#delete-comment-modal')
 var commentSuffix = 'cm-'
+var gamePermalink
 
 /************************/
 /****** PAGE LOAD *******/
 /************************/
 document.addEventListener("DOMContentLoaded", function(){
     // Retrieve game permalink from current window URL
-    var gamePermalink = window.location.href.match(/\/game\/([-a-zA-Z0-9._~!$&'()*+,;=:@]+)\/?/)[1]
+    gamePermalink = window.location.href.match(/\/game\/([-a-zA-Z0-9._~!$&'()*+,;=:@]+)\/?/)[1]
     // Load comments and populate specific template
     // Async call to get comments for current game
     var req = new XMLHttpRequest();
@@ -32,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function(){
             commentForm = $('#comment-form-container')
             parentField = $('#parent-id')
             deleteCommentModal = $('#delete-comment-modal')
+            submitBtn = document.querySelector('#submitCommentBtn')
 
             deleteCommentModal.on('hide.bs.modal', function(e) {
                 clearDeleteModal()
@@ -113,6 +116,38 @@ $(document).on('click', '#deleteCommentBtn', function(e) {
         }
     };
     req.send(null);
+});
+
+// Handler to add a comment to current game through 
+// async call, either as "root" or "reply" comment
+$(document).on('submit', '#comment-form', function(e) {
+    e.preventDefault();
+    var parentComment = document.querySelector('#parent-id').value || '' // Get parent comment if we are replyng to another comment
+    var commentText = document.querySelector('#comment-text').value // Comment actual text message 
+    var URL = "/comment/add/" + gamePermalink + '/' + parentComment // Build the URL for Async POST Request
+    var params = "message=" + commentText // Include comment text in request body...
+
+    if (parentComment) params += "&parentComment=" + parentComment; //..and if we are replying, add the parent comment slug too
+
+    // Async call to "/add/" comment route
+    var req = new XMLHttpRequest();
+    req.open("POST", URL, true);
+    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    req.onreadystatechange = function() {
+        if (this.readyState == 4) {
+        // If we get an "OK" status the comment is posted,
+        // let's create it on the frontend too
+          if (req.status == 200) {
+            alert("comment posted!")
+          }
+        // Otherwise alert with some error
+          else {
+            alert("Whooops, something went wrong!")
+          }
+        }
+    };
+    req.send(params);
+
 });
 
 /**************************/
