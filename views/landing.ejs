@@ -1,29 +1,31 @@
 <!doctype html>
 <html>
 <head>
-    <title>Homebrew Hub</title>
-    <% include head.html %>   
+	<title>Homebrew Hub</title>
+	<% include head.html %>   
 </head>
 <body>
-     <% include header.ejs %>
+	 <% include header.ejs %>
 <div class="flex-row">
 <div class="texta container col-md-11 col-lg-9">
-    <br>
+	<br>
 
-    <% if (message.length > 0) { %>
-        <% if (type == 1) { %>
-        <div class="alert alert-danger"><%= message %></div>
-        <% } else { %>
-        <div class="alert alert-success fade in"><%= message %></div>
-        <% } %>
-    <% } %>
+	<% if (message.length > 0) { %>
+		<% if (type == 1) { %>
+		<div class="alert alert-danger"><%= message %></div>
+		<% } else { %>
+		<div class="alert alert-success fade in"><%= message %></div>
+		<% } %>
+	<% } %>
 <h1>Oh hey, welcome!</h1>
 <p class="lead">This project aims to collect, archive and save every unofficial game, homebrew, patch, hackrom for Game Boy (Color) produced by the community through years of passionate work.
 </p><p class="lead">
 You'll be able to <b>vote</b>, share and submit games, search for tags and <b>play</b> them directly here, in your browser.</p>
 <p class="lead"><b> Work In Progress</b>: we are building the game database and need your help! Look <a href="https://github.com/dmg01/database">here</a> and contribute adding Game Boy games or homebrews.</p> </p>
-<img src="/patent.jpg" class="img-fluid" alt="Responsive image">
-<h2> Support </h2>
+<div class="container">
+  <div class="row">
+	<div class="col"><img src="/patent.jpg" class="img-fluid" alt="Responsive image"></div>
+	<div class="col"><br><h2> Support </h2>
 <p>
 You can help in a number of ways, we really appreciate:</p>
 <p>
@@ -34,7 +36,10 @@ You can help in a number of ways, we really appreciate:</p>
 
 <p> <b> Donate</b>: Hosting and bandwidth isn't free - and we won't add flashing banners - if you like the project, please considering <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6H2NAG2PPS4VQ"> donating</a>. </p>
 
-<p><b> Submit games and help testing</b> Everyone can help building the database of available homebrews and games! Take a look at this <a href="https://github.com/dmg01/database">repository</a> and send a Pull Request. </p>
+<p><b> Submit games and help testing:</b> Everyone can help building the database of available homebrews and games! Take a look at this <a href="https://github.com/dmg01/database">repository</a> and send a Pull Request. </p></div>
+  </div>
+</div>
+
 
 </div>
 </div>

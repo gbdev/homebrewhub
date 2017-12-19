@@ -1,83 +1,83 @@
 <!doctype html>
 <html>
-  <head>
-    <title>HHub - Games</title>
-    <% include head.html %>
-  </head>
-  <body>
-    <% include header.ejs %>
-    <div class="container">
-      <% if (games.length == 0) { %>
-      <br>
-      <div class="row">
-      <div class="col-lg-3"></div>
-          <div class="col-lg-6 alert alert-danger" role="alert">
-            <h4 class="alert-heading">Wooops, nothing found!</h4>
-            <p>Nothing matches the provided query.</p>
-          </div>
-        </div>
-          <% } %>
-      <br>
-      <div class="container">
+	<head>
+		<title>HHub - Games</title>
+		<% include head.html %>
+	</head>
+	<body>
+		<% include header.ejs %>
+		<div class="container">
+			<% if (games.length == 0) { %>
+			<br>
+			<div class="row">
+			<div class="col-lg-3"></div>
+					<div class="col-lg-6 alert alert-danger" role="alert">
+						<h4 class="alert-heading">Wooops, nothing found!</h4>
+						<p>Nothing matches the provided query.</p>
+					</div>
+				</div>
+					<% } %>
+			<br>
+			<div class="container">
 
-        <div class="dropdown">Sort by:
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Sort by
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Rating</a>
-    <a class="dropdown-item" href="#">Date</a>
-  </div>
-  <input type="checkbox" aria-label="Checkbox for following text input"> GBC
-  <input type="checkbox" aria-label="Checkbox for following text input"> Open Source
+				<div class="dropdown">Sort by:
+	<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Sort by
+	</button>
+	<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+		<a class="dropdown-item" href="#">Rating</a>
+		<a class="dropdown-item" href="#">Date</a>
+	</div>
+	<input type="checkbox" aria-label="Checkbox for following text input"> GBC
+	<input type="checkbox" aria-label="Checkbox for following text input"> Open Source
 
 </div>
 <br>
-        <div class="card-columns">
-          
-          <% games.forEach( function(element){ %>
-          <div class="card">
+				<div class="card-columns">
+					
+					<% games.forEach( function(element){ %>
+					<div class="card">
 
-             <a href=<%= "game/"+element.data.permalink %>><img class="card-img-top img-fluid" src=/<%= "database/" + element.data.permalink + "/" + element.data.screenshots[0] %> alt="Card image cap"></a>
-            <div class="card-body">
-              <a href=<%= "game/"+element.data.permalink %>><h4 class="card-title"> <%= element.data.title %> </a>
-              <% if (element.data.typetag == "game") { %>
-              <span style="float:right; font-size: 0.7em" class="fa fa-gamepad"></span></h3>
-              <% } else if (element.data.typetag == "demo") { %>
-              <span style="float:right; font-size: 0.7em" class="fa fa-cubes"></span></h3>
-              <% } else { %>
-              <span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
-              <% } %>
-              <p class="card-text">
-                <small class="text-muted"></small>
-                <% element.data.tags.forEach( function(tag) { %>
-                <span class="badge badge-secondary"><%= tag %></span>
-                <% }) %>
-              </p>
-            </div>
-          </div>
-          
-          <% }) %>
-        </div>
-      </div>
-          Legend: <i class="fa fa-gamepad"></i> Game, <i class="fa fa-cubes"></i> Demo, <i class="fa fa-microchip"></i> Homebrew. 
+						 <a href=<%= "game/"+element.data.permalink %>><img class="card-img-top img-fluid" src=/<%= "database/" + element.data.permalink + "/" + element.data.screenshots[0] %> alt="Card image cap"></a>
+						<div class="card-body">
+							<a href=<%= "game/"+element.data.permalink %>><h4 class="card-title"> <%= element.data.title %> </a>
+							<% if (element.data.typetag == "game") { %>
+							<span style="float:right; font-size: 0.7em" class="fa fa-gamepad"></span></h3>
+							<% } else if (element.data.typetag == "demo") { %>
+							<span style="float:right; font-size: 0.7em" class="fa fa-cubes"></span></h3>
+							<% } else { %>
+							<span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
+							<% } %>
+							<p class="card-text">
+								<small class="text-muted"></small>
+								<% element.data.tags.forEach( function(tag) { %>
+								<span class="badge badge-secondary"><%= tag %></span>
+								<% }) %>
+							</p>
+						</div>
+					</div>
+					
+					<% }) %>
+				</div>
+			</div>
+					Legend: <i class="fa fa-gamepad"></i> Game, <i class="fa fa-cubes"></i> Demo, <i class="fa fa-microchip"></i> Homebrew. 
 
-    </div>
+		</div>
 
-  </div>
-  <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
+	</div>
+	<nav aria-label="Page navigation example">
+	<ul class="pagination justify-content-center">
+		<li class="page-item disabled">
+			<a class="page-link" href="#" tabindex="-1">Previous</a>
+		</li>
+		<li class="page-item"><a class="page-link" href="#">1</a></li>
+		<li class="page-item"><a class="page-link" href="#">2</a></li>
+		<li class="page-item"><a class="page-link" href="#">3</a></li>
+		<li class="page-item">
+			<a class="page-link" href="#">Next</a>
+		</li>
+	</ul>
 </nav>
-  <% include footer.html %>
+	<% include footer.html %>
 </body>
 </html>
