@@ -135,52 +135,21 @@
 
         </div>
       </div>
+
       <div class="row justify-content-center">
           <div class="col-sm-10">
               <hr>
               <section id="comments">
-                <header>
-                  <h3>Comments (<%= commentsCount %>)</h3>
-                </header>
-                <div id="leave-a-comment">
-                  <% if (req.user) { %>
-                      <br>
-                      Hi <%= req.user.local.username %>,<br>
-                      if you want you can leave a comment
-                      <br><br>
-                      <div id="comment-form-container">
-                        <div class="close-reply text-center">
-                          <span>Abort Reply</span>
-                          <button type="button" class="close" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <!-- Some kind of control for permalink format? -->
-                        <form id="comment-form" class="text-center" method="post" action="/game/<%= game[0].data.permalink %>">
-                          <textarea name="comment-text" class="form-control" placeholder="Insert your message here" required=""></textarea>
-                          <input id="parent-id" name="parent-comment" type="text" hidden value="">
-                          <br>
-                          <input type="submit" value="Send" class="btn btn-warning btn-lg text-right">
-                        </form>
-                      </div>
-                      <br>
-                  <% } else { %>
-                      <br>
-                      You have to be logged in to leave a comment
-                      <br><br>
-                  <% } %>
-                </div>
-                <% if (commentsCount) { %>
-                <hr>
-                <div class="comments-list">
-                  <% rootComments.forEach(function(comment) { %>
-                  <%- include('comments.ejs', { comment: comment }) %>
-                  <% }); %>
-                </div>
-                <% } %>
+                  <div class="text-center">
+                    <img src="/images/icons/gb-loading.gif" />
+                    <br>
+                    <span class="loading-text">Loading comments...</span>
+                  </div>
               </section>
-          </div>
+
+        </div>
       </div>
+
         </div>
     </div>
 
