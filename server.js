@@ -45,7 +45,6 @@ app.use(function(req, res, next){
 
 // Routes
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-require('./app/comments.js')(app, passport);
 
 // Launch
 app.listen(port);
