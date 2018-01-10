@@ -245,17 +245,6 @@ module.exports = function(app, passport) {
 
     app.get('/game/:gameID', function(req, res) {
 
-        var sort = function(a, b) {
-            if (a.data.parent.length < b.data.parent.length) {
-                return 1;
-            }
-            if (a.data.parent.length > b.data.parent.length) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        };
-
         console.log(req.params.gameID)
         Game.find({
                 'data.permalink': req.params.gameID
@@ -266,6 +255,7 @@ module.exports = function(app, passport) {
                     // TODO: Render error page with details and send 404
                     res.send("No game found")
                 } else {
+                	console.log(game[0].data.date)
                     res.render('game.ejs', {
                         req: req,
                         game: game,

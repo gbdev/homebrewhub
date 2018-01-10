@@ -21,12 +21,22 @@ games.forEach(function(permalink, index) {
 			'data.permalink' : game["slug"],
 			'data.developer' : game["developer"],
 			'data.typetag' : game["typetag"],
-			'data.description' : game["description"],
-			'data.repository' : game["repository"],
-			'data.license' : game["license"],
-			'data.tags' : game["tags"],
+			'data.platform' : game["platform"],
+			'data.rom' : game["rom"],
 			'data.screenshots' : game["screenshots"],
-			'data.rom' : game["rom"]
+
+			'data.license' : game["license"],
+			'data.assetLicense' : game["assetLicense"],
+			'data.description' : game["description"],
+			'data.video' : game["video"],
+			'data.date' : game["date"],
+			'data.tags' : game["tags"],
+			'data.alias' : game["alias"],
+			'data.repository' : game["repository"],
+			'data.gameWebsite' : game["gameWebsite"],
+			'data.devWebsite' : game["devWebsite"],
+			'data.onlineplay' : game["onlineplay"]
+			
 		}, function(err, result) {
 			if (err) {
 				console.log("Error", err)
@@ -34,18 +44,25 @@ games.forEach(function(permalink, index) {
 			else if (!result) {
 				// No game with that permalink, create a new entry
 				var newGame = new Game({
-					data: {
-						title: game["title"],
-						permalink: game["slug"],
-						description: game["description"],
-						developer: game["developer"],
-						repository: game["repository"],
-						license : game["license"],
-						tags: game["tags"],
-						typetag : game["typetag"],
-						screenshots : game["screenshots"],
-						rom : game["rom"]
-					}
+					 'data.title': game["title"],
+					 'data.permalink': game["slug"],
+					 'data.developer': game["developer"],
+					 'data.typetag': game["typetag"],
+					 'data.platform': game["platform"],
+					 'data.rom': game["rom"],
+					 'data.screenshots': game["screenshots"],
+
+					 'data.license': game["license"],
+					 'data.assetLicense': game["assetLicense"],
+					 'data.description': game["description"],
+					 'data.video': game["video"],
+					 'data.date': game["date"],
+					 'data.tags': game["tags"],
+					 'data.alias': game["alias"],
+					 'data.repository': game["repository"],
+					 'data.gameWebsite': game["gameWebsite"],
+					 'data.devWebsite': game["devWebsite"],
+					 'data.onlineplay': game["onlineplay"]
 				})
 				newGame.save();
 				console.log("Added", game["title"])
