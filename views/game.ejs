@@ -76,7 +76,7 @@
           <h5> Description </h5>
           <p><%= game[0].data.description %> </p>
           <h5> Tags </h5>
-          <p><%= game[0].data.tags %> </p>
+          <p><%= game[0].data.tags.join(', ') %> </p>
           <h5> Released </h5>
           <p><%= game[0].data.date %> </p>
         </div>
