@@ -267,19 +267,23 @@ module.exports = function(app, passport) {
     })
 
     app.get('/game_mobile/:gameID', function(req, res) {
+
         console.log(req.params.gameID)
         Game.find({
                 'data.permalink': req.params.gameID
             })
             .exec(function(err, game) {
+                //console.log(game)
                 if (game == null || game.length == 0) {
                     // TODO: Render error page with details and send 404
                     res.send("No game found")
                 } else {
-                    console.log(game)
+                    console.log(game[0].data.date)
                     res.render('game_min.ejs', {
                         req: req,
-                        game: game
+                        game: game,
+                        message: req.flash('message'),
+                        flashType: req.flash('type')
                     })
                 }
             })
