@@ -20,7 +20,7 @@ module.exports = function(app, passport) {
 
     // COMMENT APIs - VIEW METHOD:
     // Retrieve comments thread for requested game
-    app.get('/comment/view/:gameID/:options?', function(req, res) {
+    app.get('/comment/view/:gameID/', function(req, res) {
         // Let's find game data in db based on 
         // specified game permalink
         Game.find({ 'data.permalink': req.params.gameID }, function(err, game) {
@@ -41,7 +41,6 @@ module.exports = function(app, passport) {
                     	/*------------------*/
                     	var rootComments
 			            var disabledComments = 0
-			            var hasToBeRendered = req.params.options == 'render' || false
 			            // Build a first raw version of comment tree
 			            // populating for eanch retrieved comment a "replies"
 			            // array with its children comments in it
@@ -65,30 +64,13 @@ module.exports = function(app, passport) {
 		            	rootComments = []
 		            	rootComments = comments.filter(comment => comment.data.parent.length == 1)
 
-		            	// Now decide how to handle response based on
-		            	// request we received
-		            	if (hasToBeRendered)
-		            	{	// Render approriate template
-		            		// ("internal usage")
-		            		res.render('comments-template.ejs', {
-			                    req: req,
-			                    game: game,
-			                    message: req.flash('message'),
-			                    flashType: req.flash('type'),
-			                    moment: moment,
-			                    commentsCount: comments.length - disabledComments,
-			                    rootComments: rootComments
-	                		})
-		            	}
-		            	else 
-		            	{	// Return retrieved comments data as JSON
-		            		// ("API usage")
-	                        res.json({
-	                            commentsCount: comments.length - disabledComments,
-	                            comments: rootComments,
-	                            game: game
-	                        })
-		            	}
+		            	// Return retrieved comments data as JSON
+                        res.json({
+                            commentsCount: comments.length - disabledComments,
+                            comments: rootComments,
+                            game: game,
+                            user: req.user
+                        })
 
 		            	/*--- HELPER FUNCTIONS ---*/
                     	/*------------------------*/

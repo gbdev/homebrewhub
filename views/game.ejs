@@ -140,11 +140,7 @@
           <div class="col-sm-10">
               <hr>
               <section id="comments">
-                  <div class="text-center">
-                    <img src="/images/icons/gb-loading.gif" />
-                    <br>
-                    <span class="loading-text">Loading comments...</span>
-                  </div>
+                  <%- include('comments-template.ejs') %>
               </section>
 
         </div>
@@ -153,7 +149,8 @@
         </div>
     </div>
 
-    <% include footer.html %> 
+    <% include footer.html %>
+    <script src="/js/moment-w-locales.js"></script>
     <script src="/js/commenting-system.js"></script>
   </body>
 </html>

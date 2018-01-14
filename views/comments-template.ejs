@@ -32,10 +32,12 @@
                 </div>
                 <% if (commentsCount) { %>
                 <hr>
-                <div class="comments-list">
-                  <% rootComments.forEach(function(comment) { %>
-                  <%- include('comment.ejs', { comment: comment }) %>
-                  <% }); %>
+                <div id="comments-list">
+                  <div id="comments-loading" class="text-center">
+                    <img src="/images/icons/gb-loading.gif" />
+                    <br>
+                    <span class="loading-text">Loading comments...</span>
+                  </div>
                 </div>
                 <% } %>
 

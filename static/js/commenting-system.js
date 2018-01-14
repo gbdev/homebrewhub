@@ -5,7 +5,7 @@
  */
 
 // SOME DECLARATIONS
-var commentsInjectionPoint = document.querySelector('#comments')
+var commentsInjectionPoint = document.querySelector('#comments-list')
 var commentBasePosition = $('#leave-a-comment')
 var commentForm = $('#comment-form-container')
 var submitBtn = document.querySelector('#submitCommentBtn')
@@ -23,13 +23,22 @@ document.addEventListener("DOMContentLoaded", function(){
     // Load comments and populate specific template
     // Async call to get comments for current game
     var req = new XMLHttpRequest();
-    req.open("GET", "/comment/view/" + gamePermalink + "/render/", true);
+    req.open("GET", "/comment/view/" + gamePermalink + "/", true);
     req.onreadystatechange = function() {
         if (this.readyState == 4) {
-        // If we get an "OK" status we should hava the comments
-        // template rendered, let's inject it in the "comments section"
+        // If we get an "OK" status we should have the comments in form
+        // of JSON data along with some useful info,
+        // let's render and inject them in "comments section"
           if (req.status == 200) {
-            commentsInjectionPoint.innerHTML = req.response
+            var response = JSON.parse(req.response)
+            var sessionUser = response.user ? response.user : null
+            // For every received comment call the render function
+            // to build and inject every comment
+            response.comments.forEach(function(comment) {
+                renderComment(comment, sessionUser)
+            })
+            // Call successful, let's hide loading message
+            document.querySelector("#comments-loading").style.display = 'none'
             commentBasePosition = $('#leave-a-comment')
             commentForm = $('#comment-form-container')
             parentField = $('#parent-id')
@@ -154,13 +163,54 @@ $(document).on('submit', '#comment-form', function(e) {
 /**** HELPER FUNCTIONS ****/
 /**************************/
 
+/**** COMMENTS COUNT REFRESH ****/
 var refreshCommentsCount = function(count) {
     var DOMCommentsCountElement = document.querySelector('#comments-count')
-    var comments = document.querySelectorAll('.comments-list .comment')
-    var deletedComments = document.querySelectorAll('.comments-list .comment.deleted')
-
+    var comments = document.querySelectorAll('#comments-list .comment')
+    var deletedComments = document.querySelectorAll('#comments-list .comment.deleted')
     var commentsCount = count || comments.length - deletedComments.length
     DOMCommentsCountElement.innerHTML = commentsCount
+}
+
+/**** "RENDER" COMMENT TEMPLATE ****/
+var renderComment = function(comment, sessionUser, parentSlug) {
+    // Comment post date and time 
+    moment.locale(navigator.language) // Set correct locale based on browser language
+    var commentDateTime = moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") // Format date as specified
+    // Determine if comment is deleted, if so, add "deleted" class to our comment node
+    var deleted = comment.data.deleted ? ' deleted' : ''
+    // If user is logged in, check whether he is the owner of current comment or a "super-user" to activate
+    // specific comment actions (e.g. "Delete" action)
+    var actionsForOwnerOrSuperuser = ''
+    if (sessionUser)
+        if (sessionUser.local.username == comment.data.author.local.username || sessionUser.local.role > 0)
+            var actionsForOwnerOrSuperuser = '<span class=\"sep\"> - </span><span class=\"action delete text-danger\" data-action=\"delete\">Delete</span>'
+    // If comment isn't deleted add basic "Reply" function to empty actions template
+    // (further actions could be added in case of owner/admin user)
+    var actions = ''
+    if (!comment.data.deleted)
+        actions = '<span class=\"action reply\" data-action=\"reply\">Reply</span>' + actionsForOwnerOrSuperuser
+    // If user is logged in let's prepare an empty actions template
+    var commentActionsOuterTemplate = ''
+    if (sessionUser)
+        commentActionsOuterTemplate = "<span class=\"comment-actions bg-light\">" + actions + "</span>"
+    // If current comment has replies let's prepare an empty replies template
+    var repliesOuterTemplate = ''
+    if (comment.data.replies)
+        repliesOuterTemplate = '<div class=\"replies\"></div>'
+    // Let's "render" our comment with specified template:
+    var renderedComment = "<div id=" + commentSuffix + comment.data.slug + " class=\"comment" + deleted + "\"><div class=\"comment-body\"><span class=\"comment-date\">" + commentDateTime + "</span><br><span class=\"comment-author\">" + comment.data.author.local.username + "</span><br><span class=\"comment-text\">" + comment.data.text + "</span><br>" + commentActionsOuterTemplate + "</div>" + repliesOuterTemplate + "</div>"
+    // If render function has not received any parent comment indication...
+    if (!parentSlug)
+        commentsInjectionPoint.innerHTML += renderedComment //...add the comment at the end of comments list (root comment)
+    else
+        document.querySelector("#" + commentSuffix + parentSlug + " .replies").innerHTML += renderedComment //...otherwise inject it in specified parent "replies template"
+    // Now that we have current comment rendered, let's recurively take care of any existing replies
+    if (comment.data.replies) {
+        comment.data.replies.forEach(function(reply) {
+            renderComment(reply, sessionUser, comment.data.slug)
+        })
+    }
 }
 
 /**** REPLY ****/
