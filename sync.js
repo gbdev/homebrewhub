@@ -1,6 +1,7 @@
- var mongoose = require('mongoose');
+var mongoose = require('mongoose');
 var fs = require('fs');
 var games = JSON.parse(fs.readFileSync('database/gamesList.json', 'utf8'));
+var c = 0
 
 dbURL = 'mongodb://localhost:27018/passport'
 dbOptions = {
@@ -65,11 +66,17 @@ games.forEach(function(permalink, index) {
 					 'data.devWebsite': game["devWebsite"],
 					 'data.onlineplay': game["onlineplay"]
 				})
+				c=c+1
 				newGame.save();
 				console.log("Added", game["title"])
+				if (c==games.length) mongoose.disconnect()
 			}
 			else {
+				c=c+1
+				
 				console.log("Updated", game["title"])
+				// kinda foreach callback? maybe there's a better way?
+				if (c==games.length) mongoose.disconnect()
 			}
 		})
 })
