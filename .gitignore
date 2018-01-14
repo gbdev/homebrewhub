@@ -1,6 +1,8 @@
 # passportlib-cov
+# mongo database folder
 passport
 db
+mongo
 *.seed
 *.log
 *.csv
@@ -9,6 +11,7 @@ db
 *.pid
 *.gz
 
+# node things
 pids
 logs
 results
