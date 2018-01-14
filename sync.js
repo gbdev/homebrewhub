@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+ var mongoose = require('mongoose');
 var fs = require('fs');
 var games = JSON.parse(fs.readFileSync('database/gamesList.json', 'utf8'));
 
@@ -15,6 +15,7 @@ games.forEach(function(permalink, index) {
 	Game.findOneAndUpdate({
 			'data.permalink': permalink
 		}, 
+		// TODO: use same values array for udpate and create
 		// Find the matching entry and update it
 		{
 			'data.title' : game["title"],
