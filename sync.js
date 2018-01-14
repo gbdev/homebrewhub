@@ -1,3 +1,6 @@
+// cronjob / git hook
+//  node sync.js
+
 var mongoose = require('mongoose');
 var fs = require('fs');
 var games = JSON.parse(fs.readFileSync('database/gamesList.json', 'utf8'));
