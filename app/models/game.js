@@ -1,5 +1,6 @@
 // load the things we need
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 
 var gameSchema = mongoose.Schema({
     data             : {
@@ -27,6 +28,8 @@ var gameSchema = mongoose.Schema({
 
     }
 });
+
+gameSchema.plugin(mongoosePaginate)
 
 // create the model for users and expose it to our app
 module.exports = mongoose.model('Game', gameSchema);

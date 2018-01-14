@@ -6,6 +6,7 @@ var multer = require('multer')
 var bcrypt = require('bcrypt-nodejs')
 var sha1 = require('sha1')
 var moment = require('moment')
+var mongoosePaginate = require('mongoose-paginate');
 
 // Multer Upload configuration
 var upload = multer({
@@ -62,14 +63,24 @@ module.exports = function(app, passport) {
 
 
     app.get('/games', function(req, res) {
-        Game.find({})
-            .exec(function(err, games) {
+        p = 1
+        
+        // decent validation
+        if (req.query.page) p = req.query.page
+        if (p == 0) p = 1
+
+        console.log("requested page", p)
+        Game.paginate({}, { page: p, limit: 10 }, function(err, games) {
+            console.log(games.docs)
                 res.render('index.ejs', {
                     req: req,
-                    games: games
+                    games: games.docs,
+                    pages : games.pages
                 })
             })
     });
+
+
 
     // Categories - friendly URLs
     app.get('/games/opensource', function(req, res) {
