@@ -41,6 +41,10 @@ module.exports = function(app, passport) {
     var Game = require('../app/models/game');
     var File = require('../app/models/file');
 
+    function isInt(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+    }
+
     app.get('/', function(req, res) {
         res.render('landing.ejs', {
             req: req,
@@ -66,11 +70,14 @@ module.exports = function(app, passport) {
         p = 1
         
         // decent validation
-        if (req.query.page) p = req.query.page
-        if (p == 0) p = 1
+        if (isInt(req.query.page)){
+            if (req.query.page != 0) p = req.query.page
+        } else {
+            p = 1
+        }
 
         console.log("requested page", p)
-        Game.paginate({}, { page: p, limit: 10 }, function(err, games) {
+        Game.paginate({}, { page: p, limit: 9 }, function(err, games) {
             console.log(games.docs)
                 res.render('index.ejs', {
                     req: req,
@@ -80,64 +87,48 @@ module.exports = function(app, passport) {
             })
     });
 
+    categoriesDict = new Object()
+    categoriesDict = {
+            'rpg' : 'RPG',
+            'open-source' : 'Open Source',
+            'puzzle' : 'Puzzle',
+            'platform' : 'Platform',
+            'action' : 'Action'
+    }
 
+    function getTag(permalink) {
+        if (categoriesDict[permalink]) {
+            return categoriesDict[permalink]
+        }
+        else {
+            return "open-source"
+        }
 
-    // Categories - friendly URLs
-    app.get('/games/opensource', function(req, res) {
-        Game.find({
-                'data.tags': 'Open Source'
-            })
-            .populate('data.files')
-            .populate('data.screenshots')
-            .exec(function(err, games) {
-                res.render('index.ejs', {
-                    req: req,
-                    games: games
-                })
-            })
-    })
-
-    app.get('/games/arcade', function(req, res) {
-        Game.find({
-                'data.tags': 'Arcade'
-            })
-            .populate('data.files')
-            .populate('data.screenshots')
-            .exec(function(err, games) {
-                res.render('index.ejs', {
-                    req: req,
-                    games: games
-                })
-            })
-    })
-
-    app.get('/games/rpg', function(req, res) {
-        Game.find({
-                'data.tags': 'RPG'
-            })
-            .populate('data.files')
-            .populate('data.screenshots')
-            .exec(function(err, games) {
-                res.render('index.ejs', {
-                    req: req,
-                    games: games
-                })
-            })
-    })
+    }
 
     // General category matching
-    app.get('/games/:tag', function(req, res) {
-        Game.find({
-                'data.tags': req.params.tag
-            })
-            .populate('data.files')
-            .populate('data.screenshots')
-            .exec(function(err, games) {
+    app.get('/games/:permalink', function(req, res) {
+         p = 1
+        
+        // decent validation
+        if (isInt(req.query.page)){
+            if (req.query.page != 0) p = req.query.page
+        } else { 
+            p = 1
+        }
+        Game.paginate({
+                'data.tags': getTag(req.params.permalink)
+            },
+            { page: p, limit: 9 },
+            function(err, games) {
+                console.log(games)
                 res.render('index.ejs', {
                     req: req,
-                    games: games
+                    games: games.docs,
+                    pages : games.pages
                 })
             })
+        
     })
 
 
