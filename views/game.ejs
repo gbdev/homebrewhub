@@ -14,6 +14,12 @@
     <script src="/gbjs/GameBoyIO.js"></script>
     <script src="/gbjs/gamepad.js"></script>
     <script src="/audioControl.js"></script>
+    <% if (game[0].data.onlineplay) {%>
+    <script>
+      $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+    </script>
     <script type="text/javascript">
 
     var gamepad = null;
@@ -36,6 +42,7 @@
         document.getElementById("controls-instructions-container").style.display = "none";
         document.getElementById("mainCanvas").style.display = "none";
         document.getElementById("audioRange").style.display = "none";
+        document.getElementById("gamepadCanvas").style.display = "none";
         document.getElementById("redirmobile").style.display = "initial";
       }
     
@@ -46,6 +53,7 @@
     }
 
     </script>
+    <% } %>
   </head>
   <body>
     <% include header.ejs %>
@@ -79,6 +87,8 @@
           <p><%= game[0].data.tags.join(', ') %> </p>
           <h5> Released </h5>
           <p><%= game[0].data.date %> </p>
+          <h5> Download ROM</h5>
+          <pre><a href="/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre>
         </div>
         <div class="col-sm-6 col-md-6 col-lg-5">
           <h5> Screenshots</h5>
@@ -112,7 +122,7 @@
            
           <!-- <img src=<%= // "/" +game[0].data.screenshots[0].data.fslocation %> > -->
           
-          
+          <% if (game[0].data.onlineplay) {%>
           <div class="box">
             <h4>Play Online</h4>
             <input type="range" id="audioRange" step="0.005" min="0" max="1" value="0"> <a href="javascript:void(0)" id="audiostatus" onClick="toggleAudio()"> <i class="fa fa-2x fa-volume-off" aria-hidden="true"></i> </a>
@@ -129,6 +139,11 @@
               </p>
             </div>
           </div>
+          <% } else { %>
+          <a style="color: gray" data-toggle="tooltip" data-placement="top" title="This game doesn't play well with our online emulator or the developer chose to not allow the online play. Please download the ROM to play.">
+            Online play disabled
+          </a>
+          <% } %>
           
         </div>
         <div class="col-sm-6 col-md-6 col-lg-5">

@@ -257,7 +257,7 @@ module.exports = function(app, passport) {
                     // TODO: Render error page with details and send 404
                     res.send("No game found")
                 } else {
-                	console.log(game[0].data.date)
+                	console.log(game[0].data.onlineplay)
                     res.render('game.ejs', {
                         req: req,
                         game: game,

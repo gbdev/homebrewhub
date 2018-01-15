@@ -16,6 +16,10 @@ var Game = require('./app/models/game');
 
 games.forEach(function(permalink, index) {
 	var game = JSON.parse(fs.readFileSync('database/'+permalink+'/game.json', 'utf8'));
+	
+	if (game["onlineplay"] == null)
+		game["onlineplay"] = true
+	
 	Game.findOneAndUpdate({
 			'data.permalink': permalink
 		}, 
