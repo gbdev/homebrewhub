@@ -1,9 +1,8 @@
 <!doctype html>
 <html>
 <head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <title>HHub - Sign Up</title>
+    <% include head.html %>  
     <style>
         body         { padding-top:80px; }
     </style>
@@ -17,7 +16,7 @@
     <% if (message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
-
+    <div class="alert alert-warning">Account registration is currently useless, as we are implementing social features such as voting and commenting. However, we may close signups at some point during the beta, so get an account while you can! </div>
     <!-- LOGIN FORM -->
     <form action="/signup" method="post">
         <div class="form-group">
@@ -32,7 +31,9 @@
             <label>Password</label>
             <input type="password" class="form-control" name="password">
         </div>
-
+        <b>Policy</b> Your email address is used only to allow the password recovery and to notify you about important updates and major features launches (no more than one monthly and you can unsubscribe).
+        We don't disclose any information about your account activity here and we don't save any other details other than the ones in this form.
+        <br><br>
         <button type="submit" class="btn btn-warning btn-lg">Signup</button>
     </form>
 
