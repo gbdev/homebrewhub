@@ -50,12 +50,14 @@
 							<% } else { %>
 							<span style="float:right; font-size: 0.7em" class="fa fa-microchip"></span></h3>
 							<% } %>
+							<% if (element.data.tags) { %>
 							<p class="card-text">
 								<small class="text-muted"></small>
 								<% element.data.tags.forEach( function(tag) { %>
 								<span class="badge badge-secondary"><%= tag %></span>
 								<% }) %>
 							</p>
+							<% } %>
 						</div>
 					</div>
 					
