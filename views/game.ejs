@@ -84,8 +84,10 @@
           <p> <b> License: </b> <%= game[0].data.license %> </p>
           <h5> Description </h5>
           <p><%= game[0].data.description %> </p>
+          <% if (game[0].data.tags) { %>
           <h5> Tags </h5>
           <p><%= game[0].data.tags.join(', ') %> </p>
+          <% } %>
           <h5> Released </h5>
           <p><%= game[0].data.date %> </p>
           <h5> Download ROM</h5>
