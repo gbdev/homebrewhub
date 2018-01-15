@@ -40,6 +40,7 @@
       // If the device has a touch input, hide everything and show the redirect to the minimal mobile page
       if(("ontouchstart" in document.documentElement) == true) {
         document.getElementById("controls-instructions-container").style.display = "none";
+        document.getElementById("emulator").style.display = "none";
         document.getElementById("mainCanvas").style.display = "none";
         document.getElementById("audioRange").style.display = "none";
         document.getElementById("gamepadCanvas").style.display = "none";
@@ -79,7 +80,7 @@
         <div class="col-sm-6 col-md-6 col-lg-5">
           <h2> <%= game[0].data.title %></h2>
           <p> <b> Developer: </b> <%= game[0].data.developer %> </p>
-          <p> <a href= <%= game[0].data.repository %> > Repository </a></p>
+          <p> <a href= <%= game[0].data.repository %> > Repository </a> <a class="github-button" href="<%= game[0].data.repository %>" data-icon="octicon-star" data-show-count="true" aria-label="Star avivace/awesome-gbdev on GitHub">Star</a></p>
           <p> <b> License: </b> <%= game[0].data.license %> </p>
           <h5> Description </h5>
           <p><%= game[0].data.description %> </p>
@@ -88,9 +89,43 @@
           <h5> Released </h5>
           <p><%= game[0].data.date %> </p>
           <h5> Download ROM</h5>
-          <pre><a href="/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre>
+          <pre><a href="/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p>
+
         </div>
         <div class="col-sm-6 col-md-6 col-lg-5">
+          <h4>Play Online</h4>
+          <% if (game[0].data.onlineplay) {%>
+
+          <div id="redirmobile" style="display: none"> <h5>To play online on a touchscreen device, click <a href=/game_mobile/<%= game[0].data.permalink %>> here </a></h5></div>
+          <div id="emulator" class="box">
+            
+            <input type="range" id="audioRange" step="0.005" min="0" max="1" value="0"> <a href="javascript:void(0)" id="audiostatus" onClick="toggleAudio()"> <i class="fa fa-2x fa-volume-off" aria-hidden="true"></i> </a>
+            
+            <canvas class="reset-this" id="mainCanvas"></canvas>
+            <canvas id="gamepadCanvas"></canvas>
+            <div id="controls-instructions-container">
+              <br>
+              <h5>Controls</h5>
+              <p>Return = Start<br>
+              Arrow Keys = Up, Down, Left, Right <br>
+              X = A <br>
+              Z = B 
+              </p>
+            </div>
+          </div>
+          <% } else { %>
+          <a style="color: gray" data-toggle="tooltip" data-placement="top" title="This game doesn't play well with our online emulator or the developer chose to not allow the online play.">
+            Online play disabled, download the ROM to play.
+          </a>
+          <% } %>
+        </div>
+
+      </div>
+      <br>
+      <div class="row justify-content-center">
+        <div class="col-sm-6 col-md-6 col-lg-5">
+           
+          <!-- <img src=<%= // "/" +game[0].data.screenshots[0].data.fslocation %> > -->
           <h5> Screenshots</h5>
           <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner" role="listbox">
@@ -114,36 +149,7 @@
               <span class="sr-only">Next</span>
             </a>
           </div>
-        </div>
-      </div>
-      <br>
-      <div class="row justify-content-center">
-        <div class="col-sm-6 col-md-6 col-lg-5">
-           
-          <!-- <img src=<%= // "/" +game[0].data.screenshots[0].data.fslocation %> > -->
-          
-          <% if (game[0].data.onlineplay) {%>
-          <div class="box">
-            <h4>Play Online</h4>
-            <input type="range" id="audioRange" step="0.005" min="0" max="1" value="0"> <a href="javascript:void(0)" id="audiostatus" onClick="toggleAudio()"> <i class="fa fa-2x fa-volume-off" aria-hidden="true"></i> </a>
-            <div id="redirmobile" style="display: none"> <h5>To play online on a touchscreen device, click <a href=/game_mobile/<%= game[0].data.permalink %>> here </a></h5></div>
-            <canvas class="reset-this" id="mainCanvas"></canvas>
-            <canvas id="gamepadCanvas"></canvas>
-            <div id="controls-instructions-container">
-              <br>
-              <h5>Controls</h5>
-              <p>Return = Start<br>
-              Arrow Keys = Up, Down, Left, Right <br>
-              X = A <br>
-              Z = B 
-              </p>
-            </div>
-          </div>
-          <% } else { %>
-          <a style="color: gray" data-toggle="tooltip" data-placement="top" title="This game doesn't play well with our online emulator or the developer chose to not allow the online play. Please download the ROM to play.">
-            Online play disabled
-          </a>
-          <% } %>
+
           
         </div>
         <div class="col-sm-6 col-md-6 col-lg-5">
