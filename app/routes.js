@@ -46,10 +46,16 @@ module.exports = function(app, passport) {
     }
 
     app.get('/', function(req, res) {
-        res.render('landing.ejs', {
-            req: req,
-            message: req.flash('loginMessage'), // Show permission problems
-            type: req.flash('type')
+        Game.count({},function(err, gamecount){
+            User.count({}, function(err, usercount){
+                res.render('landing.ejs', {
+                    gamecount,
+                    usercount,
+                    req: req,
+                    message: req.flash('loginMessage'), // Show permission problems
+                    type: req.flash('type')
+                })
+            })
         })
     });
 

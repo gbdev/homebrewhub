@@ -7,7 +7,7 @@
 <body>
 	 <% include header.ejs %>
 <div class="flex-row">
-<div class="texta container col-md-11 col-lg-9">
+<div class="texta container col-md-11 col-lg-10">
 	<br>
 
 	<% if (message.length > 0) { %>
@@ -19,13 +19,17 @@
 	<% } %>
 <h1>Oh hey, welcome!</h1>
 <p class="lead">This project aims to collect, archive and save every unofficial game, homebrew, patch, hackrom for Game Boy (Color) produced by the community through years of passionate work.
-</p><p class="lead">
+</p>
+<p class="lead">
 You'll be able to <b>vote</b>, share and submit games, search for tags and <b>play</b> them directly here, in your browser.</p>
 <p class="lead"><b> Work In Progress</b>: we are building the game database and need your help! Look <a href="https://github.com/dmg01/database">here</a> and contribute adding Game Boy games or homebrews.</p> </p>
 <div class="container">
   <div class="row">
-	<div class="col"><img src="/patent.jpg" class="img-fluid" alt="Responsive image"></div>
-	<div class="col"><br><h2> Support </h2>
+	<div class="col-sm-6 col-md-6 col-lg-6"><img src="/patent.jpg" class="img-fluid" alt="Responsive image"></div>
+	<div class="col-sm-6 col-md-6 col-lg-6"><br>
+<p>We currently have <b><%= gamecount %></b> entries in the database and <b><%= usercount %></b> user registered.</p>
+
+		<h2> Support </h2>
 <p>
 You can help in a number of ways:</p>
 <p>
