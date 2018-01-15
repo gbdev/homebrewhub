@@ -91,6 +91,9 @@
           <h5> Download ROM</h5>
           <pre><a href="/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p>
 
+          <% if (game[0].data.wip) { %><div class="alert alert-warning">
+            This game is flagged as <b> Work In Progress</b>. Expect it to be broken, unfinished or unplayable at some point.
+          </div> <% } %>
         </div>
         <div class="col-sm-6 col-md-6 col-lg-5">
           <h4>Play Online</h4>
@@ -118,6 +121,7 @@
             Online play disabled, download the ROM to play.
           </a>
           <% } %>
+
         </div>
 
       </div>
