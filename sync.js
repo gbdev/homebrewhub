@@ -15,7 +15,7 @@ mongoose.connect(dbURL, dbOptions)
 var Game = require('./app/models/game');
 
 games.forEach(function(permalink, index) {
-	var game = JSON.parse(fs.readFileSync('database/'+permalink+'/game.json', 'utf8'));
+	var game = JSON.parse(fs.readFileSync('database/entries/'+permalink+'/game.json', 'utf8'));
 	
 	if (game["onlineplay"] == null)
 		game["onlineplay"] = true
