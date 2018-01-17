@@ -90,8 +90,16 @@
           <% } %>
           <h5> Released </h5>
           <p><%= game[0].data.date %> </p>
+          <% if (game[0].data.files) { %>
+          <h5> Files </h5>
+          <% game[0].data.files.forEach(function(file) { %>
+          <a href="<%= "/database/entries/" + game[0].data.permalink + "/" + file[0] %>"> <%= file[0] %></a> - 
+          <%= file[1] %> <br><br>
+          <% }) %>
+          <% } %>
+
           <h5> Download ROM</h5>
-          <pre><a href="/<%= "database/entries/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p>
+          <pre><a href="<%= "/database/entries/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p>
 
           <% if (game[0].data.wip) { %><div class="alert alert-warning">
             This game is flagged as <b> Work In Progress</b>. Expect it to be broken, unfinished or unplayable at some point.
