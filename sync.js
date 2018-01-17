@@ -45,7 +45,8 @@ games.forEach(function(permalink, index) {
 			'data.gameWebsite' : game["gameWebsite"],
 			'data.devWebsite' : game["devWebsite"],
 			'data.onlineplay' : game["onlineplay"],
-			'data.wip' : game["wip"]
+			'data.wip' : game["wip"],
+			'data.files' : game["files"]
 			
 		}, function(err, result) {
 			if (err) {
@@ -73,7 +74,8 @@ games.forEach(function(permalink, index) {
 					 'data.gameWebsite': game["gameWebsite"],
 					 'data.devWebsite': game["devWebsite"],
 					 'data.onlineplay': game["onlineplay"],
-					 'data.wip' : game["wip"]
+					 'data.wip' : game["wip"],
+					 'data.files' : game["files"]
 				})
 				c=c+1
 				newGame.save();
