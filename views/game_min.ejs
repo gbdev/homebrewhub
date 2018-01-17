@@ -45,7 +45,7 @@
       mainCanvas = document.getElementById("mainCanvas");
     
       var request = new XMLHttpRequest();
-      request.open("GET", "/<%= "database/" + game[0].data.permalink + "/" + game[0].data.rom %>", true);
+      request.open("GET", "/<%= "database/entries" + game[0].data.permalink + "/" + game[0].data.rom %>", true);
       request.responseType = "blob";
     
       request.onload = function(event) {
