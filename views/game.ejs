@@ -93,14 +93,17 @@
           <% } else { %>
         Unknown </p>
           <% } %>
+          <% if (game[0].data.description) { %>
           <h5> Description </h5>
           <p><%= game[0].data.description %> </p>
+          <% } %>
           <% if (game[0].data.tags) { %>
           <h5> Tags </h5>
           <p><%= game[0].data.tags.join(', ') %> </p>
           <% } %>
+          <% if (game[0].data.date) { %>
           <h5> Released </h5>
-          <p><%= game[0].data.date %> </p>
+          <p><%= game[0].data.date %> </p> <% } %>
           <% if (game[0].data.files) { %>
           <h5> Files </h5>
           <% game[0].data.files.forEach(function(file) { %>
@@ -109,8 +112,7 @@
           <% }) %>
           <% } %>
 
-          <h5> Download ROM</h5>
-          <pre><a href="<%= "/database/entries/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></pre> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p>
+          <p> <b> ROM </b> <code><a href="<%= "/database/entries/" + game[0].data.permalink + "/" + game[0].data.rom %>"><%=game[0].data.rom%></a></code> <p style="color: gray">Use an emulator like <a href="http://bgb.bircd.org/#downloads">BGB</a> or <a href="https://sourceforge.net/projects/gambatte/files/gambatte/r571/">Gambatte</a> to play downloaded ROMS.</p></p>
 
           <% if (game[0].data.wip) { %><div class="alert alert-warning">
             This game is flagged as <b> Work In Progress</b>. Expect it to be broken, unfinished or unplayable at some point.
