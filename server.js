@@ -26,6 +26,9 @@ app.set('view engine', 'ejs'); // set up ejs for templating
 app.use('/', express.static('static'))
 app.use('/database', express.static('database'))
 app.use('/uploads', express.static('uploads'))
+app.use('/include', express.static('node_modules/countup.js/dist'));
+app.use('/include', express.static('node_modules/boostrap/dist/js'));
+app.use('/include', express.static('node_modules/boostrap/dist/css'));
 
 // Passport session
 app.use(session({
