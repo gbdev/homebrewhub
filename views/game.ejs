@@ -80,8 +80,19 @@
         <div class="col-sm-6 col-md-6 col-lg-5">
           <h2> <%= game[0].data.title %></h2>
           <p> <b> Developer: </b> <%= game[0].data.developer %> </p>
-          <p> <a href= <%= game[0].data.repository %> > Repository </a> <a class="github-button" href="<%= game[0].data.repository %>" data-icon="octicon-star" data-show-count="true" aria-label="Star avivace/awesome-gbdev on GitHub">Star</a></p>
-          <p> <b> License: </b> <%= game[0].data.license %> </p>
+          <% if (game[0].data.repository) {%>
+          <p> <a href= <%= game[0].data.repository %> > Repository </a> 
+            <% if (game[0].data.repository.indexOf('github') != -1) { %>
+            <a class="github-button" href="<%= game[0].data.repository %>" data-icon="octicon-star" data-show-count="true">Star</a>
+            <% } %>
+          </p>
+          <% } %>
+          <p> <b> License: </b>
+          <% if (game[0].data.license) {%>
+          <%= game[0].data.license %> </p>
+          <% } else { %>
+        Unknown </p>
+          <% } %>
           <h5> Description </h5>
           <p><%= game[0].data.description %> </p>
           <% if (game[0].data.tags) { %>
