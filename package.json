@@ -4,7 +4,7 @@
   "dependencies": {
     "bcrypt-nodejs": "latest",
     "body-parser": "~1.15.2",
-    "bootstrap": "^4.0.0-beta.3",
+    "bootstrap": "^4.0.0",
     "connect-flash": "~0.1.1",
     "cookie-parser": "~1.4.3",
     "countup.js": "^1.9.3",

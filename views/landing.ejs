@@ -3,6 +3,23 @@
 <head>
 	<title>Homebrew Hub</title>
 	<% include head.html %>   
+	<script src="include/countUp.js"></script>
+	<script>
+		window.onload = function() {
+			var options = {
+			  useEasing: true,
+			  useGrouping: true,
+			  separator: ',',
+			  decimal: '.',
+			};
+			var demo = new CountUp('dbCount', 0, <%= gamecount %>, 0, 2.5, options);
+			if (!demo.error) {
+			  demo.start();
+			} else {
+			  console.error(demo.error);
+			}
+		}
+	</script>
 </head>
 <body>
 	 <% include header.ejs %>
@@ -27,7 +44,7 @@ You'll be able to <b>vote</b>, share and submit games, search for tags and <b>pl
   <div class="row">
 	<div class="col-sm-6 col-md-6 col-lg-6"><img src="/patent.jpg" class="img-fluid" alt="Responsive image"></div>
 	<div class="col-sm-6 col-md-6 col-lg-6"><br>
-<p>We currently have <b><%= gamecount %></b> entries in the database and <b><%= usercount %></b> user registered.</p>
+<p>We currently have <b id='dbCount'></b> entries in the database and <b><%= usercount %></b> user registered.</p>
 		<h2> Wait, really? </h2>
 		Yeah. <b>Really</b>. This is an active scene. <a href="https://github.com/search?o=desc&q=game+boy&s=updated&type=Repositories&utf8=%E2%9C%93">Recently updated game boy repositories on GitHub</a>. <br>A lot of unofficial and homebrew software and hardware has and it's been produced for the original <i>gray brick</i>. People are still documenting and studying every part of its architecture: there's a whole community of hackers creating emulators and games for this 30 years old hardware. Want to take a look at the Game Boy hardware and software architecture and see if you can get your hands dirty? We got you covered: here's some awesome <a href="https://github.com/avivace/awesome-gbdev">Game Boy development resources</a>.
 		<br><br>
