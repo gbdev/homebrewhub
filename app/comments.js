@@ -176,6 +176,9 @@ module.exports = function(app, passport) {
 	        if (game == null || game.length == 0) {
 	        	// ...let's repond with an error
 	        	res.status(500).send("Can't find any game with that permalink")
+	        // (same if the message is empty)
+	        } else if (req.body.message.trim() == '') {
+	        	res.status(500).send("Message cannot be blank!")
 	        } else {
        			// Let's search the db for parent comment from post request parent comment slug
        			// (no results in the case of posting a root comment)
@@ -230,9 +233,20 @@ module.exports = function(app, passport) {
 	                    }
 	                });
 	                // Saving Comment document in db
-	                comment.save();
-	                console.log("Comment saved")
-	                res.status(200).send('OK')
+	                comment.save().then(function(comment) {
+		                console.log("Comment saved")
+		                // Now that we have our new comment stored in db
+		                // let's retrieve its full data and return it 
+		                // as JSON
+		                Comment.findOne({ 'data.slug' : slug })
+		                .populate('data.author')
+		               	.exec(function(err,comment) {
+			                res.status(200).send({ 
+			                	comment: comment,
+			                	user: req.user
+			                })
+		            	})
+	                })
 	            });
         	}
     	})

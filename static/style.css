@@ -90,6 +90,8 @@ body {
 .close-reply:hover, .close-reply .close:hover { cursor: pointer; }
 .comment .close-reply { display: block; }
 .comment .close-reply .close { margin-right: .5em; }
+:-moz-ui-invalid { box-shadow: none }
+.comment-body #comment-form-container { margin-bottom: 20px }
 
 
 .reset-this {

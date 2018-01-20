@@ -82,7 +82,6 @@ $(document).on('click', '.comment-actions .action', function(e) {
         case 'delete':
             // Triggering modal to check if user is sure
             // to delete selected comment
-            console.log("Prompting modal to check if user is sure to delete comment")
             triggerDeleteModal(commentId, commentText)
         break;
 
@@ -106,7 +105,7 @@ $(document).on('click', '#deleteCommentBtn', function(e) {
     var commentSlug = $(this).data('delete') // Get comment slug
     var comment = $("#" + commentSuffix + commentSlug)
     deleteCommentModal.modal('hide') // Hide modal and proceed with serious stuff
-    console.log('Trying to delete comment "' + comment.find('> .comment-body > .comment-text').text() +  '" through async route')
+    console.log('Trying to delete comment [' + commentSlug + '] "' + comment.find('> .comment-body > .comment-text').text() + '"')
 
     // Async call to delete comment route
     var req = new XMLHttpRequest();
@@ -117,6 +116,7 @@ $(document).on('click', '#deleteCommentBtn', function(e) {
         // let's mirror it on frontend
           if (req.status == 200) {
             deleteComment(comment)
+            console.log('Comment [' + commentSlug + '] succesfully deleted!')
           }
         // Otherwise alert with some error
           else {
@@ -147,11 +147,24 @@ $(document).on('submit', '#comment-form', function(e) {
         // If we get an "OK" status the comment is posted,
         // let's create it on the frontend too
           if (req.status == 200) {
-            alert("comment posted!")
-          }
+            var response = JSON.parse(req.response)
+            var comment = response.comment
+            var user = response.user
+            parentComment = comment.data.parent.length > 1 ? comment.data.parent[comment.data.parent.length - 2] : null
+
+            console.log('Comment', comment.data.slug, 'succesfully posted!')
+            abortReply() // Reset comment form status (empty it and move it out of the way)
+            renderComment(comment, user, parentComment) // Render our new comment in DOM
+            refreshCommentsCount() // Update total comments count
+            // Scroll to new comment and visually highlight it
+            window.location.href = '#' + commentSuffix + comment.data.slug
+            $('#' + commentSuffix + comment.data.slug).hide()
+            $('#' + commentSuffix + comment.data.slug).fadeIn()
+        }
         // Otherwise alert with some error
-          else {
-            alert("Whooops, something went wrong!")
+        else {
+            alert("Whooops, something went wrong:\n" + req.response)
+            console.log("Error:",req.response)
           }
         }
     };
@@ -176,7 +189,7 @@ var refreshCommentsCount = function(count) {
 var renderComment = function(comment, sessionUser, parentSlug) {
     // Comment post date and time 
     moment.locale(navigator.language) // Set correct locale based on browser language
-    var commentDateTime = moment(comment.data.posted).format("MMMM DD YYYY [at] HH:mm:ss") // Format date as specified
+    var commentDateTime = moment(comment.data.posted).format("MMMM DD YYYY, HH:mm:ss") // Format date as specified
     // Determine if comment is deleted, if so, add "deleted" class to our comment node
     var deleted = comment.data.deleted ? ' deleted' : ''
     // If user is logged in, check whether he is the owner of current comment or a "super-user" to activate
@@ -203,8 +216,15 @@ var renderComment = function(comment, sessionUser, parentSlug) {
     // If render function has not received any parent comment indication...
     if (!parentSlug)
         commentsInjectionPoint.innerHTML += renderedComment //...add the comment at the end of comments list (root comment)
-    else
-        document.querySelector("#" + commentSuffix + parentSlug + " .replies").innerHTML += renderedComment //...otherwise inject it in specified parent "replies template"
+    else {
+        //...otherwise inject it in specified parent "replies template"
+        var parentComment= document.querySelector("#" + commentSuffix + parentSlug)
+        // If parent comment hasn't got a child ".replies" node, let's create it
+        if (!parentComment.querySelector('.replies')) {
+            parentComment.innerHTML += '<div class=\"replies\"></div>'
+        }
+        parentComment.querySelector(".replies").innerHTML += renderedComment
+    }
     // Now that we have current comment rendered, let's recurively take care of any existing replies
     if (comment.data.replies) {
         comment.data.replies.forEach(function(reply) {
@@ -226,6 +246,7 @@ var bringCommentFormIn = function(commentId) {
 // and empty its parent field value
 var abortReply = function() {
     commentForm.appendTo(commentBasePosition)
+    document.getElementById("comment-text").value = ''
     setCommentParent()
 }
 // Given current comment id attribute (which contains comment unique slug)
