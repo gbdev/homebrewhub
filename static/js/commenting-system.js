@@ -68,7 +68,7 @@ $(document).on('click', '.comment-actions .action', function(e) {
     var action = $(this).attr('data-action') // Selected action from "data-" attribute
     var comment = $(this).closest('.comment')
     var commentId = $(this).closest('.comment').attr('id') // Current comment from closest ".comment" parent id attribute
-    var commentText = $(this).closest('.comment').find('> .comment-body > .comment-text').text() // Current comment actual text message
+    var commentText = $(this).closest('.comment').find('> .comment-body > .message-container > .comment-text').text() // Current comment actual text message
     console.log('Commenting System action:', action)
     // Decide what to do based on current action
     switch (action) {
@@ -76,14 +76,19 @@ $(document).on('click', '.comment-actions .action', function(e) {
         case 'reply':
             // Bring the comment form from previous level
             // to current DOM position for the reply
-            bringCommentFormIn(commentId);
+            bringCommentFormIn(commentId)
+            break;
+
+        case 'edit':
+            // Render comment Edit Form
+            activateEditForm(commentId, commentText)    
             break;
 
         case 'delete':
             // Triggering modal to check if user is sure
             // to delete selected comment
             triggerDeleteModal(commentId, commentText)
-        break;
+            break;
 
         default:
             // Nothing to do if action is not recognized,
@@ -98,14 +103,20 @@ $(document).on('click', '.close-reply', function(e) {
     abortReply()
 });
 
-// Handler to delete seletced comment through 
+// Handler to abort comment edit, reset default status
+// (destroy edit form)
+$(document).on('click', '.close-edit', function(e) {
+    deactivateEditForm()
+});
+
+// Handler to delete selected comment through 
 // async call to delete backend route
 $(document).on('click', '#deleteCommentBtn', function(e) {
     $(this).removeData('delete') // Clear "cached" data value
     var commentSlug = $(this).data('delete') // Get comment slug
     var comment = $("#" + commentSuffix + commentSlug)
     deleteCommentModal.modal('hide') // Hide modal and proceed with serious stuff
-    console.log('Trying to delete comment [' + commentSlug + '] "' + comment.find('> .comment-body > .comment-text').text() + '"')
+    console.log('Trying to delete comment [' + commentSlug + '] "' + comment.find('> .comment-body > .message-container > .comment-text').text() + '"')
 
     // Async call to delete comment route
     var req = new XMLHttpRequest();
@@ -172,6 +183,45 @@ $(document).on('submit', '#comment-form', function(e) {
 
 });
 
+// Handler to update comment text through async call
+$(document).on('submit', '.edit-form', function(e) {
+    e.preventDefault();
+    var commentSlug = document.querySelector('#comment-to-edit').value // Comment-to-edit slug
+    var commentTextNode = document.querySelector('#' + commentSuffix + commentSlug + ' .comment-text') // Comment-to-edit DOM node
+    var commentText = document.querySelector('#' + commentSuffix + commentSlug + ' .edit-field').value // Comment new text message 
+    var URL = "/comment/edit/" + commentSlug // Build the URL for Async POST Request
+    var params = "message=" + commentText // Include updated comment text in request body...
+
+    // Async call to "/edit/" comment route
+    var req = new XMLHttpRequest();
+    req.open("POST", URL, true);
+    req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    req.onreadystatechange = function() {
+        if (this.readyState == 4) {
+        // If we get an "OK" status the comment is updated,
+        // let's update the frontend too
+          if (req.status == 200) {
+            var response = JSON.parse(req.response)
+            var comment = response.comment
+
+            console.log('Comment', comment.data.slug, 'succesfully updated!')
+            deactivateEditForm() // Destroy Edit Form
+            // Update frontend text message 
+            // and highlight it for a moment
+            commentTextNode.innerHTML = comment.data.text
+            $('#' + commentSuffix + commentSlug + ' > .comment-body > .message-container > .comment-text').hide()
+            $('#' + commentSuffix + commentSlug + ' > .comment-body > .message-container > .comment-text').fadeIn()
+        }
+        // Otherwise alert with some error
+        else {
+            alert("Whooops, something went wrong:\n" + req.response)
+            console.log("Error:",req.response)
+          }
+        }
+    };
+    req.send(params);
+});
+
 /**************************/
 /**** HELPER FUNCTIONS ****/
 /**************************/
@@ -197,7 +247,7 @@ var renderComment = function(comment, sessionUser, parentSlug) {
     var actionsForOwnerOrSuperuser = ''
     if (sessionUser)
         if (sessionUser.local.username == comment.data.author.local.username || sessionUser.local.role > 0)
-            var actionsForOwnerOrSuperuser = '<span class=\"sep\"> - </span><span class=\"action delete text-danger\" data-action=\"delete\">Delete</span>'
+            var actionsForOwnerOrSuperuser = ' <span class=\"sep\"> - <span class=\"action edit\" data-action=\"edit\">Edit</span><span class=\"sep\"> - </span><span class=\"action delete text-danger\" data-action=\"delete\">Delete</span>'
     // If comment isn't deleted add basic "Reply" function to empty actions template
     // (further actions could be added in case of owner/admin user)
     var actions = ''
@@ -212,7 +262,7 @@ var renderComment = function(comment, sessionUser, parentSlug) {
     if (comment.data.replies)
         repliesOuterTemplate = '<div class=\"replies\"></div>'
     // Let's "render" our comment with specified template:
-    var renderedComment = "<div id=" + commentSuffix + comment.data.slug + " class=\"comment" + deleted + "\"><div class=\"comment-body\"><span class=\"comment-date\">" + commentDateTime + "</span><br><span class=\"comment-author\">" + comment.data.author.local.username + "</span><br><span class=\"comment-text\">" + comment.data.text + "</span><br>" + commentActionsOuterTemplate + "</div>" + repliesOuterTemplate + "</div>"
+    var renderedComment = "<div id=" + commentSuffix + comment.data.slug + " class=\"comment" + deleted + "\"><div class=\"comment-body\"><span class=\"comment-date\">" + commentDateTime + "</span><br><span class=\"comment-author\">" + comment.data.author.local.username + "</span><br><div class=\"message-container\"><span class=\"comment-text\">" + comment.data.text + "</span></div>" + commentActionsOuterTemplate + "</div>" + repliesOuterTemplate + "</div>"
     // If render function has not received any parent comment indication...
     if (!parentSlug)
         commentsInjectionPoint.innerHTML += renderedComment //...add the comment at the end of comments list (root comment)
@@ -261,6 +311,36 @@ var getCommentParent = function(commentId) {
     var comment = $('#' + commentId) // Build jQuery selector
     var parentId = comment.closest('.comment').attr('id').replace(commentSuffix, '') // Extract parent id 
     return parentId || '' // Return parent id if existing
+}
+
+/**** EDIT ****/
+// Activate Edit Form for chosen comment
+var activateEditForm = function(commentId, commentText) {
+    // Destroy any existing edit form
+    deactivateEditForm()
+    var commentToEdit = document.querySelector('#' + commentId)
+    var editFormInjectionPoint = commentToEdit.querySelector('.message-container')
+    var commentTextNode = editFormInjectionPoint.querySelector('.comment-text')
+    var editFormTemplate = '<span class=\"edit-form-container\"><div class=\"close-edit text-center\"><span>Cancel Edit</span><button type=\"button\" class=\"close\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div><form class=\"edit-form text-center\" method=\"post\"><textarea class=\"form-control edit-field\">' + commentText + '</textarea><input id=\"comment-to-edit\" type=\"text\" value=\"' + commentId.replace(commentSuffix,'') + '\" hidden /><input type=\"submit\" value=\"Update Comment\" class=\"btn btn-info btn-sm text-center mt-2\"></form></span>'
+    // Hide existing comment text node...
+    commentTextNode.style.display = 'none'
+    // ...and make space to edit form
+    // thus allowing the user to update the message
+    editFormInjectionPoint.innerHTML += editFormTemplate
+}
+// Destroy any existing comment edit form
+// restoring corresponding text messages without any modification
+var deactivateEditForm = function() {
+    var editForms = document.querySelectorAll('.edit-form-container')
+    // For any existing edit form...
+    editForms.forEach(function(editForm) {
+        var parent = editForm.parentNode
+        var commentTextNode = parent.querySelector('.comment-text')
+        // ...remove that form from DOM...
+        parent.removeChild(editForm)
+        // ...and restore corresponding, untouched, texs message
+        commentTextNode.style.display = 'inline'
+    }) 
 }
 
 /**** DELETE ****/

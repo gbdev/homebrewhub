@@ -82,14 +82,15 @@ body {
 }
 
 /* === GAME VIEW: COMMENTING SYSTEM === */
+.btn { cursor: pointer; }
 .comment { margin-bottom: 20px; }
 .comment .comment-actions { display: block; padding: .4em; margin: 1em auto; font-size: .9em; }
 .comment .comment-actions .action { cursor: pointer; }
 .comment .replies { padding-left: 45px; }
-.close-reply { display: none; line-height: 2em; padding: 0.3em; background-color: #f5f5f5; margin:0.5em auto; }
-.close-reply:hover, .close-reply .close:hover { cursor: pointer; }
-.comment .close-reply { display: block; }
-.comment .close-reply .close { margin-right: .5em; }
+.close-reply, .close-edit { display: none; line-height: 2em; padding: 0.3em; background-color: #f5f5f5; margin:0.5em auto; }
+.close-reply:hover, .close-reply .close:hover, .close-edit:hover, .close-edit .close:hover { cursor: pointer; }
+.comment .close-reply, .comment .close-edit  { display: block; }
+.comment .close-reply .close, .comment .close-edit .close  { margin-right: .5em; }
 :-moz-ui-invalid { box-shadow: none }
 .comment-body #comment-form-container { margin-bottom: 20px }
 
