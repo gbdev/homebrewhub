@@ -201,6 +201,12 @@
 
     <% include footer.html %>
     <script src="/js/moment-w-locales.js"></script>
+    <!-- COMMENT SYSTEM -->
+    <script>
+        // Initializing game-depending variables
+        const gamePermalink = <%- JSON.stringify(game[0].data.permalink) %>
+    </script>
     <script src="/js/commenting-system.js"></script>
+    <!-- COMMEN SYSTEM END -->
   </body>
 </html>

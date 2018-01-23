@@ -12,14 +12,11 @@ var submitBtn = document.querySelector('#submitCommentBtn')
 var parentField = $('#parent-id')
 var deleteCommentModal = $('#delete-comment-modal')
 var commentSuffix = 'cm-'
-var gamePermalink
 
 /************************/
 /****** PAGE LOAD *******/
 /************************/
 document.addEventListener("DOMContentLoaded", function(){
-    // Retrieve game permalink from current window URL
-    gamePermalink = window.location.href.match(/\/game\/([-a-zA-Z0-9._~!$&'()*+,;=:@]+)\/?/)[1]
     // Load comments and populate specific template
     // Async call to get comments for current game
     var req = new XMLHttpRequest();
