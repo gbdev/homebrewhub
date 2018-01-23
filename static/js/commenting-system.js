@@ -50,9 +50,9 @@ document.addEventListener("DOMContentLoaded", function(){
                 clearDeleteModal()
             });
           }
-        // Otherwise alert with some error
+        // Otherwise throw an error in console
           else {
-            alert("Whooops, something went wrong while loading comments!\n" + "Code " + req.status)
+            console.error("Something went wrong while loading comments!\n" + "Status: " + req.status + "\nResponse: " + req.responseText )
           }
         }
     };
@@ -130,9 +130,9 @@ $(document).on('click', '#deleteCommentBtn', function(e) {
             deleteComment(comment)
             console.log('Comment [' + commentSlug + '] succesfully deleted!')
           }
-        // Otherwise alert with some error
+        // Otherwise throw an error in console
           else {
-            alert("Whooops, something went wrong!")
+            console.error("Whooops, something went wrong while deleting comment!\n" + "Status: " + req.status + "\nResponse: " + req.responseText)
           }
         }
     };
@@ -173,10 +173,9 @@ $(document).on('submit', '#comment-form', function(e) {
             $('#' + commentSuffix + comment.data.slug).hide()
             $('#' + commentSuffix + comment.data.slug).fadeIn()
         }
-        // Otherwise alert with some error
+        // Otherwise throw an error in console
         else {
-            alert("Whooops, something went wrong:\n" + req.response)
-            console.log("Error:",req.response)
+            console.error("Whooops, something went wrong while posting comment!\n" + "Status: " + req.status + "\nResponse: " + req.responseText)
           }
         }
     };
@@ -213,10 +212,9 @@ $(document).on('submit', '.edit-form', function(e) {
             $('#' + commentSuffix + commentSlug + ' > .comment-body > .message-container > .comment-text').hide()
             $('#' + commentSuffix + commentSlug + ' > .comment-body > .message-container > .comment-text').fadeIn()
         }
-        // Otherwise alert with some error
+        // Otherwise throw an error in console
         else {
-            alert("Whooops, something went wrong:\n" + req.response)
-            console.log("Error:",req.response)
+            console.error("Whooops, something went wrong while updating comment!\n" + "Status: " + req.status + "\nResponse: " + req.response)
           }
         }
     };
