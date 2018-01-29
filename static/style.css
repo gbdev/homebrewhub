@@ -1,3 +1,14 @@
+/* Unaligned twitter/fb buttons */
+.fb_iframe_widget span {
+    vertical-align: baseline !important;
+}
+
+.fb_iframe_widget iframe {
+    vertical-align: baseline !important;
+}
+
+
+
 .card-title {
     overflow: hidden;
     white-space: nowrap;
