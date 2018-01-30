@@ -24,13 +24,12 @@ $(document).ready(function() {
 			  update();
 			  i = 0
 			  var animation = setInterval(function(){
+			  		update()
+			  		i+=1
 			  		if (i==40){
 			  			clearInterval(animation)
 			  			reset()
 			  		}
-			  		update()
-			  		i+=1
-
 			  }, 50);
 
 			})

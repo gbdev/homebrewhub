@@ -1,3 +1,35 @@
+@font-face {
+    font-family: SemplicitaM;
+    src: url("SemplicitaMedium.otf") format("opentype");
+}
+
+@font-face {
+    font-family: SemplicitaL;
+    src: url("SemplicitaLight.otf") format("opentype");
+}
+
+.navbar-brand {
+    font-family: "SemplicitaM";
+    font-size: 1.7em;
+    color: #263238;
+    text-shadow: 0px 3px 3px rgba(0,0,0,0.1)
+
+
+}
+
+.intro {
+    font-family: "SemplicitaM" !important;
+    font-size: 3.9em !important;
+    color: #263238; 
+    text-shadow: 0px 5px 5px rgba(0,0,0,0.1)
+    
+}
+
+.stats {
+    font-family: "SemplicitaL" !important;
+    font-size: 1em !important;
+}
+
 /* Unaligned twitter/fb buttons */
 .fb_iframe_widget span {
     vertical-align: baseline !important;
@@ -35,7 +67,9 @@ img {
 }
 
 .lead {
-	font-size: 20px;
+	font-size: 1.5em;
+    font-family: "SemplicitaL";
+    text-align: center;
 }
 body { 
 	padding-top:1em; 
