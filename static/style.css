@@ -66,11 +66,16 @@ img {
 	image-rendering: pixelated;
 }
 
-.lead {
+.leadL {
 	font-size: 1.5em;
     font-family: "SemplicitaL";
     text-align: center;
 }
+
+.lead {
+    font-size: 1.2em;
+}
+
 body { 
 	padding-top:1em; 
 }
