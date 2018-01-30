@@ -9,11 +9,15 @@ Each entry can be voted, shared, discussed and played online.
 
 ### Contribute
 
-We'd love to have your help, bug reports, or simply feedback:
-If you want to deploy an instance and start hacking, the [wiki](https://github.com/dmg01/homebrewhub/wiki) has got you covered: you'll find deploy instructions, detailed explanations on how we implemented features, technicalities and documentation.
-You're welcome to open an Issue or send a Pull Request, we're looking forward to hear from you!
+We'd love to have your help! The project is essentially a Node application and you can contribute in a number of ways:
 
-The **database** is community mantained too: everyone can contribute adding entries and fixing or improving the existing ones: take a look at [this](https://github.com/dmg01/database) repository, it's really easy!
+- Deploy an instance and start hacking, following the [deploy](https://github.com/dmg01/homebrewhub/wiki) instructions;
+- Add entries and fix or improve the existing ones in the [database](https://github.com/dmg01/database) repository;
+- Find further explanations on how we implemented features, technicalities and documentation the [Wiki](Wiki);
+- Open an Issue or send a Pull Request here on in any of the related repository;
+- Help us improve, fix or test the javascript Game Boy [emulator]() we use to provide the online play in every browser;
+- Join us on [Discord](https://discord.gg/BEeT3XZ) server to give feedback, help us testing or simply talk about Game Boy.
+
 
 
 ### Features
