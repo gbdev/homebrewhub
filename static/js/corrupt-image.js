@@ -6,8 +6,8 @@ $(document).ready(function() {
 			  reset()
 			  var $img = $("img");
 			  var data = $img.attr("src");
-			  var maxErrors = 1000;
-			  var margin = 2200;
+			  var maxErrors = 100;
+			  var margin = 5000;
 
 			  function update() {
 			    var corrupted = data;
@@ -24,7 +24,7 @@ $(document).ready(function() {
 			  update();
 			  i = 0
 			  var animation = setInterval(function(){
-			  		if (i==20){
+			  		if (i==40){
 			  			clearInterval(animation)
 			  			reset()
 			  		}
