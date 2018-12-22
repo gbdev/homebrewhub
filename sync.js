@@ -13,7 +13,32 @@ var Game = require('./app/models/game');
 gb = new RegExp('(.*\.c*gbc*|\.dmg)')
 
 games.forEach(function(permalink, index) {
+    console.log(index)
     var game = JSON.parse(fs.readFileSync('database/entries/' + permalink + '/game.json', 'utf8'));
+
+    if (game["onlineplay"] == null)
+        game["onlineplay"] = true
+
+    romFileIndex = 0
+    game["files"].forEach(function(file, index){
+        if (file["default"]){
+            romFileIndex = index
+        } else if (gb.exec(file["filename"])) {
+            romFileIndex = index
+        }
+    })
+    game["rom"] = game["files"][romFileIndex]["filename"]
+    console.log(index, permalink)
+    gamej = JSON.stringify(game)
+    fs.writeFileSync('database/entries/' + permalink + '/game2.json', gamej, 'utf8', function(err){
+        throw err
+    });
+})
+
+console.log("eccoci")
+games.forEach(function(permalink, index) {
+    console.log(permalink)
+    var game = JSON.parse(fs.readFileSync('database/entries/' + permalink + '/game2.json', 'utf8'));
 
     if (game["onlineplay"] == null)
         game["onlineplay"] = true
@@ -26,7 +51,7 @@ games.forEach(function(permalink, index) {
     		romFileIndex = index
     	}
     })
-    console.log(game["slug]"], "romindex:", romFileIndex)
+    console.log(game["slug"], "romindex:", romFileIndex)
 
     gameObject = {
 					 'data.title': game["title"],
@@ -34,16 +59,17 @@ games.forEach(function(permalink, index) {
 					 'data.developer': game["developer"],
 					 'data.typetag': game["typetag"],
 					 'data.platform': game["platform"],
-					 'data.rom': game["files"][0]["filename"],
+					 'data.rom': game["rom"],
 					 'data.screenshots': game["screenshots"],
                      'data.onlineplay': game["onlineplay"],
+                     'data.tags': game["tags"]
 					 /*
 					 'data.license': game["license"],
 					 'data.assetLicense': game["assetLicense"],
 					 'data.description': game["description"],
 					 'data.video': game["video"],
 					 'data.date': game["date"],
-					 'data.tags': game["tags"],
+					 ,
 					 'data.alias': game["alias"],
 					 'data.repository': game["repository"],
 					 'data.gameWebsite': game["gameWebsite"],
@@ -65,9 +91,10 @@ games.forEach(function(permalink, index) {
                      'data.developer': game["developer"],
                      'data.typetag': game["typetag"],
                      'data.platform': game["platform"],
-                     'data.rom': game["files"][0]["filename"],
+                     'data.rom': game["rom"],
                      'data.screenshots': game["screenshots"],
-                     'data.onlineplay': game["onlineplay"]},
+                     'data.onlineplay': game["onlineplay"],
+                     'data.tags': game["tags"]},
         function(err, result) {
             if (err) {
                 console.log("Error", err)
@@ -79,9 +106,10 @@ games.forEach(function(permalink, index) {
                      'data.developer': game["developer"],
                      'data.typetag': game["typetag"],
                      'data.platform': game["platform"],
-                     'data.rom': game["files"][0]["filename"],
+                     'data.rom': game["rom"],
                      'data.screenshots': game["screenshots"],
-                     'data.onlineplay': game["onlineplay"]})
+                     'data.onlineplay': game["onlineplay"],
+                     'data.tags': game["tags"]})
                 c = c + 1
                 newGame.save();
 
