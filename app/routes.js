@@ -65,6 +65,12 @@ module.exports = function(app, passport) {
         })
     });
 
+    app.get('/developers', function(req, res) {
+        res.render('developers.ejs', {
+            req: req
+        })
+    });
+
     app.get('/credits', function(req, res) {
         res.render('credits.ejs', {
             req: req
