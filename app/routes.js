@@ -46,8 +46,8 @@ module.exports = function(app, passport) {
     }
 
     app.get('/', function(req, res) {
-        Game.count({},function(err, gamecount){
-            User.count({}, function(err, usercount){
+        Game.countDocuments({},function(err, gamecount){
+            User.countDocuments({}, function(err, usercount){
                 res.render('landing.ejs', {
                     gamecount,
                     usercount,
