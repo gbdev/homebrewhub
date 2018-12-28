@@ -35,4 +35,13 @@ module.exports = function(app) {
 			res.json(result)
 		})
 	})
+
+	app.get('/api/info', function(req, res) {
+		Game.countDocuments({},function(err, gamecount){
+			var data = new Object()
+			data["games"] = gamecount
+			res.json(data)
+		})
+	})
+
 }
