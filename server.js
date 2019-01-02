@@ -5,6 +5,7 @@ var port     = process.env.PORT || 8080;
 var mongoose = require('mongoose');
 var passport = require('passport');
 var flash    = require('connect-flash');
+var cors 	 = require('cors')
 
 var morgan       = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -25,6 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs'); // set up ejs for templating
 app.use('/', express.static('static'))
 app.use('/database', express.static('database'))
+
+app.all("/database", cors());
 
 //app.use('/uploads', express.static('uploads'))
 
