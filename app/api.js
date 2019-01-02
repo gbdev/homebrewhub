@@ -1,4 +1,5 @@
 var request = require('request');
+var cors 	 = require('cors')
 
 module.exports = function(app) {
 	var User = require('../app/models/user');
@@ -27,7 +28,7 @@ module.exports = function(app) {
 		});
 	}
 	// TODO: just import dmg01/discordBadge as npm module and include its route
-	app.get('/api/discord', function(req, res) {
+	app.get('/api/discord', cors(), function(req, res) {
 		countUsers(function (data, err) {
 			if (err) return res.send(err.toString())
 			var result = new Object()
@@ -36,7 +37,7 @@ module.exports = function(app) {
 		})
 	})
 
-	app.get('/api/info', function(req, res) {
+	app.get('/api/info', cors(), function(req, res) {
 		Game.countDocuments({},function(err, gamecount){
 			var data = new Object()
 			data["games"] = gamecount
