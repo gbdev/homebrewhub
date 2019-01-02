@@ -9,36 +9,75 @@
      <div class="flex-row">
 <div class="texta container col-lg-9">
 <br>
-<h1>Homebrew Hub Public API</h1>
+<h1>HHUB Public API</h1>
 <div class="alert alert-warning" role="alert">
   This feature is experimental, subject to change in any moment and not guaranteed to stay online! We're still working on it, don't expect to stay stable.
 </div>
 <p>
 Version 0.1<br>
-Base URL: <code>https://gbhh.avivace.com/api</code><br>
+Base API URL: <code>https://gbhh.avivace.com/api</code><br>
+Base Assets URL: <code>https://gbhh.avivace.com/database/entries</code><br>
 <h4>Methods:</h4>
-GET <code>/discord</code> <br>
+<b>GET</b> <code>/discord</code> <br>
 Online users of the Discord Server <br>
 Example response payload:
-<pre>
+<pre style="background-color:#fffe071a">
 {"count":188}
 </pre>
 
 
-GET <code>/info</code> <br>
+<b>GET</b> <code>/info</code> <br>
 General info on the Homebrew Hub database, such as total game count<br>
 Example response payload:
-<pre>
+<pre style="background-color:#fffe071a">
 {"games":488}
 </pre>
 
-GET <code>/games</code> <br>
-General info on the Homebrew Hub database, such as total game count <br>
+<b>GET</b> <code>/homebrews?page=n</code> <br>
+Accepts a query string <code>page</code>. If omitted, it returns the first page. <br>
+<!--Accepts a query string <code>type</code>, filtering the type of entries to return. Can be <code>game</code>, <code> homebrew </code> or <code> demo </code>. <br>-->
+Returns a <b>paginated</b> object, containing:
+<ul>
+	<li> <b> docs </b>: an array of Game objects </li>
+	<li> <b> total </b>: total number of games </li>
+	<li> <b> limit </b>: number of results per page </li>
+	<li> <b> page </b>: fetched page </li>
+	<li> <b> 55 </b>: total number of pages available for this query </li>
+</ul>
+
 Example response payload:
-<pre>
-{"games":488}
+<pre style="background-color:#fffe071a">
+{"docs":[
+	{
+	 "screenshots":["1.png","2.png"],
+	 "tags":["Open Source","Puzzle"],
+	 "alias":[],
+	 "files":[],
+	 "title":"2048gb",
+	 "permalink":"2048gb",
+	 "developer":"Sanqui",
+	 "typetag":"game",
+	 "platform":"GB",
+	 "rom":"2048.gb",
+	 "onlineplay":true
+	},
+	{...}
+	],
+ "total":492,
+ "limit":9,
+ "page":1,
+ "pages":55
+}
 </pre>
 
+If you prepend <code>https://gbhh.avivace.com/database/entries/<b>PERMALINK</b>/</code> to the screenshots and rom values, you have fetch-able URL for those resources.<br><br>
+E.g., from the example payload:
+<ul>
+	<li>permalink is <code>2048gb</code></li>
+	<li>rom is <code> 2048.gb</code></li> 
+</ul>
+
+<code>https://gbhh.avivace.com/database/entries/<b>2048gb/2048.gb</b></code> gives you the game ROM.
 
 </p>
 
