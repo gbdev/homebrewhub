@@ -5,6 +5,10 @@ module.exports = function(app) {
 	var User = require('../app/models/user');
 	var Game = require('../app/models/game');
 	
+	function isInt(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+    }
+
 	function countUsers(callback){
 		var url = 'https://discordapp.com/api/guilds/303217943234215948/widget.json';
 		var count = 0
@@ -42,6 +46,29 @@ module.exports = function(app) {
 			var data = new Object()
 			data["games"] = gamecount
 			res.json(data)
+		})
+	})
+
+	app.get('/api/homebrews', cors(), function(req, res) {
+		p = 1
+        
+        // decent validation
+        if (isInt(req.query.page)){
+            if (req.query.page != 0) p = req.query.page
+        } else {
+            p = 1
+        }
+
+        
+		Game.paginate({}, {select: ['-_id', '-__v'], page:p, limit: 9}, function(err, games) {
+			
+			games["docs"].forEach(function(game){
+				game["data"]["rom"] = 'game/' + game["data"]["permalink"] + '/' + game["data"]["rom"]
+				game["data"]["screenshots"].forEach(function(screenshotFile, i){
+					game["data"]["screenshots"][i] = 'game/' + game["data"]["permalink"] + '/' + screenshotFile
+				})
+			})
+			res.json(games)
 		})
 	})
 
