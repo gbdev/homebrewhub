@@ -54,7 +54,7 @@ module.exports = function(app) {
         })
     })
     // {'data.typetag' : 'homebrew'}
-    app.get('/api/entries', function(req, res) {
+    app.get('/api/homebrews', function(req, res) {
         p = 1
 
         // decent validation
