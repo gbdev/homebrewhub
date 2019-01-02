@@ -62,10 +62,11 @@ module.exports = function(app) {
         
 		Game.paginate({}, {select: ['-_id', '-__v'], page:p, limit: 9}, function(err, games) {
 			
+			baseURL = 'database/entries'
 			games["docs"].forEach(function(game){
-				game["data"]["rom"] = 'game/' + game["data"]["permalink"] + '/' + game["data"]["rom"]
+				game["data"]["rom"] = 'database/entries/' + game["data"]["permalink"] + '/' + game["data"]["rom"]
 				game["data"]["screenshots"].forEach(function(screenshotFile, i){
-					game["data"]["screenshots"][i] = 'game/' + game["data"]["permalink"] + '/' + screenshotFile
+					game["data"]["screenshots"][i] = 'database/entries/' + game["data"]["permalink"] + '/' + screenshotFile
 				})
 			})
 			res.json(games)
