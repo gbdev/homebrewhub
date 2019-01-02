@@ -53,8 +53,8 @@ module.exports = function(app) {
             res.json(data)
         })
     })
-
-    app.get('/api/homebrews', function(req, res) {
+    // {'data.typetag' : 'homebrew'}
+    app.get('/api/entries', function(req, res) {
         p = 1
 
         // decent validation
@@ -64,18 +64,21 @@ module.exports = function(app) {
             p = 1
         }
 
+        if (req.query.type == undefined){
+        	console.log("a")
+        	const query = {}
+        } else {
+        	console.log("a")
+        	const query = {'data.typetag' : req.query.type}
+        }
 
         Game.paginate({}, { select: ['-_id', '-__v'], page: p, limit: 9 }, function(err, games) {
-
-            baseURL = 'database/entries'
-            games["docs"].forEach(function(game) {
-                game["data"]["rom"] = 'database/entries/' + game["data"]["permalink"] + '/' + game["data"]["rom"]
-                game["data"]["screenshots"].forEach(function(screenshotFile, i) {
-                    game["data"]["screenshots"][i] = 'database/entries/' + game["data"]["permalink"] + '/' + screenshotFile
-                })
+            games["docs"].forEach(function(game, i) {
+                games["docs"][i] = game["data"]
             })
             res.json(games)
         })
+
     })
 
 }
