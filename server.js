@@ -25,9 +25,15 @@ app.use(bodyParser.json()); // get information from html forms
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs'); // set up ejs for templating
 app.use('/', express.static('static'))
+
+app.use("/database", function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.use('/database', express.static('database'))
 
-app.all("/database", cors());
 
 //app.use('/uploads', express.static('uploads'))
 
