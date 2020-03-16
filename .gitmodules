@@ -1,4 +1,4 @@
 [submodule "database"]
 	path = database
-	url = git@github.com:dmg01/database.git
+	url = git@github.com:gbdev/database.git
 	branch = master
