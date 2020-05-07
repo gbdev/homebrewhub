@@ -85,5 +85,20 @@
 	</ul>
 </nav>
 	<% include footer.html %>
+		<script>
+		(function() {
+		
+		var currentPage = window.location.search.match(/\d+/g);
+		var pageItems = document.getElementsByClassName("page-item");
+		
+		for (var j = 0; j < pageItems.length; j++) {
+			if (pageItems[j].textContent == currentPage){
+				pageItems[j].childNodes[0].removeAttribute("href");
+				pageItems[j].childNodes[0].setAttribute("style", "background-color: #e9ecef;");
+			}
+		}
+		
+		})();
+		</script>
 </body>
 </html>
