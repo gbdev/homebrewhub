@@ -91,10 +91,16 @@
 		var currentPage = window.location.search.match(/\d+/g);
 		var pageItems = document.getElementsByClassName("page-item");
 		
-		for (var j = 0; j < pageItems.length; j++) {
-			if (pageItems[j].textContent == currentPage){
-				pageItems[j].childNodes[0].removeAttribute("href");
-				pageItems[j].childNodes[0].setAttribute("style", "background-color: #e9ecef;");
+		if (currentPage == undefined) {
+			pageItems[0].childNodes[0].removeAttribute("href");
+			pageItems[0].childNodes[0].setAttribute("style", "background-color: #e9ecef;")
+		}
+		else {
+			for (var j = 0; j < pageItems.length; j++) {
+				if (pageItems[j].textContent == currentPage){
+					pageItems[j].childNodes[0].removeAttribute("href");
+					pageItems[j].childNodes[0].setAttribute("style", "background-color: #e9ecef;");
+				}
 			}
 		}
 		
