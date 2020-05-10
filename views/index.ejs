@@ -3,6 +3,37 @@
 	<head>
 		<title>HHub - Games</title>
 		<% include head.html %>
+		<style>
+		.page-btn {
+			border-top: 1px solid #dee2e6 !important;
+			border-bottom: 1px solid #dee2e6 !important;
+			border-radius: 0 !important;
+		}
+		
+		.page-btn-only {
+			border: 1px solid #dee2e6 !important;
+		}
+		
+		.page-btn-first {
+			border-top: 1px solid #dee2e6 !important;
+			border-bottom: 1px solid #dee2e6 !important;
+			border-left: 1px solid #dee2e6 !important;
+			border-radius: .25rem 0 0 .25rem !important;
+		}
+
+		.page-btn-last {
+			border-top: 1px solid #dee2e6 !important;
+			border-bottom: 1px solid #dee2e6 !important;
+			border-right: 1px solid #dee2e6 !important;
+			border-radius: 0 .25rem .25rem 0 !important;
+		}
+		
+		.dropdown-menu {
+			min-width: 5.8rem;
+			height:140px;
+			overflow-y:auto;
+		}
+		</style>
 	</head>
 	<body>
 		<% include header.ejs %>
@@ -70,41 +101,86 @@
 				</div>
 			</div>
 					Legend: <i class="fa fa-gamepad"></i> Game, <i class="fa fa-cubes"></i> Demo, <i class="fa fa-microchip"></i> Homebrew. 
-
 		</div>
 
-	</div>
+	</div><br />
 	<nav aria-label="Page navigation example">
 	<ul class="pagination justify-content-center">
-		<% var i = 0 
-			while (i < pages) {
-		%>
-			<li class="page-item"><a class="page-link" href="?page=<%=i+1%>"><%=i+1%></a></li>
+	
+		<% 
+		var maxPage = Math.max(pages);
+		var prev = parseInt(p)-1;
+		var next = parseInt(p)+1;
+		
+		if (p == 1) { %>
+				
+			<% if (maxPage == 1) { %>
+			
+			<div>
+			  <a class="page-btn-only btn" data-toggle="dropdown" href="#">
+				Page <%=p%>
+			  </a>
+			</div>
+			<% } 
+			else { %>
+					
+			<div>
+			  <a class="page-btn-first btn dropdown-toggle" data-toggle="dropdown" href="#">
+				Page <%=p%>
+			  </a>
 
-		<% i++ } %>
+			  <div class="dropdown-menu">
+				<% for(var i = 1; i<=pages; i++) { %>
+				<a class="dropdown-item" style="color: #007bff" href="?page=<%=i%>"><%=i%></a>
+				<% } %>
+			  </div>
+			</div>
+			
+			<li class="page-item"><a class="page-link" href="?page=<%=next%>">></a></li>
+			<li class="page-item"><a class="page-link" href="?page=<%=maxPage%>">>></a></li>
+
+			<% } }
+			else if (p == maxPage) { %>
+			
+			<li class="page-item"><a class="page-link" href="?page=1"><<</a></li>			
+			<li class="page-item"><a class="page-link" href="?page=<%=prev%>"><</a></li>
+			
+			<div>
+			  <a class="page-btn-last btn dropdown-toggle" data-toggle="dropdown" href="#">
+				Page <%=p%>
+			  </a>
+
+			  <div class="dropdown-menu">
+				<% for(var i = 1; i<=pages; i++) { %>
+				<a class="dropdown-item" style="color: #007bff" href="?page=<%=i%>"><%=i%></a>
+				<% } %>
+			  </div>
+			</div>
+						
+			<% } else { %>
+			
+			<li class="page-item"><a class="page-link" href="?page=1"><<</a></li>
+			<li class="page-item"><a class="page-link" href="?page=<%=prev%>"><</a></li>
+			
+			<div>
+			  <a class="page-btn btn dropdown-toggle" data-toggle="dropdown" href="#">
+				Page <%=p%>
+			  </a>
+
+			  <div class="dropdown-menu">
+				<% for(var i = 1; i<=pages; i++) { %>
+				<a class="dropdown-item" style="color: #007bff" href="?page=<%=i%>"><%=i%></a>
+				<% } %>
+			  </div>
+			</div>
+			
+			<li class="page-item"><a class="page-link" href="?page=<%=next%>">></a></li>
+			<li class="page-item"><a class="page-link" href="?page=<%=maxPage%>">>></a></li>
+
+		<% } %>
+		
 	</ul>
 </nav>
 	<% include footer.html %>
-		<script>
-		(function() {
-		
-		var currentPage = window.location.search.match(/\d+/g);
-		var pageItems = document.getElementsByClassName("page-item");
-		
-		if (currentPage == undefined) {
-			pageItems[0].childNodes[0].removeAttribute("href");
-			pageItems[0].childNodes[0].setAttribute("style", "background-color: #e9ecef;")
-		}
-		else {
-			for (var j = 0; j < pageItems.length; j++) {
-				if (pageItems[j].textContent == currentPage){
-					pageItems[j].childNodes[0].removeAttribute("href");
-					pageItems[j].childNodes[0].setAttribute("style", "background-color: #e9ecef;");
-				}
-			}
-		}
-		
-		})();
-		</script>
 </body>
 </html>
