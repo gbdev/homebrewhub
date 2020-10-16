@@ -21,6 +21,7 @@ var mulconf = upload.fields([{
     maxCount: 5
 }])
 
+var search ='';
 
 const nodemailer = require('nodemailer');
 // Create reusable transporter object using the default SMTP transport
@@ -77,7 +78,6 @@ module.exports = function(app, passport) {
         })
     });
 
-
     app.get('/all', function(req, res) {
         p = 1
         
@@ -120,6 +120,59 @@ module.exports = function(app, passport) {
             })
     });
 
+    app.post('/search', function(req, res) {
+        search = req.body.submit
+        p = 1
+        
+        // decent validation
+        if (isInt(req.query.page)){
+            if (req.query.page != 0) p = req.query.page
+        } else {
+            p = 1
+        }
+
+        console.log("requested page", p)
+        Game.paginate({
+            $or:[
+                { 'data.title': { '$regex': search, '$options': 'i' }}, 
+                { 'data.tags': { '$regex': search, '$options': 'i' }}, 
+                { 'data.developer': { '$regex': search, '$options': 'i' }}
+                ]}, 
+        { page: p, limit: 9 }, function(err, games) {
+            console.log(games.docs)
+                res.render('index.ejs', {
+                    req: req,
+                    games: games.docs,
+                    pages : games.pages
+                })
+            })
+    });
+
+    app.get('/search', function(req, res) {
+
+        // decent validation
+        if (isInt(req.query.page)){
+            if (req.query.page != 0) p = req.query.page
+        } else {
+            p = 1
+        }
+
+        console.log("requested page", p)
+        Game.paginate({
+            $or:[
+                { 'data.title': { '$regex': search, '$options': 'i' }}, 
+                { 'data.tags': { '$regex': search, '$options': 'i' }}, 
+                { 'data.developer': { '$regex': search, '$options': 'i' }}
+                ]}, 
+        { page: p, limit: 9 }, function(err, games) {
+            console.log(games.docs)
+                res.render('index.ejs', {
+                    req: req,
+                    games: games.docs,
+                    pages : games.pages
+                })
+            })
+    });
 
     app.get('/demos', function(req, res) {
         p = 1
@@ -141,7 +194,6 @@ module.exports = function(app, passport) {
                 })
             })
     });
-
 
     app.get('/hb', function(req, res) {
         p = 1
@@ -207,7 +259,6 @@ module.exports = function(app, passport) {
             })
         
     })
-
 
     // Profile, and some redirection
     app.get('/profile', function(req, res) {
@@ -502,7 +553,6 @@ module.exports = function(app, passport) {
         }
     });
 
-
     app.get('/resetPassword/:permalink/:token', function(req, res) {
         var permalink = req.params.permalink
         var token = req.params.token
@@ -531,6 +581,7 @@ module.exports = function(app, passport) {
             }
         })
     });
+
 
     app.post('/resetPassword/:permalink/:token', function(req, res) {
 

@@ -30,7 +30,7 @@
 					<a class="nav-link"> | </a>
 				</li>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Tags
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -43,15 +43,11 @@
 					<a class="nav-link" href="https://github.com/dmg01/database" target="_blank">Submit game</a>
 				</li>
 			</ul>
-			<!--
-			<form class="form-inline my-2 my-lg-0">
-				<i class="fa fa-search" aria-hidden="true"></i>
-				&nbsp;
-				<input class="form-control mr-sm-2" type="text" placeholder="Search">
-			</a>
-			-->
-		</form>
-    <!--
+			<form action="/search" method="post" class="form-inline my-2 my-lg-0">
+				<input id="search" class="form-control mr-sm-2" name="submit" type="text" placeholder="Search" onkeypress="" value="">
+				<button type="submit" class="form-control mr-sm-2"><i class="fa fa-search" aria-hidden="true" type="submit"></i></button>
+			</form>
+<!--
 		<% if (req.user) { %>
 		<span class="navbar-text">
 			
