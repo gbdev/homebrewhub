@@ -39,8 +39,6 @@
     vertical-align: baseline !important;
 }
 
-
-
 .card-title {
     overflow: hidden;
     white-space: nowrap;
@@ -52,13 +50,14 @@
 }
 
 .carousel {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 288px;
 }
 
 .carousel img {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 288px;
+    image-rendering: crisp-edges;
     image-rendering: pixelated;
 }
 
