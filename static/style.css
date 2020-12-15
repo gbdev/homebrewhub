@@ -1,12 +1,112 @@
 @font-face {
-    font-family: SemplicitaM;
-    src: url("SemplicitaMedium.otf") format("opentype");
+    font-family: "Bariol Bold Italic";
+    src: url("fonts/bariol_bold_italic-webfont.woff2") format("woff2"),
+         url("fonts/bariol_bold_italic-webfont.woff") format("woff");
 }
 
 @font-face {
-    font-family: SemplicitaL;
-    src: url("SemplicitaLight.otf") format("opentype");
+    font-family: "Bariol Bold";
+    src: url("fonts/bariol_bold-webfont.woff") format("woff"),
+         url("fonts/bariol_bold-webfont.woff2") format("woff2");
 }
+
+@font-face {
+    font-family: "Bariol Light";
+    src: url("fonts/bariol_light_italic-webfont.woff") format("woff"),
+         url("fonts/bariol_light_italic-webfont.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Bariol Light Italic";
+    src: url("fonts/bariol_light_italic-webfont.woff") format("woff"),
+         url("fonts/bariol_light_italic-webfont.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Bariol Light";
+    src: url("fonts/bariol_light-webfont.woff") format("woff"),
+         url("fonts/bariol_light-webfont.woff2") format("woff2");
+}
+
+
+@font-face {
+    font-family: "Bariol Italic";
+    src: url("fonts/bariol_regular_italic-webfont.woff") format("woff"),
+         url("fonts/bariol_regular_italic-webfont.woff2") format("woff2"),
+}
+
+
+@font-face {
+    font-family: "Bariol";
+    src: url("fonts/bariol_regular-webfont.woff") format("woff"),
+         url("fonts/bariol_regular-webfont.woff2") format("woff2"),
+}
+
+@font-face {
+    font-family: "Bariol Thin Italic";
+    src: url("fonts/bariol_thin_italic-webfont.woff") format("woff"),
+         url("fonts/bariol_thin_italic-webfont.woff2") format("woff2"),
+}
+
+@font-face {
+    font-family: "Bariol Thin";
+    src: url("fonts/bariol_thin-webfont.woff") format("woff"),
+         url("fonts/bariol_thin-webfont.woff2") format("woff2");
+}      
+         
+@font-face {
+    font-family: "Basier Square Bold";
+    src: url("fonts/basiersquare-bold-webfont.woff") format("woff"),
+         url("fonts/basiersquare-bold-webfont.woff2") format("woff2"),
+}
+
+@font-face {
+    font-family: "Basier Square Bold Italic";
+    src: url("fonts/basiersquare-bolditalic-webfont.woff") format("woff"),
+         url("fonts/basiersquare-bolditalic-webfont.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Basier Square Medium";
+    src: url("fonts/basiersquare-medium-webfont.woff") format("woff"),
+         url("fonts/basiersquare-medium-webfont.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Basier Square Medium Italic";
+    src: url("fonts/basiersquare-mediumitalic-webfont.woff") format("woff"),
+         url("fonts/basiersquare-mediumitalic-webfont.woff2") format("woff2");
+}         
+
+@font-face {
+    font-family: "Basier Square Medium Italic";
+    src: url("fonts/basiersquare-regular-webfont.woff") format("woff"),
+         url("fonts/basiersquare-regular-webfont.woff2") format("woff2");
+}          
+
+@font-face {
+    font-family: "Basier Square Regular Italic";
+    src: url("fonts/basiersquare-regularitalic-webfont.woff") format("woff"),
+         url("fonts/basiersquare-regularitalic-webfont.woff2") format("woff2");
+}         
+
+@font-face {
+    font-family: "Basier Square Semibold";
+    src: url("fonts/basiersquare-semibold-webfont.woff") format("woff"),
+         url("fonts/basiersquare-semibold-webfont.woff2") format("woff2");
+}             
+         
+@font-face {
+    font-family: "Basier Square Semibold Italic";
+    src: url("fonts/basiersquare-semibolditalic-webfont.woff") format("woff"),
+         url("fonts/basiersquare-semibolditalic-webfont.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "Roboto Mono";
+    src: url("fonts/RobotoMono-Regular.ttf") format("opentype");
+}
+
 
 .h1 .h2{
     font-family: "Bariol" !important
@@ -23,13 +123,16 @@
     font-size: 1.2em;
 }
 
+code {
+    font-family: "Roboto Mono" !important;
+    font-size: 0.9em;
+}
 
 .intro {
     font-family: "Bariol" !important;
     font-size: 4em !important;
     color: #263238; 
     text-shadow: 0px 5px 5px rgba(0,0,0,0.20)
-    
 }
 
 .stats {
