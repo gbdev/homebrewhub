@@ -1,0 +1,6 @@
+env
+database
+*.db
+hhub/migrations
+__pycache__
+*.sqlite3
