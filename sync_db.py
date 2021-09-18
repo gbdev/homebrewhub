@@ -7,7 +7,7 @@ dirs = os.listdir('database/entries')
 
 
 def connect_db():
-    con = sqlite3.connect('entries.db')
+    con = sqlite3.connect('db.sqlite3')
     cur = con.cursor()
     return con, cur
 
@@ -34,16 +34,23 @@ def sync_db(con, cur):
     for game in dirs:
         with open(f'database/entries/{game}/game.json') as json_file:
             data = json.load(json_file)
-            print(data["title"])
+            # print(data["title"])
             if "tags" not in data:
                 data["tags"] = ""
             if "platform" not in data:
+                print("no platform for", data["slug"])
                 data["platform"] = "GB"
             if "developer" not in data:
                 data["developer"] = ""
-            values = (data["slug"], data["developer"], data["title"], data["platform"], data["typetag"], json.dumps(data["tags"]))
+            values = (
+                data["slug"],
+                data["developer"],
+                data["title"],
+                data["platform"],
+                data["typetag"],
+            )
             insert_query = """
-            INSERT INTO "main"."entries"("slug","developer","title","platform","typetag","tags") VALUES (?, ?, ?, ?, ?, ?);
+            INSERT INTO "main"."hhub_entry"("slug","developer","title","platform","typetag") VALUES (?, ?, ?, ?, ?);
             """
             cur.execute(insert_query, values)
 
