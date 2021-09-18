@@ -1,11 +1,8 @@
 # hhub
 
-This repository provides the source code of the new [HHub API](), which powers [Homebres Hub](), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
+This repository provides the source code of the new [HHub API](), which powers [Homebres Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 To learn how to use the HHub API in your project, check the [HHub API documentation]().
-
-For the old version written in Node/Express, check [homebrewhub-legacy]().
-
 
 ### Synchronising the database
 
@@ -37,3 +34,7 @@ pip install -r requirements.txt
 
 python sync_db.py
 ```
+
+### Legacy
+
+If you were looking for old version written in Node/Express, check [homebrewhub-legacy](https://github.com/gb-archive/homebrewhub-legacy).
