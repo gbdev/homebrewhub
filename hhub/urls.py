@@ -21,4 +21,5 @@ from hhub import views
 urlpatterns = [
     path('entry/<slug:pk>.json', views.entry_manifest),
     path('all', views.entries_all),
+    path('search', views.search_entries),
 ]
