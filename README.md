@@ -136,6 +136,33 @@ The following values are always present in responses, related to the given query
 
 ## Deploy
 
+```bash
+# Set up a virtual env
+python3 -m venv env
+# Activate it
+source env/bin/activate
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Prepare migrations for our Entry model
+python3 manage.py makemigrations
+# Sync the database for the first time.
+python3 manage.py migrate
+
+# Clone the database repository
+git clone https://github.com/gbdev/database/
+
+# Populate with the entries from the database repository
+python3 sync_db.py
+
+# Start the Django app
+python3 manage.py runserver
+
+# Query the /all route to see if everything's there
+curl https://localhost:8000/all
+```
+
+
 ### Synchronising the database
 
 The Homebrew Hub "source" database is a simple collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a consisting way.
@@ -148,7 +175,7 @@ The actual psql database needs to be built (and updated when a commit gets pushe
 
 The scripts expects every entry to be compliant with the [game.json schema DRAFT 3]() specification.
 
-Keep in mind that the two are not equivalent, as the psql database saves additional values about each entry (e.g. simple analytics).
+> Keep in mind that the two are not equivalent, as the Django database will keep additional values about each entry (e.g. simple analytics).
 
 Fire up a Postgresql instance. E.g. with Docker and docker-compose:
 
