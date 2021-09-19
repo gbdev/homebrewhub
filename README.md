@@ -2,7 +2,26 @@
 
 This repository provides the source code of the new [HHub API](https://hh2.gbdev.io/api), which powers [Homebres Hub](https://hh2.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
-## API
+Table of contents:
+
+- API Documentation
+	- GET `/entry/<entry-slug>.json`
+	- GET `/entry/<entry-slug>/<filename>`
+	- GET `/all`
+	- GET `/search`
+	- Pagination
+	- Order
+- Deploy
+	- Requisites
+	- Django app
+	- Synchronising the database
+- Contributing
+	- Add a game
+- Legacy
+
+---
+
+## API Documentation
 
 The API is exposed at `https://hh2.gbdev.io/api`.
 
@@ -10,7 +29,7 @@ Here's a quick overview of the available endpoints:
 
 ### GET `/entry/<entry-slug>.json`
 
-Get the "game.json" manifest for the game with the given slug identifier, providing every information available in the database about the entry. Here's a quick overview on how it's built:
+Get the game manifest for the game with the given slug identifier, providing every information available in the database about the entry. Here's a quick overview on how it's built:
 
 - `title` - Full name of the game
 - `slug` - A unique string identifier for a game
@@ -22,9 +41,9 @@ Get the "game.json" manifest for the game with the given slug identifier, provid
 - `screenshots` - A list of filenames of screenshots
 - `tags` - A list of the categories representing the entry
 
-To learn more about formal definitions of each of these properties,check the specification [JSON Schema](https://github.com/gbdev/database/blob/master/game-schema-d3.json), against which every manifest is validated.
+To learn more about formal definitions of each of these properties, check the specification [JSON Schema](https://github.com/gbdev/database/blob/master/game-schema-d3.json), against which every manifest is validated.
 
-E.g.:
+#### Examples
 
 ```bash
 curl hh2.gbdev.io/api/entry/2048.json
@@ -56,16 +75,17 @@ will return:
       ],
       "title": "2048gb",
       "typetag": "game"
-    }
+}
 ```
 
-Some of these fields can be queried through the `/search` route.
+*Some* of these fields can be queried through the [`/search`](#get-search) route.
 
 ### GET `/entry/<entry-slug>/<filename>`
 
 Access to all the files related to an entry. File names are found in the game manifest, accessed with the previous route.
 
-E.g.:
+#### Examples
+
 ```bash
 # Get the game manifest for the game with the slug "2048gb"
 curl hh2.gbdev.io/api/entry/2048.json
@@ -75,21 +95,30 @@ curl hh2.gbdev.io/api/entry/2048gb/2048.gb
 
 ### GET `/all`
 
-Returns every entry in the database. Every entry is represented by its full game manifest.
+Returns every entry in the database. Every entry is represented by its game manifest.
 
 ### GET `/search`
 
-Return every entry in the database matching the given conditions. Every entry is represented by its full game manifest.
+Return every entry in the database matching the given conditions. Every entry is represented by its game manifest.
 
 The following query parameters can be used:
 
-- `title`
-- `type`
-- `developer`
-- `platform`
-- `tags`
+- `type` (exact matching)
+- `developer` (exact matching)
+- `platform` (exact matching)
+- `tags` (exact matching, comma-separated array e.g. `/search?tags=Open Source,RPG`)
+- `title` ("contains" matching, e.g. `/search?title=brick` will return "**Brick**ster" and "**Brick**Breaker")
 
 More than one query parameter can be specified. They will be concatenated in "AND" statements, i.e. `/search?type=homebrew&platform=GBC` will return every Homebrew developed with GBC features.
+
+Every matching is case-insensitive.
+
+#### Examples
+
+```bash
+# Get every RPG released as Open Source with Game Boy Color features:
+curl hh2.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
+```
 
 ### Pagination
 
