@@ -2,7 +2,6 @@ import sqlite3
 import os
 import json
 
-
 dirs = os.listdir('database/entries')
 
 
@@ -12,48 +11,53 @@ def connect_db():
     return con, cur
 
 
-def init_db():
-    """
-    Initialises an empty sqlite db with necessary tables
-    """
-    create = """
-    CREATE TABLE "entries" (
-    "slug"  TEXT,
-    "developer" TEXT,
-    "title" TEXT,
-    "platform"  TEXT,
-    "typetag"   TEXT,
-    "tags"  TEXT,
-    PRIMARY KEY("slug")
-    )
-    """
-    return
-
-
 def sync_db(con, cur):
+    inserted = 0
+    updated = 0
     for game in dirs:
         with open(f'database/entries/{game}/game.json') as json_file:
             data = json.load(json_file)
-            # print(data["title"])
+            print(f"Processing entry {game}")
             if "tags" not in data:
                 data["tags"] = ""
             if "platform" not in data:
-                print("no platform for", data["slug"])
+                print("no platform")
                 data["platform"] = "GB"
             if "developer" not in data:
                 data["developer"] = ""
             values = (
-                data["slug"],
                 data["developer"],
                 data["title"],
                 data["platform"],
                 data["typetag"],
+                data["slug"],
             )
-            insert_query = """
-            INSERT INTO "main"."hhub_entry"("slug","developer","title","platform","typetag") VALUES (?, ?, ?, ?, ?);
+            # Check if the entry already exists
+            select_query = """
+            SELECT *
+            FROM "main"."hhub_entry"
+            WHERE "slug"=?
             """
-            cur.execute(insert_query, values)
 
+            cur.execute(select_query, (data["slug"],))
+            rows = cur.fetchall()
+
+            if len(rows) > 0:
+                print("Entry already in the database, overwriting its values..")
+                query = """
+                UPDATE "main"."hhub_entry" SET "developer" = ?, "title" = ?, "platform" = ?, "typetag" = ? WHERE "slug"=?
+                """
+                updated += 1
+            else:
+                print("Inserting new entry..")
+                query = """
+                INSERT INTO "main"."hhub_entry"("developer","title","platform","typetag", "slug") VALUES (?, ?, ?, ?, ?);
+                """
+                inserted += 1
+
+            cur.execute(query, values)
+
+    print(f"{inserted} new entries inserted, {updated} updated")
     # Save (commit) the changes
     con.commit()
 
@@ -61,5 +65,7 @@ def sync_db(con, cur):
     con.close()
 
 
+# Connect to the database
 con, cur = connect_db()
+# Synchronize entries
 sync_db(con, cur)
