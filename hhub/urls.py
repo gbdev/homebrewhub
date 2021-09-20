@@ -14,12 +14,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.urls import path
+from django.urls import include, path
 from hhub import views
 
 
 urlpatterns = [
-    path('entry/<slug:pk>.json', views.entry_manifest),
-    path('all', views.entries_all),
-    path('search', views.search_entries),
+    path(
+        # Set base path
+        r"api/",
+        include(
+            [
+                path('entry/<slug:pk>.json', views.entry_manifest),
+                path('all', views.entries_all),
+                path('search', views.search_entries),
+            ]
+        ),
+    )
 ]
