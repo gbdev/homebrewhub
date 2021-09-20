@@ -80,14 +80,17 @@ will return:
 
 ### GET `/entry/<entry-slug>/<filename>`
 
-Access to all the files related to an entry. File names are found in the game manifest, accessed with the previous route.
+Gives access to the files related to an entry (e.g. the ROMs, screenshots,..).
+
+File names are found in the game manifest, accessed with the previous route.
 
 #### Examples
 
 ```bash
 # Get the game manifest for the game with the slug "2048gb"
 curl hh2.gbdev.io/api/entry/2048.json
-# In the response JSON, a file name "2048.gb" is found in the "files" array. Let's get it:
+# In the response JSON, a file name "2048.gb" is found in the "files" array, as a playable ROM
+#  Let's get it:
 curl hh2.gbdev.io/api/entry/2048gb/2048.gb
 ```
 
