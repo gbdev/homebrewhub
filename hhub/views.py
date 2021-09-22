@@ -4,7 +4,7 @@ from hhub.models import Entry
 from hhub.serializers import EntrySerializer
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.core.exceptions import FieldError
 
 def entry_manifest(request, pk):
     try:
@@ -27,16 +27,22 @@ def entries_all(request):
 
     # sort and order
     # it would be meaningless to have a sort without an order
-    # order_by a specific field from schema
-    if order_by != 1 and order_by != "":
-        # specify an order --> asc is by default, so we're not dealing with it
-        if sort_by != 1 and sort_by != "" and sort_by.lower() != "asc":
-            entries = entries.order_by("-" + order_by.lower())  # order_by desc order
+    
+    try:
+        # order_by a specific field from schema
+        if order_by != 1 and order_by != "":
+            # specify an order --> asc is by default, so we're not dealing with it
+            if sort_by != 1 and sort_by != "" and sort_by.lower() != "asc":
+                entries = entries.order_by("-" + order_by.lower())  # order_by desc order
+            else:
+                entries = entries.order_by(order_by.lower())        # by default: sort by asc order
         else:
-            entries = entries.order_by(order_by.lower())        # by default: sort by asc order
-    else:
-        # TODO: should we notify the user about a malformed query in case of empty order_by param? e.g. /api/all?order_by=&page=2
-        pass
+            # TODO: should we notify the user about a malformed query in case of empty order_by param? e.g. /api/all?order_by=&page=2
+            pass
+    except FieldError as e:
+        return JsonResponse(
+            {'error': str(e) }, status=400
+        )
 
     paginator = Paginator(entries, 10)
     page = request.GET.get('page', 1)
