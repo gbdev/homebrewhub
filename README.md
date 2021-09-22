@@ -5,7 +5,7 @@ This repository provides the source code of the new [HHub API](https://hh2.gbdev
 Table of contents:
 
 - [API Documentation](#api-documentation)
-  * [GET `/entry/<entry-slug>.json`](#get---entry--entry-slug-json-)
+  * [GET `/entry/<entry-slug>`](#get---entry--entry-slug-json-)
     + [Examples](#examples)
   * [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---filename--)
     + [Examples](#examples-1)
@@ -25,7 +25,7 @@ The API is exposed at `https://hh2.gbdev.io/api`.
 
 Here's a quick overview of the available endpoints:
 
-### GET `/entry/<entry-slug>.json`
+### GET `/entry/<entry-slug>`
 
 Get the game manifest for the game with the given slug identifier, providing every information available in the database about the entry. Here's a quick overview on how it's built:
 
@@ -44,7 +44,7 @@ To learn more about formal definitions of each of these properties, check the sp
 #### Examples
 
 ```bash
-curl hh2.gbdev.io/api/entry/2048.json
+curl hh2.gbdev.io/api/entry/2048
 ```
 
 will return:
@@ -142,8 +142,10 @@ Here's how to quickly get started:
 ```bash
 # Set up a virtual env
 python3 -m venv env
+
 # Activate it
 source env/bin/activate
+
 # Install Python dependencies
 pip install -r requirements.txt
 
@@ -162,7 +164,7 @@ python3 sync_db.py
 python3 manage.py runserver
 
 # Query the /all route to see if everything's there
-curl https://localhost:8000/all
+curl http://localhost:8000/api/all
 ```
 
 

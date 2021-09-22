@@ -1,9 +1,28 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 
 from hhub.models import Entry
 from hhub.serializers import EntrySerializer
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+# given a filename, returns that file
+# /entry/<entry-slug>/<filename>
+def entry_download_file(request, pk, filename):
+    try:
+        entry = Entry.objects.get(pk=pk)
+    except Entry.DoesNotExist:
+        return JsonResponse(
+            {'error': 'No entry found in the database with the given slug'}, status=404
+        )
+
+    try:
+        data = open(f'database/entries/{pk}/{filename}', "rb")
+        return FileResponse(data)
+    except FileNotFoundError:
+        return JsonResponse(
+            {'error': "File not found"}, status=404
+        )
+
 
 
 def entry_manifest(request, pk):

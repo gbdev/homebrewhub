@@ -24,7 +24,8 @@ urlpatterns = [
         r"api/",
         include(
             [
-                path('entry/<slug:pk>.json', views.entry_manifest),
+                path('entry/<slug:pk>', views.entry_manifest),
+                path('entry/<slug:pk>/<str:filename>', views.entry_download_file),
                 path('all', views.entries_all),
                 path('search', views.search_entries),
             ]
