@@ -27,22 +27,7 @@ def entries_all(request):
 
     # sort and order
     # it would be meaningless to have a sort without an order
-    
-    try:
-        # order_by a specific field from schema
-        if order_by != 1 and order_by != "":
-            # specify an order --> asc is by default, so we're not dealing with it
-            if sort_by != 1 and sort_by != "" and sort_by.lower() != "asc":
-                entries = entries.order_by("-" + order_by.lower())  # order_by desc order
-            else:
-                entries = entries.order_by(order_by.lower())        # by default: sort by asc order
-        else:
-            # TODO: should we notify the user about a malformed query in case of empty order_by param? e.g. /api/all?order_by=&page=2
-            pass
-    except FieldError as e:
-        return JsonResponse(
-            {'error': str(e) }, status=400
-        )
+    entries = sort_and_order(entries, order_by, sort_by)
 
     paginator = Paginator(entries, 10)
     page = request.GET.get('page', 1)
@@ -83,9 +68,14 @@ def search_entries(request):
     typetag = request.GET.get('typetag', '')
     tags = request.GET.get('tags', '')
     platform = request.GET.get('platform', '')
+    sort_by = request.GET.get('sort_by', 1)
+    order_by = request.GET.get('order_by', 1)
 
     # Start selecting everything
     entries = Entry.objects.all()
+
+    # sort and order
+    entries = sort_and_order(entries, order_by, sort_by)
 
     if developer:
         entries = entries.filter(developer=developer)
@@ -131,3 +121,24 @@ def search_entries(request):
 
 def entry_platform(request, platform):
     return
+
+#########
+# UTILS #
+#########
+def sort_and_order(entries, order_by, sort_by):
+    try:
+        # order_by a specific field from schema
+        if order_by != 1 and order_by != "":
+            # specify an order --> asc is by default, so we're not dealing with it
+            if sort_by != 1 and sort_by != "" and sort_by.lower() != "asc":
+                return entries.order_by("-" + order_by.lower())  # order_by desc order
+            else:
+                return entries.order_by(order_by.lower())        # by default: sort by asc order
+        else:
+            # TODO: should we notify the user about a malformed query in case of empty order_by param? e.g. /api/all?order_by=&page=2
+            return entries
+
+    except FieldError as e:
+        return JsonResponse(
+            {'error': str(e) }, status=400
+        )
