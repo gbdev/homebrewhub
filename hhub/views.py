@@ -20,7 +20,24 @@ def entry_manifest(request, pk):
 
 
 def entries_all(request):
+    sort_by = request.GET.get('sort_by', 1)
+    order_by = request.GET.get('order_by', 1)
+
     entries = Entry.objects.all()
+
+    # sort and order
+    # it would be meaningless to have a sort without an order
+    # order_by a specific field from schema
+    if order_by != 1 and order_by != "":
+        # specify an order --> asc is by default, so we're not dealing with it
+        if sort_by != 1 and sort_by != "" and sort_by.lower() != "asc":
+            entries = entries.order_by("-" + order_by.lower())  # order_by desc order
+        else:
+            entries = entries.order_by(order_by.lower())        # by default: sort by asc order
+    else:
+        # TODO: should we notify the user about a malformed query in case of empty order_by param? e.g. /api/all?order_by=&page=2
+        pass
+
     paginator = Paginator(entries, 10)
     page = request.GET.get('page', 1)
     results = len(entries)
