@@ -7,12 +7,13 @@ Table of contents:
 - [API Documentation](#api-documentation)
   * [GET `/entry/<entry-slug>.json`](#get---entry--entry-slug-json-)
     + [Examples](#examples)
-  * [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---filename--)
+  * [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---fialename--)
     + [Examples](#examples-1)
   * [GET `/all`](#get---all-)
   * [GET `/search`](#get---search-)
     + [Examples](#examples-2)
   * [Pagination](#pagination)
+  * [Sort and order by](#sort-and-order-by)
 - [Deploy](#deploy)
   * [Synchronising the database](#synchronising-the-database)
   * [Legacy](#legacy)
@@ -134,6 +135,24 @@ The following values are always present in responses, related to the given query
 - `page_total` - Total pages
 - `page_current` - Current page. This can be different from the requested page (using the `page` query param) when the number is invalid or out of the range 0..`page-total`.
 - `page_elements` - Elements per page. This can be customised (in the allowed range 1..10) by passing the `page_elements` query param.
+
+
+### Sort and order by
+This API supports sort and order operations, you just need to specify these query params while doing requests (respectively `sort` and `order_by`).
+
+`order_by` could assume these values:
+- `slug`
+- `title`
+
+`sort` is intended to be used with `order_by` and could assume the following values:
+- `asc`: enabled by default, ascending order
+- `desc`: descending order
+
+Example:
+```bash
+# Get every game in the homebrewhub ordered by title in a descending order:
+curl hh2.gbdev.io/api/all?order_by=title&sort=desc
+```
 
 ## Deploy
 
