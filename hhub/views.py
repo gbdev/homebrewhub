@@ -20,7 +20,7 @@ def entry_manifest(request, pk):
 
 
 def entries_all(request):
-    sort_by_param = request.GET.get('sort_by', '')
+    sort_by_param = request.GET.get('sort', '')
     order_by_param = request.GET.get('order_by', '')
 
     entries = Entry.objects.all()
