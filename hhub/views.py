@@ -4,7 +4,7 @@ from hhub.models import Entry
 from hhub.serializers import EntrySerializer
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.core.exceptions import FieldError
 
 def entry_manifest(request, pk):
     try:
@@ -20,7 +20,20 @@ def entry_manifest(request, pk):
 
 
 def entries_all(request):
+    sort_by_param = request.GET.get('sort', '')
+    order_by_param = request.GET.get('order_by', '')
+
     entries = Entry.objects.all()
+
+    # sort and order
+    # it would be meaningless to have a sort without an order
+    try:
+        entries = sort_and_order(entries, order_by_param, sort_by_param)
+    except FieldError as e:
+        return JsonResponse(
+            {'error': str(e) }, status=400
+        )
+
     paginator = Paginator(entries, 10)
     page = request.GET.get('page', 1)
     results = len(entries)
@@ -60,9 +73,15 @@ def search_entries(request):
     typetag = request.GET.get('typetag', '')
     tags = request.GET.get('tags', '')
     platform = request.GET.get('platform', '')
-
+    order_by_param = request.GET.get('order_by', '')
+    sort_by_param = request.GET.get('sort', '')
+    
     # Start selecting everything
     entries = Entry.objects.all()
+
+    # sort and order
+    if sort_by_param:
+        entries = sort_and_order(entries, order_by_param, sort_by_param)
 
     if developer:
         entries = entries.filter(developer=developer)
@@ -108,3 +127,33 @@ def search_entries(request):
 
 def entry_platform(request, platform):
     return
+
+#########
+# UTILS #
+#########
+def sort_and_order(entries, col_name, sort_by_param):
+    # regardless what user has submitted, we lowercase the input
+    col_name = col_name.lower().strip()  
+    sort_by_param = sort_by_param.lower().strip()
+    
+    # if col_name has been specified and it is in allowed list of fields, check if sort has been specified
+    if col_name in ["slug", "title"]:
+        if sort_by_param in ["", "asc", "desc"]:
+            if sort_by_param == "asc" or not sort_by_param:
+                return entries.order_by(col_name)
+            elif sort_by_param == "desc":
+                # minus here means "desc" order, according to 
+                # https://docs.djangoproject.com/en/dev/ref/models/querysets/#order-by
+                return entries.order_by("-" + col_name)
+        else:
+            return entries.order_by(col_name)
+    elif sort_by_param in ["", "asc", "desc"]:
+        # default sorting: slug, asc order
+        if sort_by_param == "asc" or not sort_by_param:
+            return entries.order_by("slug")
+        elif sort_by_param == "desc":
+            # minus here means "desc" order, according to 
+            # https://docs.djangoproject.com/en/dev/ref/models/querysets/#order-by
+            return entries.order_by("-slug") 
+    
+    return entries
