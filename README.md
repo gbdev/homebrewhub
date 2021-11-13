@@ -156,6 +156,16 @@ curl hh2.gbdev.io/api/all?order_by=title&sort=desc
 
 ## Deploy
 
+### Requirements
+
+You need Python 3 and a couple of packages to build psycopg2:
+
+```bash
+apt install python3 libpq-dev python3-dev python3-venv
+```
+
+### Run server
+
 Here's how to quickly get started:
 
 ```bash
