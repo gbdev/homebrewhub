@@ -25,7 +25,8 @@ SECRET_KEY = "REPLACE_ME"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Allow the API to be served over the following hostnames:
+ALLOWED_HOSTS = ["hh3.gbdev.io"]
 
 CORS_ALLOWED_ORIGINS = [
     "https://hh2.gbdev.io",
