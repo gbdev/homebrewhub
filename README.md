@@ -1,6 +1,6 @@
 # hhub
 
-This repository provides the source code of the new [HHub API](https://hh2.gbdev.io/api), which powers [Homebrew Hub](https://hh2.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
+This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh2.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 Table of contents:
 
@@ -22,7 +22,7 @@ Table of contents:
 
 ## API Documentation
 
-The API is exposed at `https://hh2.gbdev.io/api`.
+The API is exposed at `https://hh3.gbdev.io/api`.
 
 Here's a quick overview of the available endpoints:
 
@@ -45,7 +45,7 @@ To learn more about formal definitions of each of these properties, check the sp
 #### Examples
 
 ```bash
-curl hh2.gbdev.io/api/entry/2048.json
+curl hh3.gbdev.io/api/entry/2048.json
 ```
 
 will return:
@@ -89,10 +89,10 @@ File names are found in the game manifest, accessed with the previous route.
 
 ```bash
 # Get the game manifest for the game with the slug "2048gb"
-curl hh2.gbdev.io/api/entry/2048.json
+curl hh3.gbdev.io/api/entry/2048.json
 # In the response JSON, a file name "2048.gb" is found in the "files" array, as a playable ROM
 #  Let's get it:
-curl hh2.gbdev.io/api/entry/2048gb/2048.gb
+curl hh3.gbdev.io/api/entry/2048gb/2048.gb
 ```
 
 ### GET `/all`
@@ -119,7 +119,7 @@ Every matching is case-insensitive.
 
 ```bash
 # Get every RPG released as Open Source with Game Boy Color features:
-curl hh2.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
+curl hh3.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
 ```
 
 ### Pagination
@@ -151,7 +151,7 @@ This API supports sort and order operations, you just need to specify these quer
 Example:
 ```bash
 # Get every game in the homebrewhub ordered by title in a descending order:
-curl hh2.gbdev.io/api/all?order_by=title&sort=desc
+curl hh3.gbdev.io/api/all?order_by=title&sort=desc
 ```
 
 ## Deploy
