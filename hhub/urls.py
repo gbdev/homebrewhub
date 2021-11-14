@@ -24,9 +24,9 @@ urlpatterns = [
         r"api/",
         include(
             [
-                path('entry/<slug:pk>.json', views.entry_manifest),
-                path('all', views.entries_all),
-                path('search', views.search_entries),
+                path("entry/<slug:pk>.json", views.entry_manifest),
+                path("all", views.entries_all),
+                path("search", views.search_entries),
             ]
         ),
     )

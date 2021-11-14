@@ -5,4 +5,4 @@ from django.apps import AppConfig
 
 
 class HhubConfig(AppConfig):
-    name = 'hhub'
+    name = "hhub"

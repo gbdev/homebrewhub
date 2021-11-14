@@ -2,11 +2,11 @@ import sqlite3
 import os
 import json
 
-dirs = os.listdir('database/entries')
+dirs = os.listdir("database/entries")
 
 
 def connect_db():
-    con = sqlite3.connect('db.sqlite3')
+    con = sqlite3.connect("db.sqlite3")
     cur = con.cursor()
     return con, cur
 
@@ -15,7 +15,7 @@ def sync_db(con, cur):
     inserted = 0
     updated = 0
     for game in dirs:
-        with open(f'database/entries/{game}/game.json') as json_file:
+        with open(f"database/entries/{game}/game.json") as json_file:
             data = json.load(json_file)
             print(f"Processing entry {game}")
             if "tags" not in data:

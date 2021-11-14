@@ -9,4 +9,4 @@ class Entry(models.Model):
     typetag = models.TextField(null=True)
 
     class Meta:
-        ordering = ['slug']
+        ordering = ["slug"]
