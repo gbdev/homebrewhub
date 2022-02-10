@@ -1,23 +1,30 @@
+import json
+
+from django.core.exceptions import FieldError
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import HttpResponse, JsonResponse
 
 from hhub.models import Entry
 from hhub.serializers import EntrySerializer
-import json
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.exceptions import FieldError
 
 
 def entry_manifest(request, pk):
+    """
+    Check if an entry with the given slug exists,
+    reads its JSON manifest from disk and returns it
+    """
     try:
-        entry = Entry.objects.get(pk=pk)
+        Entry.objects.get(pk=pk)
     except Entry.DoesNotExist:
         return JsonResponse(
             {"error": "No entry found in the database with the given slug"}, status=404
         )
 
+    # Manifests need to stay on disk (and not serialized/deserialized from db)
+    # because that way they can be versioned and modified through PRs
     data = open(f"database/entries/{pk}/game.json").read()
-    jsonData = json.loads(data)
-    return JsonResponse(jsonData)
+    json_data = json.loads(data)
+    return JsonResponse(json_data)
 
 
 def entries_all(request):
@@ -28,7 +35,6 @@ def entries_all(request):
     entries = Entry.objects.all()
 
     # sort and order
-    # it would be meaningless to have a sort without an order
     try:
         entries = sort_and_order(entries, order_by_param, sort_by_param)
     except FieldError as e:
@@ -67,23 +73,44 @@ def entries_all(request):
 
 
 def search_entries(request):
-    # Catch query params
-    page = request.GET.get("page", "")
+    """
+    Returns every entry matching the conditions given in the query
+    parameters. If not filter is specified, everything is returned.
+
+    Every entry is represented by its manifest, read from disk.
+    """
+    # Parse query params, providing defaults
+    # Filters
     developer = request.GET.get("developer", "")
     title = request.GET.get("title", "")
     typetag = request.GET.get("typetag", "")
     tags = request.GET.get("tags", "")
     platform = request.GET.get("platform", "")
+
+    # Pagination
+    # Request a specific page
+    page = request.GET.get("page", "")
+    # Request a specific number of results (>1,<30)
+    num_elements = request.GET.get("results", 10)
+
+    # Order and sort
     order_by_param = request.GET.get("order_by", "")
     sort_by_param = request.GET.get("sort", "")
 
-    # Start selecting everything
+    # Start by selecting everything
     entries = Entry.objects.all()
+
+    # Boundaries for elements per page
+    if num_elements <= 1:
+        num_elements = 1
+    elif num_elements >= 30:
+        num_elements = 30
 
     # sort and order
     if sort_by_param:
         entries = sort_and_order(entries, order_by_param, sort_by_param)
 
+    # Apply filters (exact matches)
     if developer:
         entries = entries.filter(developer=developer)
 
@@ -96,8 +123,14 @@ def search_entries(request):
     if title:
         entries = entries.filter(title__contains=title)
 
-    paginator = Paginator(entries, 10)
+    if tags:
+        entries = entries.filter(tags__contains=tags)
+
+    # Prepare paginators and number of results
+    paginator = Paginator(entries, num_elements)
     results = len(entries)
+
+    # Request the desired page of results
     try:
         entries = paginator.page(page)
     except PageNotAnInteger:
@@ -109,30 +142,31 @@ def search_entries(request):
 
     serializer = EntrySerializer(entries, many=True)
 
+    # Read from disks the manifests of the result entries
     json_entries = []
     for entry in entries:
         data = open(f"database/entries/{entry.slug}/game.json").read()
         json_entries.append(json.loads(data))
+   
+    # Prepare final JSON response
     return JsonResponse(
         {
+            # total number of results from the query
             "results": results,
+            # total number of pages
             "page_total": paginator.num_pages,
+            # current request page
             "page_current": page,
+            # number of elements in this page
             "page_elements": len(serializer.data),
+            # array of entries manifests
             "entries": json_entries,
         },
+        # Allow non-dict instances to be passed and serialized
         safe=False,
     )
-    return JsonResponse(serializer.data, safe=False)
 
-
-def entry_platform(request, platform):
-    return
-
-
-#########
-# UTILS #
-#########
+# Utils
 def sort_and_order(entries, col_name, sort_by_param):
     # regardless what user has submitted, we lowercase the input
     col_name = col_name.lower().strip()
