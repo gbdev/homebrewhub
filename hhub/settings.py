@@ -26,10 +26,10 @@ SECRET_KEY = "REPLACE_ME"
 DEBUG = True
 
 # Allow the API to be served over the following hostnames:
-ALLOWED_HOSTS = ["hh3.gbdev.io"]
+ALLOWED_HOSTS = ["127.0.0.1", "hh3.gbdev.io", "localhost"]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://hh2.gbdev.io",
+    "http://127.0.0.1", "https://hh2.gbdev.io",
 ]
 
 # Application definition
