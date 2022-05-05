@@ -1,8 +1,8 @@
-import sqlite3
-import os
 import json
+import os
+import sqlite3
 
-dirs = os.listdir("database/entries")
+dirs = ["database/entries", "database-gba/entries"]
 
 
 def connect_db():
@@ -14,48 +14,51 @@ def connect_db():
 def sync_db(con, cur):
     inserted = 0
     updated = 0
-    for game in dirs:
-        with open(f"database/entries/{game}/game.json") as json_file:
-            data = json.load(json_file)
-            print(f"Processing entry {game}")
-            if "tags" not in data:
-                data["tags"] = ""
-            if "platform" not in data:
-                print("no platform")
-                data["platform"] = "GB"
-            if "developer" not in data:
-                data["developer"] = ""
-            values = (
-                data["developer"],
-                data["title"],
-                data["platform"],
-                data["typetag"],
-                data["slug"],
-            )
-            # Check if the entry already exists
-            select_query = """
-            SELECT *
-            FROM "main"."hhub_entry"
-            WHERE "slug"=?
-            """
-
-            cur.execute(select_query, (data["slug"],))
-            rows = cur.fetchall()
-
-            if len(rows) > 0:
-                print("Entry already in the database, overwriting its values..")
-                query = """
-                UPDATE "main"."hhub_entry" SET "developer" = ?, "title" = ?, "platform" = ?, "typetag" = ? WHERE "slug"=?
+    for folder in dirs:
+        print(f"Processing folder {folder}")
+        games = os.listdir(folder)
+        for game in games:
+            with open(f"{folder}/{game}/game.json") as json_file:
+                data = json.load(json_file)
+                print(f"Processing entry {game}")
+                if "tags" not in data:
+                    data["tags"] = ""
+                if "platform" not in data:
+                    print("no platform")
+                    data["platform"] = "GB"
+                if "developer" not in data:
+                    data["developer"] = ""
+                values = (
+                    data["developer"],
+                    data["title"],
+                    data["platform"],
+                    data["typetag"],
+                    data["slug"],
+                )
+                # Check if the entry already exists
+                select_query = """
+                SELECT *
+                FROM "main"."hhub_entry"
+                WHERE "slug"=?
                 """
-                updated += 1
-            else:
-                print("Inserting new entry..")
-                query = """
-                INSERT INTO "main"."hhub_entry"("developer","title","platform","typetag", "slug") VALUES (?, ?, ?, ?, ?);
-                """
-                inserted += 1
 
-            cur.execute(query, values)
+                cur.execute(select_query, (data["slug"],))
+                rows = cur.fetchall()
+
+                if len(rows) > 0:
+                    print("Entry already in the database, overwriting its values..")
+                    query = """
+                    UPDATE "main"."hhub_entry" SET "developer" = ?, "title" = ?, "platform" = ?, "typetag" = ? WHERE "slug"=?
+                    """
+                    updated += 1
+                else:
+                    print("Inserting new entry..")
+                    query = """
+                    INSERT INTO "main"."hhub_entry"("developer","title","platform","typetag", "slug") VALUES (?, ?, ?, ?, ?);
+                    """
+                    inserted += 1
+
+                cur.execute(query, values)
 
     print(f"{inserted} new entries inserted, {updated} updated")
     # Save (commit) the changes
