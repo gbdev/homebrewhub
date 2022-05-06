@@ -181,8 +181,12 @@ python3 manage.py makemigrations hhub
 # Sync the database for the first time
 python3 manage.py migrate
 
-# Clone the database repository
+# Clone the database repositories
+# GB/GBC
 git clone https://github.com/gbdev/database/
+# GBA
+git clone https://github.com/gbadev-org/games database-gba
+
 
 # Populate with the entries from the database repository
 python3 sync_db.py
@@ -194,10 +198,9 @@ python3 manage.py runserver
 curl https://localhost:8000/all
 ```
 
-
 ### Synchronising the database
 
-The Homebrew Hub "source" database is a simple collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a *consisting* way (see the game.json JSON schema).
+The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consisting_ way (see the game.json JSON schema).
 
 For more information check the ["database" repository](https://github.com/gbdev/database) documentation.
 
