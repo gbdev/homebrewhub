@@ -5,18 +5,18 @@ This repository provides the source code of the new [HHub API](https://hh3.gbdev
 Table of contents:
 
 - [API Documentation](#api-documentation)
-  * [GET `/entry/<entry-slug>.json`](#get---entry--entry-slug-json-)
-    + [Examples](#examples)
-  * [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---fialename--)
-    + [Examples](#examples-1)
-  * [GET `/all`](#get---all-)
-  * [GET `/search`](#get---search-)
-    + [Examples](#examples-2)
-  * [Pagination](#pagination)
-  * [Sort and order by](#sort-and-order-by)
+  - [GET `/entry/<entry-slug>.json`](#get---entry--entry-slug-json-)
+    - [Examples](#examples)
+  - [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---fialename--)
+    - [Examples](#examples-1)
+  - [GET `/all`](#get---all-)
+  - [GET `/search`](#get---search-)
+    - [Examples](#examples-2)
+  - [Pagination](#pagination)
+  - [Sort and order by](#sort-and-order-by)
 - [Deploy](#deploy)
-  * [Synchronising the database](#synchronising-the-database)
-  * [Legacy](#legacy)
+  - [Synchronising the database](#synchronising-the-database)
+  - [Legacy](#legacy)
 
 ---
 
@@ -52,32 +52,26 @@ will return:
 
 ```json
 {
-      "developer": "Sanqui",
-      "files": [
-        {
-          "default": true,
-          "filename": "2048.gb",
-          "playable": true
-        }
-      ],
-      "license": "Zlib",
-      "platform": "GB",
-      "repository": "https://github.com/Sanqui/2048-gb",
-      "screenshots": [
-        "1.png",
-        "2.png"
-      ],
-      "slug": "2048gb",
-      "tags": [
-        "Open Source",
-        "Puzzle"
-      ],
-      "title": "2048gb",
-      "typetag": "game"
+  "developer": "Sanqui",
+  "files": [
+    {
+      "default": true,
+      "filename": "2048.gb",
+      "playable": true
+    }
+  ],
+  "license": "Zlib",
+  "platform": "GB",
+  "repository": "https://github.com/Sanqui/2048-gb",
+  "screenshots": ["1.png", "2.png"],
+  "slug": "2048gb",
+  "tags": ["Open Source", "Puzzle"],
+  "title": "2048gb",
+  "typetag": "game"
 }
 ```
 
-*Some* of these fields can be queried through the [`/search`](#get-search) route.
+_Some_ of these fields can be queried through the [`/search`](#get-search) route.
 
 ### GET `/entry/<entry-slug>/<filename>`
 
@@ -136,19 +130,22 @@ The following values are always present in responses, related to the given query
 - `page_current` - Current page. This can be different from the requested page (using the `page` query param) when the number is invalid or out of the range 0..`page-total`.
 - `page_elements` - Elements per page. This can be customised (in the allowed range 1..10) by passing the `page_elements` query param.
 
-
 ### Sort and order by
+
 This API supports sort and order operations, you just need to specify these query params while doing requests (respectively `sort` and `order_by`).
 
 `order_by` could assume these values:
+
 - `slug`
 - `title`
 
 `sort` is intended to be used with `order_by` and could assume the following values:
+
 - `asc`: enabled by default, ascending order
 - `desc`: descending order
 
 Example:
+
 ```bash
 # Get every game in the homebrewhub ordered by title in a descending order:
 curl hh3.gbdev.io/api/all?order_by=title&sort=desc
@@ -206,9 +203,13 @@ For more information check the ["database" repository](https://github.com/gbdev/
 
 This enables the database to be "community-maintained", allowing everyone to add new entries (manually or by writing scrapers) or improve existing ones simply by opening Pull Requests.
 
-The "real" database needs to be built (and updated when a commit gets pushed) from this collection of folders. This job is done by the **sync_db.py** script.
+The "real" database needs to be built (and updated when a commit gets pushed) from this collection of folders. This job is done by the **sync-db.py** script.
 
 > Keep in mind that the two are not equivalent, as the Django database will keep additional values about each entry (e.g. simple analytics).
+
+```sh
+python manage.py runscript sync-db
+```
 
 ### Legacy
 

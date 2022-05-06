@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "hhub.apps.HhubConfig",
     "corsheaders",
+    # Used to run separate scripts that interact with the models (sync_db)
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
