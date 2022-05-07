@@ -101,10 +101,10 @@ def search_entries(request):
     entries = Entry.objects.all()
 
     # Boundaries for elements per page
-    if num_elements <= 1:
-        num_elements = 1
-    elif num_elements >= 30:
-        num_elements = 30
+    # if num_elements <= 1:
+    #    num_elements = 1
+    # elif num_elements >= 30:
+    #    num_elements = 30
 
     # sort and order
     if sort_by_param:
@@ -127,9 +127,10 @@ def search_entries(request):
         tags = tags.split(",")
         entries = entries.filter(tags__contains=tags)
 
+    results = len(entries)
+
     # Prepare paginators and number of results
     paginator = Paginator(entries, num_elements)
-    results = len(entries)
 
     # Request the desired page of results
     try:
