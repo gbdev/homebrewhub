@@ -8,7 +8,7 @@ class Entry(models.Model):
     developer = models.TextField(null=True)
     title = models.TextField()
     typetag = models.TextField(null=True)
-    tags = ArrayField(null=True)
+    tags = ArrayField(models.TextField(), null=True)
 
     class Meta:
         ordering = ["slug"]

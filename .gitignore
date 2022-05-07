@@ -1,5 +1,6 @@
 env
 database
+database-gba
 *.db
 hhub/migrations
 __pycache__

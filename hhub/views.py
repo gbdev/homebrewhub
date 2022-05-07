@@ -110,7 +110,6 @@ def search_entries(request):
     if sort_by_param:
         entries = sort_and_order(entries, order_by_param, sort_by_param)
 
-    # Apply filters (exact matches)
     if developer:
         entries = entries.filter(developer=developer)
 
@@ -124,6 +123,8 @@ def search_entries(request):
         entries = entries.filter(title__contains=title)
 
     if tags:
+        # Read the value of tags as an array of tags separated by commas
+        tags = tags.split(",")
         entries = entries.filter(tags__contains=tags)
 
     # Prepare paginators and number of results
@@ -147,7 +148,7 @@ def search_entries(request):
     for entry in entries:
         data = open(f"database/entries/{entry.slug}/game.json").read()
         json_entries.append(json.loads(data))
-   
+
     # Prepare final JSON response
     return JsonResponse(
         {
@@ -165,6 +166,7 @@ def search_entries(request):
         # Allow non-dict instances to be passed and serialized
         safe=False,
     )
+
 
 # Utils
 def sort_and_order(entries, col_name, sort_by_param):

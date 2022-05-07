@@ -1,6 +1,6 @@
 # This script must be run through Django manage.py as it interacts with the ORM
 # e.g python manage.py runscript sync_db
-# Keep also in mind it runs for the root of the project, even if it's in hhub/scripts
+# In importing other folders, keep also in this runs for the root of the project, even if it's in hhub/scripts
 
 import json
 import os
@@ -21,7 +21,7 @@ def run():
                 data = json.load(json_file)
                 print(f"Processing entry {game}")
                 if "tags" not in data:
-                    data["tags"] = ""
+                    data["tags"] = []
                 if "platform" not in data:
                     print("no platform")
                     data["platform"] = "GB"
@@ -31,16 +31,27 @@ def run():
                     data["typetag"] = "game"
 
             try:
+                # Check if an entry already exists with the given slug
                 entry = Entry.objects.get(slug=data["slug"])
-                print("Updating")
-                updated += 1
-            except Exception:
+                # And update its values
                 entry = Entry(
                     slug=data["slug"],
                     platform=data["platform"],
                     developer=data["developer"],
                     typetag=data["typetag"],
                     title=data["title"],
+                    tags=data["tags"],
+                )
+                updated += 1
+            except Exception:
+                # otherwise, create a new entry
+                entry = Entry(
+                    slug=data["slug"],
+                    platform=data["platform"],
+                    developer=data["developer"],
+                    typetag=data["typetag"],
+                    title=data["title"],
+                    tags=data["tags"],
                 )
                 inserted += 1
 
