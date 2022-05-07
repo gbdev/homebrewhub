@@ -41,6 +41,7 @@ def run():
                     typetag=data["typetag"],
                     title=data["title"],
                     tags=data["tags"],
+                    basepath=folder,
                 )
                 updated += 1
             except Exception:
@@ -52,6 +53,7 @@ def run():
                     typetag=data["typetag"],
                     title=data["title"],
                     tags=data["tags"],
+                    basepath=folder,
                 )
                 inserted += 1
 

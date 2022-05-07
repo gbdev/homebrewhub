@@ -9,6 +9,7 @@ class Entry(models.Model):
     title = models.TextField()
     typetag = models.TextField(null=True)
     tags = ArrayField(models.TextField(), null=True)
+    basepath = models.TextField()
 
     class Meta:
         ordering = ["slug"]
