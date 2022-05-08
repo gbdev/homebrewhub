@@ -4,6 +4,7 @@
 
 import json
 import os
+import subprocess
 
 from hhub.models import Entry
 
@@ -20,6 +21,15 @@ def run():
             with open(f"{folder}/{game}/game.json") as json_file:
                 data = json.load(json_file)
                 print(f"Processing entry {game}")
+                for file in data["files"]:
+                    if "playable" in file:
+                        romfile = file["filename"]
+                try:
+                    gbtoolsid_out = subprocess.check_output(['./gbtoolsid', '-oj', f'database/entries/{game}/{romfile}'])
+                    tools = json.loads(gbtoolsid_out)
+                    print(tools)
+                except:
+                    tools = ""
                 if "tags" not in data:
                     data["tags"] = []
                 if "platform" not in data:
