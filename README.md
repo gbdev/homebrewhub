@@ -1,6 +1,6 @@
 # hhub
 
-This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh2.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
+This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 Table of contents:
 
