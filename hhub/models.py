@@ -10,6 +10,7 @@ class Entry(models.Model):
     typetag = models.TextField(null=True)
     tags = ArrayField(models.TextField(), null=True)
     basepath = models.TextField()
+    devtoolinfo = models.JSONField(null=True)
 
     class Meta:
         ordering = ["slug"]

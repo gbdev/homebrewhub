@@ -24,12 +24,16 @@ def run():
                 for file in data["files"]:
                     if "playable" in file:
                         romfile = file["filename"]
+
+                # Run gbstoolsid to get some information about how the ROM was developed
                 try:
-                    gbtoolsid_out = subprocess.check_output(['./gbtoolsid', '-oj', f'database/entries/{game}/{romfile}'])
+                    gbtoolsid_out = subprocess.check_output(
+                        ["./gbtoolsid", "-oj", f"database/entries/{game}/{romfile}"]
+                    )
                     tools = json.loads(gbtoolsid_out)
-                    print(tools)
-                except:
+                except Exception:
                     tools = ""
+
                 if "tags" not in data:
                     data["tags"] = []
                 if "platform" not in data:
@@ -39,6 +43,9 @@ def run():
                     data["developer"] = ""
                 if "typetag" not in data:
                     data["typetag"] = "game"
+                if "title" not in data:
+                    print("Warning: no title")
+                    data["title"] = ""
 
             try:
                 # Check if an entry already exists with the given slug
@@ -52,6 +59,7 @@ def run():
                     title=data["title"],
                     tags=data["tags"],
                     basepath=folder,
+                    devtoolinfo=tools,
                 )
                 updated += 1
             except Exception:
@@ -64,6 +72,7 @@ def run():
                     title=data["title"],
                     tags=data["tags"],
                     basepath=folder,
+                    devtoolinfo=tools,
                 )
                 inserted += 1
 
