@@ -2,6 +2,7 @@
 # e.g python manage.py runscript sync_db
 # In importing other folders, keep also in this runs for the root of the project, even if it's in hhub/scripts
 
+import hashlib
 import json
 import os
 import subprocess
@@ -33,6 +34,18 @@ def run():
                     tools = json.loads(gbtoolsid_out)
                 except Exception:
                     tools = ""
+
+                try:
+                    sha1sum = hashlib.sha1()
+                    with open(f"database/entries/{game}/{romfile}", 'rb') as source:
+                        block = source.read(2**16)
+                        while len(block) != 0:
+                            sha1sum.update(block)
+                            block = source.read(2**16)
+                        sha1 = sha1sum.hexdigest()
+                        print("SHA1:", sha1)
+                except Exception:
+                    sha1 = ""
 
                 if "tags" not in data:
                     data["tags"] = []
