@@ -15,7 +15,7 @@ Table of contents:
   - [Pagination](#pagination)
   - [Sort and order by](#sort-and-order-by)
 - [Deploy](#deploy)
-  - [Synchronising the database](#synchronising-the-database)
+  - [Synchronising the database](#synchronizing-the-database)
   - [Legacy](#legacy)
 
 ---
@@ -166,15 +166,23 @@ apt install python3 libpq-dev python3-dev python3-venv
 Here's how to quickly get started:
 
 ```bash
+
+# Start up backing services (database and database admin)
+# NOTE: Remember to run "docker-compose down" afterwards
+docker-compose up --detach
+
 # Set up a virtual env
 python3 -m venv env
+
 # Activate it
 source env/bin/activate
+
 # Install Python dependencies
 pip install -r requirements.txt
 
 # Prepare migrations for our Entry model
 python3 manage.py makemigrations hhub
+
 # Sync the database for the first time
 python3 manage.py migrate
 
@@ -186,7 +194,7 @@ git clone https://github.com/gbadev-org/games database-gba
 
 
 # Populate with the entries from the database repository
-python3 sync_db.py
+python3 manage.py runscript sync_db
 
 # Start the Django app
 python3 manage.py runserver
@@ -195,9 +203,9 @@ python3 manage.py runserver
 curl https://localhost:8000/all
 ```
 
-### Synchronising the database
+### Synchronizing the database
 
-The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consisting_ way (see the game.json JSON schema).
+The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consistent_ way (see the game.json JSON schema).
 
 For more information check the ["database" repository](https://github.com/gbdev/database) documentation.
 
