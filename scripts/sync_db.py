@@ -1,6 +1,7 @@
 # This script must be run through Django manage.py as it interacts with the ORM
 # e.g python manage.py runscript sync_db
-# In importing other folders, keep also in this runs for the root of the project, even if it's in hhub/scripts
+# In importing other folders, keep also in this runs for the root of the project,
+# even if it's in hhub/scripts
 
 import hashlib
 import json
@@ -16,7 +17,7 @@ def _get_sha1_hash(game, romfile):
     try:
         sha1sum = hashlib.sha1()
 
-        with open(f"database/entries/{game}/{romfile}", "rb") as source:
+        with open(f"database/entries/{game}/{romfile}", "rb") as source:  # noqa: E501
             block = source.read(2**16)
 
             while len(block) != 0:
@@ -96,8 +97,8 @@ def run():
             )
 
             if created:
-                inserted +=1
+                inserted += 1
             else:
-                updated +=1
+                updated += 1
 
-    print(f"{inserted} new entries inserted, {updated} updated")
+    print(f"{inserted} new entries inserted, {updated} updated")  # noqa: E501

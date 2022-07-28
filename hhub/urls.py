@@ -15,8 +15,8 @@ Including another URLconf
 """
 
 from django.urls import include, path
-from hhub import views
 
+from hhub import views
 
 urlpatterns = [
     path(

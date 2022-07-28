@@ -180,6 +180,9 @@ source env/bin/activate
 # Install Python dependencies
 pip install -r requirements.txt
 
+# Install Pre-Commit git hooks (for enforcing code style on git commit)
+pre-commit install
+
 # Prepare migrations for our Entry model
 python3 manage.py makemigrations hhub
 
