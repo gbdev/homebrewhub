@@ -15,7 +15,7 @@ Table of contents:
   - [Pagination](#pagination)
   - [Sort and order by](#sort-and-order-by)
 - [Deploy](#deploy)
-  - [Synchronising the database](#synchronizing-the-database)
+  - [Synchronising the database](#synchronising-the-database)
   - [Legacy](#legacy)
 
 ---
@@ -203,7 +203,7 @@ python3 manage.py runserver
 curl https://localhost:8000/all
 ```
 
-### Synchronizing the database
+### Synchronising the database
 
 The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consistent_ way (see the game.json JSON schema).
 
