@@ -49,7 +49,12 @@ def run():
 
                 romfile = ""
 
-                for file in data.get("files", []):
+                # Safety check to protect against entry without file (against schema)
+                if "files" not in data:
+                    print("Entry missing 'files' key, skipping...")
+                    continue
+
+                for file in data["files"]:
                     if "playable" in file:
                         romfile = file["filename"]
 
@@ -81,6 +86,8 @@ def run():
                     print("Warning: no title")
                     data["title"] = ""
 
+            # Returns an (entry, bool) tuple. Here we don't need the object that was
+            # either updated or created, we only want to know if it was created or not
             _, created = Entry.objects.update_or_create(
                 slug=data["slug"],
                 defaults=dict(
