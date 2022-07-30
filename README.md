@@ -151,25 +151,29 @@ Example:
 curl hh3.gbdev.io/api/all?order_by=title&sort=desc
 ```
 
-## Deploy
+## Local Development
 
-### Requirements
+There are two options for running this project locally: manually or using Docker.
 
-You need Python 3 and a couple of packages to build psycopg2:
+### Manual requirements
 
+You need Python 3 and a couple of packages to build `psycopg2` (database driver):
+
+On Linux, this command should install all requirements:
 ```bash
 apt install python3 libpq-dev python3-dev python3-venv
 ```
 
-### Run server
+Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a `hh` table and have it running in the background.
 
-Here's how to quickly get started:
+After that, follow the steps below to get started running the project manually:
 
 ```bash
+# Clone the repo locally
+git clone https://github.com/gbdev/homebrewhub
 
-# Start up backing services (database and database admin)
-# NOTE: Remember to run "docker-compose down" afterwards
-docker-compose up --detach
+# Change into the cloned repo
+cd homebrewhub
 
 # Set up a virtual env
 python3 -m venv env
@@ -192,15 +196,44 @@ git clone https://github.com/gbdev/database/
 # GBA
 git clone https://github.com/gbadev-org/games database-gba
 
-
 # Populate with the entries from the database repository
-python3 manage.py runscript sync_db
+DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runscript sync_db
 
 # Start the Django app
-python3 manage.py runserver
+DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runserver
 
-# Query the /all route to see if everything's there
-curl https://localhost:8000/all
+# In another terminal, query the /api/all route to see if everything's there
+curl https://localhost:8000/api/all
+```
+
+### Docker based requirements
+
+
+
+
+First, install Docker ([download link](https://docs.docker.com/get-docker/)).
+
+After that, follow the steps below to get started running the project using containers:
+
+```bash
+# Clone the repo locally
+git clone https://github.com/gbdev/homebrewhub
+
+# Change into the cloned repo
+cd homebrewhub
+
+# Clone the database repositories
+# GB/GBC
+git clone https://github.com/gbdev/database/
+# GBA
+git clone https://github.com/gbadev-org/games database-gba
+
+# Start up backing services (web server, database and database admin)
+# NOTE: This command will also take care of synchronising the database
+docker-compose up --build
+
+# Once that's finished, in another terminal, query the /api/all route to see if everything's there
+curl https://localhost:8000/api/all
 ```
 
 ### Synchronising the database
@@ -216,7 +249,7 @@ The "real" database needs to be built (and updated when a commit gets pushed) fr
 > Keep in mind that the two are not equivalent, as the Django database will keep additional values about each entry (e.g. simple analytics).
 
 ```sh
-python manage.py runscript sync-db
+python3 manage.py runscript sync_db
 ```
 
 ### Legacy
