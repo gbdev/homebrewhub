@@ -157,14 +157,14 @@ There are two options for running this project locally: manually or using Docker
 
 ### Manual requirements
 
-You need Python 3 and a couple of packages to build `psycopg2` (database driver):
+You need Python 3 and a couple of packages to build `psycopg2` (database driver).
 
 On Linux, this command should install all requirements:
 ```bash
 apt install python3 libpq-dev python3-dev python3-venv
 ```
 
-Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a `hh` table and have it running in the background.
+Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a user, password and an `hh` table. Have it running in the background on port `5432`.
 
 After that, follow the steps below to get started running the project manually:
 
@@ -199,6 +199,9 @@ git clone https://github.com/gbadev-org/games database-gba
 # Populate with the entries from the database repository
 DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runscript sync_db
 
+# Optional note: You can export the environment variable to avoid typing it each time:
+EXPORT DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh
+
 # Start the Django app
 DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runserver
 
@@ -229,7 +232,7 @@ git clone https://github.com/gbdev/database/
 git clone https://github.com/gbadev-org/games database-gba
 
 # Start up backing services (web server, database and database admin)
-# NOTE: This command will also take care of synchronising the database
+# NOTE: This command will also take care of synchronising the database (including migrations)
 docker-compose up --build
 
 # Once that's finished, in another terminal, query the /api/all route to see if everything's there
@@ -244,7 +247,7 @@ For more information check the ["database" repository](https://github.com/gbdev/
 
 This enables the database to be "community-maintained", allowing everyone to add new entries (manually or by writing scrapers) or improve existing ones simply by opening Pull Requests.
 
-The "real" database needs to be built (and updated when a commit gets pushed) from this collection of folders. This job is done by the **sync-db.py** script.
+The "real" database needs to be built (and updated when a commit gets pushed) from this collection of folders. This job is done by the **sync_db.py** script.
 
 > Keep in mind that the two are not equivalent, as the Django database will keep additional values about each entry (e.g. simple analytics).
 
