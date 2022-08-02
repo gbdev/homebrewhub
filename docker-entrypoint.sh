@@ -24,7 +24,7 @@ until postgres_ready; do
 case "$1" in
   "dev_web_start")
     echo "==> Creating migrations..."
-    python manage.py makemigrations
+    python manage.py makemigrations hhub
 
     echo "==> Running migrations..."
     python manage.py migrate
