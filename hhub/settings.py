@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,7 @@ SECRET_KEY = "REPLACE_ME"
 DEBUG = True
 
 # Allow the API to be served over the following hostnames:
-ALLOWED_HOSTS = ["127.0.0.1", "hh3.gbdev.io", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "hh3.gbdev.io", "localhost", "0.0.0.0"]
 
 # Allow the following hosts to consume the API
 CORS_ALLOWED_ORIGINS = [
@@ -86,13 +87,9 @@ WSGI_APPLICATION = "hhub.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": "0.0.0.0",
-        "NAME": "hh",
-        "USER": "postgres",
-        "PASSWORD": "overwritethisinprod!",
-    }
+    "default": dj_database_url.config(
+        default="postgres://postgres:overwritethisinprod!@0.0.0.0:5432/hh"
+    )
 }
 
 

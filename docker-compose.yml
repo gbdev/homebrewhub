@@ -19,6 +19,7 @@ services:
       retries: 50
     ports:
       - "5432:5432"
+
   pgadmin:
     container_name: hh_pgadmin
     image: dpage/pgadmin4
@@ -31,6 +32,23 @@ services:
     ports:
       - "5050:80"
     restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: dev_web_start
+    entrypoint: /src/docker-entrypoint.sh
+    environment:
+      - DJANGO_SETTINGS_MODULE=hhub.settings
+      - DATABASE_URL=postgres://postgres:overwritethisinprod!@db:5432/hh
+    restart: on-failure
+    volumes:
+      - .:/src
+    ports:
+      - "8000:8000"
+    links:
+      - db:db
 
 volumes:
   postgres:
