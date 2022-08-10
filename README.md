@@ -1,5 +1,7 @@
 # hhub
 
+![Github CI](https://github.com/gbdev/homebrewhub/actions/workflows/ci.yaml/badge.svg)
+
 This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 Table of contents:
@@ -164,7 +166,7 @@ On Linux, this command should install all requirements:
 apt install python3 libpq-dev python3-dev python3-venv
 ```
 
-Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a user, password and an `hh` table. Have it running in the background on port `5432`.
+Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a user, password and a database named `hh`. Have it running in the background on port `5432`.
 
 After that, follow the steps below to get started running the project manually:
 
