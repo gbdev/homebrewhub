@@ -12,16 +12,48 @@ from hhub.models import Entry
 dirs = ["database/entries", "database-gba/entries"]
 
 
+def _get_sha1_hash(game, romfile):
+    try:
+        sha1sum = hashlib.sha1()
+
+        with open(f"database/entries/{game}/{romfile}", "rb") as source:
+            block = source.read(2**16)
+
+            while len(block) != 0:
+                sha1sum.update(block)
+                block = source.read(2**16)
+
+        sha1 = sha1sum.hexdigest()
+        print("SHA1:", sha1)
+        return sha1
+
+    except Exception:
+        return ""
+
+
 def run():
     inserted = 0
     updated = 0
+
     for folder in dirs:
         print(f"Processing folder {folder}")
         games = os.listdir(folder)
-        for game in games:
+
+        games_count = len(games)
+        print(f"Found {games_count} games")
+
+        for n, game in enumerate(games, start=1):
             with open(f"{folder}/{game}/game.json") as json_file:
                 data = json.load(json_file)
-                print(f"Processing entry {game}")
+                print(f"({n}/{games_count}) Processing entry {game}")
+
+                romfile = ""
+
+                # Safety check to protect against entry without file (against schema)
+                if "files" not in data:
+                    print("Entry missing 'files' key, skipping...")
+                    continue
+
                 for file in data["files"]:
                     if "playable" in file:
                         romfile = file["filename"]
@@ -35,36 +67,30 @@ def run():
                 except Exception:
                     tools = ""
 
-                try:
-                    sha1sum = hashlib.sha1()
-                    with open(f"database/entries/{game}/{romfile}", 'rb') as source:
-                        block = source.read(2**16)
-                        while len(block) != 0:
-                            sha1sum.update(block)
-                            block = source.read(2**16)
-                        sha1 = sha1sum.hexdigest()
-                        print("SHA1:", sha1)
-                except Exception:
-                    sha1 = ""
+                _get_sha1_hash(game, romfile)
 
                 if "tags" not in data:
                     data["tags"] = []
+
                 if "platform" not in data:
                     print("no platform")
                     data["platform"] = "GB"
+
                 if "developer" not in data:
                     data["developer"] = ""
+
                 if "typetag" not in data:
                     data["typetag"] = "game"
+
                 if "title" not in data:
                     print("Warning: no title")
                     data["title"] = ""
 
-            try:
-                # Check if an entry already exists with the given slug
-                entry = Entry.objects.get(slug=data["slug"])
-                # And update its values
-                entry = Entry(
+            # Returns an (entry, bool) tuple. Here we don't need the object that was
+            # either updated or created, we only want to know if it was created or not
+            _, created = Entry.objects.update_or_create(
+                slug=data["slug"],
+                defaults=dict(
                     slug=data["slug"],
                     platform=data["platform"],
                     developer=data["developer"],
@@ -73,22 +99,12 @@ def run():
                     tags=data["tags"],
                     basepath=folder,
                     devtoolinfo=tools,
-                )
-                updated += 1
-            except Exception:
-                # otherwise, create a new entry
-                entry = Entry(
-                    slug=data["slug"],
-                    platform=data["platform"],
-                    developer=data["developer"],
-                    typetag=data["typetag"],
-                    title=data["title"],
-                    tags=data["tags"],
-                    basepath=folder,
-                    devtoolinfo=tools,
-                )
-                inserted += 1
+                ),
+            )
 
-            entry.save()
+            if created:
+                inserted +=1
+            else:
+                updated +=1
 
     print(f"{inserted} new entries inserted, {updated} updated")
