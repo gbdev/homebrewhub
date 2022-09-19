@@ -1,0 +1,24 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+env:
+  DJANGO_SECRET_KEY: "super-secret-ci-key"
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9.13
+      - name: Install System Dependencies
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends build-essential curl gettext git
+      - uses: pre-commit/action@v2.0.3

@@ -1,5 +1,7 @@
 # hhub
 
+![Github CI](https://github.com/gbdev/homebrewhub/actions/workflows/ci.yaml/badge.svg)
+
 This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 Table of contents:
@@ -183,6 +185,9 @@ source env/bin/activate
 
 # Install Python dependencies
 pip install -r requirements.txt
+
+# Install Pre-Commit git hooks (for enforcing code style on git commit)
+pre-commit install
 
 # Prepare migrations for our Entry model
 python3 manage.py makemigrations hhub

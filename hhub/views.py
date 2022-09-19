@@ -2,7 +2,7 @@ import json
 
 from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 from hhub.models import Entry
 from hhub.serializers import EntrySerializer
@@ -175,7 +175,8 @@ def sort_and_order(entries, col_name, sort_by_param):
     col_name = col_name.lower().strip()
     sort_by_param = sort_by_param.lower().strip()
 
-    # if col_name has been specified and it is in allowed list of fields, check if sort has been specified
+    # if col_name has been specified and it is in allowed list of fields,
+    # check if sort has been specified
     if col_name in ["slug", "title"]:
         if sort_by_param in ["", "asc", "desc"]:
             if sort_by_param == "asc" or not sort_by_param:
