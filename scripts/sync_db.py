@@ -1,7 +1,7 @@
 # This script must be run through Django manage.py as it interacts with the ORM
 # e.g python manage.py runscript sync_db
-# In importing other folders, keep also in this runs for the root of the project,
-# even if it's in hhub/scripts
+# In importing other folders, keep also in mind that this will run from the root
+# of the project, even if it's in hhub/scripts
 
 import hashlib
 import json
@@ -14,6 +14,9 @@ dirs = ["database/entries", "database-gba/entries"]
 
 
 def _get_sha1_hash(game, romfile):
+    """
+    Compute the SHA1 of the passed file
+    """
     try:
         sha1sum = hashlib.sha1()
 
