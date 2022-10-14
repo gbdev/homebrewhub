@@ -2,6 +2,7 @@ import json
 
 from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.http import JsonResponse
 
 from hhub.models import Entry
@@ -86,6 +87,7 @@ def search_entries(request):
     typetag = request.GET.get("typetag", "")
     tags = request.GET.get("tags", "")
     platform = request.GET.get("platform", "")
+    text_query = request.GET.get("q", "")
 
     # Pagination
     # Request a specific page
@@ -126,7 +128,10 @@ def search_entries(request):
         # Read the value of tags as an array of tags separated by commas
         tags = tags.split(",")
         entries = entries.filter(tags__contains=tags)
-
+    if text_query:
+        entries = entries.filter(
+            Q(title__icontains=text_query) | Q(slug__icontains=text_query)
+        )
     results = len(entries)
 
     # Prepare paginators and number of results
