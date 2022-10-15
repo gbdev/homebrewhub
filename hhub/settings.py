@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "hh3.gbdev.io", "localhost", "0.0.0.0"]
 CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1",
     "https://hh2.gbdev.io",
+    "https://hh.gbdev.io",
 ]
 
 # Application definition
