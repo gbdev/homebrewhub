@@ -25,6 +25,8 @@ def entry_manifest(request, pk):
     # because that way they can be versioned and modified through PRs
     data = open(f"{entry.basepath}/{pk}/game.json").read()
     json_data = json.loads(data)
+
+    json_data["devtoolinfo"] = entry.devtoolinfo
     return JsonResponse(json_data)
 
 
