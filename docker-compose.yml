@@ -34,6 +34,7 @@ services:
     restart: unless-stopped
 
   web:
+    container_name: hh_api
     build:
       context: .
       dockerfile: Dockerfile
