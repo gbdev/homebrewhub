@@ -176,6 +176,32 @@ def search_entries(request):
     )
 
 
+def stats(request):
+    entries = Entry.objects
+    data = {
+        "total": entries.all().count(),
+        "typetag": {
+            "game": entries.filter(typetag="game").count(),
+            "demo": entries.filter(typetag="demo").count(),
+            "music": entries.filter(typetag="music").count(),
+            "tools": entries.filter(typetag="homebrew").count(),
+        },
+        "tags": {
+            "oss": entries.filter(tags__contains=["Open Source"]).count(),
+            "puzzle": entries.filter(tags__contains=["Puzzle"]).count(),
+            "rpg": entries.filter(tags__contains=["RPG"]).count(),
+            "platform": entries.filter(tags__contains=["Platform"]).count(),
+        },
+        "platforms": {
+            "gba": entries.filter(platform="GBA").count(),
+            "gbc": entries.filter(platform="GBC").count(),
+            "gb": entries.filter(platform="GB").count(),
+        },
+    }
+
+    return JsonResponse(data)
+
+
 # Utils
 def sort_and_order(entries, col_name, sort_by_param):
     # regardless what user has submitted, we lowercase the input
