@@ -7,30 +7,71 @@ This repository provides the source code of the new [HHub API](https://hh3.gbdev
 Table of contents:
 
 - [API Documentation](#api-documentation)
-  - [GET `/entry/<entry-slug>.json`](#get---entry--entry-slug-json-)
-    - [Examples](#examples)
-  - [GET `/entry/<entry-slug>/<filename>`](#get---entry--entry-slug---fialename--)
-    - [Examples](#examples-1)
-  - [GET `/all`](#get---all-)
-  - [GET `/search`](#get---search-)
-    - [Examples](#examples-2)
-  - [Pagination](#pagination)
-  - [Sort and order by](#sort-and-order-by)
-- [Deploy](#deploy)
-  - [Synchronising the database](#synchronising-the-database)
-  - [Legacy](#legacy)
-
----
+- [Local Development](#local-development)
+  - [1. Prerequisites](#prerequisites)
+  - [2. Pull the games databases](#pull-the-games-databases)
+  - [3A. Docker based requirements](#3a-docker-based-requirements)
+  - [3B. Manual requirements](#3b-manual-requirements)
+  - [4. Synchronising the database](#4-synchronising-the-database)
+  - [5. Get the frontend running](#get-the-frontend-running)
+- [Legacy](#legacy)
 
 ## API Documentation
 
-Documentation about the exposed API and how to interact with the Homebrew Hub instance over hh3.gbdev.io, see [API.md](API.md)
+Documentation about the exposed API and how to interact with the Homebrew Hub instance over hh3.gbdev.io, see [API.md](API.md).
 
 ## Local Development
 
-There are two options for running this project locally: manually or using Docker.
+To run a complete local instance of Homebrew Hub, let's start with:
 
-### Manual requirements
+```
+# Cloning the repo locally
+git clone https://github.com/gbdev/homebrewhub
+
+# Changing directory into the cloned repo
+cd homebrewhub
+```
+
+### 1. Prerequisites
+
+No matter if you choose the local setup or the docker one, you will need a couple of pre-requirements on the system:
+
+- The executable `pre-commit`, available as a pip package.
+  E.g.:
+  ```
+  python3 -m venv env
+  sourc env/bin/activate
+  pip install pre-commit
+  ```
+  After it's installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly.
+- (Optional) The `gbtoolsid` ([Game Boy Toolchain ID](https://github.com/bbbbbr/gbtoolsid)) executable must be available in the project root to populate toolchain details for the imported entries. Get a build on the [Releases](https://github.com/bbbbbr/gbtoolsid/releases/latest) page and extract the zip.
+
+### 2. Pull the games database(s)
+
+```bash
+# Clone the database repositories
+# GB/GBC
+git clone https://github.com/gbdev/database/
+# GBA
+git clone https://github.com/gbadev-org/games database-gba
+```
+
+### 3A. Docker based requirements
+
+First, install Docker ([download link](https://docs.docker.com/get-docker/)).
+
+After that, follow the steps below to get started running the project using containers:
+
+```bash
+# Start up backing services (web server, database and database admin)
+# NOTE: This command will also take care of synchronising the database (including migrations)
+docker-compose up --build
+
+# Once that's finished, in another terminal, query the /api/all route to see if everything's there
+curl https://localhost:8000/api/all
+```
+
+### 3B. Manual requirements
 
 You need Python 3 and a couple of packages to build `psycopg2` (database driver).
 
@@ -88,34 +129,7 @@ DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:
 curl https://localhost:8000/api/all
 ```
 
-### Docker based requirements
-
-First, install Docker ([download link](https://docs.docker.com/get-docker/)).
-
-After that, follow the steps below to get started running the project using containers:
-
-```bash
-# Clone the repo locally
-git clone https://github.com/gbdev/homebrewhub
-
-# Change into the cloned repo
-cd homebrewhub
-
-# Clone the database repositories
-# GB/GBC
-git clone https://github.com/gbdev/database/
-# GBA
-git clone https://github.com/gbadev-org/games database-gba
-
-# Start up backing services (web server, database and database admin)
-# NOTE: This command will also take care of synchronising the database (including migrations)
-docker-compose up --build
-
-# Once that's finished, in another terminal, query the /api/all route to see if everything's there
-curl https://localhost:8000/api/all
-```
-
-### Synchronising the database
+### 4. Synchronising the database
 
 The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consistent_ way (see the game.json JSON schema).
 
@@ -130,6 +144,10 @@ The "real" database needs to be built (and updated when a commit gets pushed) fr
 ```sh
 python3 manage.py runscript sync_db
 ```
+
+### 5. Get the frontend running
+
+Now that you have your Homebrew Hub backend up and running, you can check [Virens](https://github.com/gbdev/virens), our Vue-powered Homebrew Hub frontend shipping web assembly builds of mGBA and binjgb to actually play all these entries directly on a browser :D
 
 ### Legacy
 
