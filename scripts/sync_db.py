@@ -10,6 +10,10 @@ import subprocess
 
 from hhub.models import Entry
 
+# The list of the target directories that need to be processed
+# Those should point to the "entries" subfolder of a "Homebrew Hub database"
+# e.g.: https://github.com/gbdev/database or https://github.com/gbadev-org/games
+
 dirs = ["database/entries", "database-gba/entries"]
 
 
@@ -28,7 +32,6 @@ def _get_sha1_hash(game, romfile):
                 block = source.read(2**16)
 
         sha1 = sha1sum.hexdigest()
-        print("SHA1:", sha1)
         return sha1
 
     except Exception:
@@ -62,14 +65,16 @@ def run():
                     if "playable" in file:
                         romfile = file["filename"]
 
-                # Run gbstoolsid to get some information about how the ROM was developed
-                try:
-                    gbtoolsid_out = subprocess.check_output(
-                        ["./gbtoolsid", "-oj", f"database/entries/{game}/{romfile}"]
-                    )
-                    tools = json.loads(gbtoolsid_out)
-                except Exception:
-                    tools = ""
+                # Just on the GB database, run the gbstoolsid to get
+                # some information about how the ROM was developed
+                if folder == "database/entries":
+                    try:
+                        gbtoolsid_out = subprocess.check_output(
+                            ["./gbtoolsid", "-oj", f"{folder}/{game}/{romfile}"]
+                        )
+                        tools = json.loads(gbtoolsid_out)
+                    except Exception:
+                        tools = ""
 
                 _get_sha1_hash(game, romfile)
 
