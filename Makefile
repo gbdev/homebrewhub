@@ -1,9 +1,9 @@
 # Reset the database, restarting all the containers and bringing the instance back up
 reset-psql:
-	docker-compose stop
-	docker-compose down
+	docker compose stop
+	docker compose down
 	docker volume rm homebrewhub_postgres -f
-	docker-compose up
+	docker compose up
 
 update-db:
 	cd database && git pull
