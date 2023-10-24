@@ -1,6 +1,16 @@
 version: "3"
 
 services:
+  nginx:
+    container_name: hh_nginx
+    build:
+      context: nginx/
+    ports:
+      - 8081:80
+    volumes:
+      - ./db-sources:/db-sources
+    depends_on:
+      - web
   db:
     container_name: hh_psql
     image: postgres:12-alpine
