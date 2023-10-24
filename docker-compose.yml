@@ -21,6 +21,9 @@ services:
       - "5432:5432"
 
   pgadmin:
+    # pgAdmin can access the postgres db with "db" as host and
+    # "POSTGRES_USER" and "POSTGRES_PASSWORD" as credentials 
+    # (specified just above in the db service)
     container_name: hh_pgadmin
     image: dpage/pgadmin4
     environment:
