@@ -14,7 +14,20 @@ from hhub.models import Entry
 # Those should point to the "entries" subfolder of a "Homebrew Hub database"
 # e.g.: https://github.com/gbdev/database or https://github.com/gbadev-org/games
 
-dirs = ["database/entries", "database-gba/entries"]
+basefolder = "db-sources/"
+
+dirs = [
+    "database-gb/entries",
+    "database-gba/entries",
+    "database-nes/entries",
+]
+
+
+git_pointers = {
+    "database-gb/entries": "https://github.com/gbdev/database",
+    "database-gba/entries": "https://github.com/gbadev-org/games",
+    "database-nes/entries": "https://github.com/nesdev-org/homebrew-db",
+}
 
 
 def _get_sha1_hash(game, romfile):
@@ -41,8 +54,10 @@ def _get_sha1_hash(game, romfile):
 def run():
     inserted = 0
     updated = 0
-
-    for folder in dirs:
+    d = 0
+    for database_folder in dirs:
+        folder = f"{basefolder}/{database_folder}"
+        d += 1
         print(f"Processing folder {folder}")
         games = os.listdir(folder)
 
@@ -52,7 +67,7 @@ def run():
         for n, game in enumerate(games, start=1):
             with open(f"{folder}/{game}/game.json") as json_file:
                 data = json.load(json_file)
-                print(f"({n}/{games_count}) Processing entry {game}")
+                print(f"({d}/{len(dirs)}) ({n}/{games_count}) Processing entry {game}")
 
                 romfile = ""
 
@@ -67,7 +82,7 @@ def run():
 
                 # Just on the GB database, run the gbstoolsid to get
                 # some information about how the ROM was developed
-                if folder == "database/entries":
+                if "database-gb/entries" in folder:
                     try:
                         gbtoolsid_out = subprocess.check_output(
                             ["./gbtoolsid", "-oj", f"{folder}/{game}/{romfile}"]
@@ -75,6 +90,8 @@ def run():
                         tools = json.loads(gbtoolsid_out)
                     except Exception:
                         tools = ""
+                else:
+                    tools = ""
 
                 _get_sha1_hash(game, romfile)
 
@@ -106,8 +123,9 @@ def run():
                     typetag=data["typetag"],
                     title=data["title"],
                     tags=data["tags"],
-                    basepath=folder,
+                    basepath=database_folder,
                     devtoolinfo=tools,
+                    baserepo=git_pointers[database_folder],
                 ),
             )
 
