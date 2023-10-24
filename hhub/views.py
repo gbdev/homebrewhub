@@ -23,10 +23,12 @@ def entry_manifest(request, pk):
 
     # Manifests need to stay on disk (and not serialized/deserialized from db)
     # because that way they can be versioned and modified through PRs
-    data = open(f"{entry.basepath}/{pk}/game.json").read()
+    data = open(f"db-sources/{entry.basepath}/{pk}/game.json").read()
     json_data = json.loads(data)
 
+    # Enrich the manifest with some values available only in the (postgres) database
     json_data["devtoolinfo"] = entry.devtoolinfo
+    json_data["basepath"] = entry.basepath
     return JsonResponse(json_data)
 
 
@@ -60,7 +62,7 @@ def entries_all(request):
 
     json_entries = []
     for entry in entries:
-        data = open(f"{entry.basepath}/{entry.slug}/game.json").read()
+        data = open(f"db-sources/{entry.basepath}/{entry.slug}/game.json").read()
         json_entries.append(json.loads(data))
     return JsonResponse(
         {
@@ -154,8 +156,11 @@ def search_entries(request):
     # Read from disks the manifests of the result entries
     json_entries = []
     for entry in entries:
-        data = open(f"{entry.basepath}/{entry.slug}/game.json").read()
-        json_entries.append(json.loads(data))
+        data = open(f"db-sources/{entry.basepath}/{entry.slug}/game.json").read()
+        json_data = json.loads(data)
+        # Enrich the manifest with some values available only in the (postgres) database
+        json_data["basepath"] = entry.basepath
+        json_entries.append(json_data)
 
     # Prepare final JSON response
     return JsonResponse(
