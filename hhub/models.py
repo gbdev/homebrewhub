@@ -9,7 +9,10 @@ class Entry(models.Model):
     title = models.TextField()
     typetag = models.TextField(null=True)
     tags = ArrayField(models.TextField(), null=True)
-    basepath = models.TextField()
+    # Where is this entry on disk?
+    basepath = models.TextField(default="")
+    # This is used to generate the "Improve metadata" links
+    baserepo = models.TextField(null=True)
     devtoolinfo = models.JSONField(null=True)
 
     class Meta:
