@@ -25,7 +25,7 @@ services:
     # "POSTGRES_USER" and "POSTGRES_PASSWORD" as credentials 
     # (specified just above in the db service)
     container_name: hh_pgadmin
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:7
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
