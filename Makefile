@@ -6,8 +6,9 @@ reset-psql:
 	docker compose up
 
 update-db:
-	cd database && git pull
-	cd gba-database && git pull
+	cd db-sources/database-gb && git pull
+	cd db-sources/database-gba && git pull
+	cd db-sources/database-nes && git pull
 
 sync-db:
 	docker exec hh_api python manage.py runscript sync_db
