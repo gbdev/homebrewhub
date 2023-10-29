@@ -29,6 +29,7 @@ def entry_manifest(request, pk):
     # Enrich the manifest with some values available only in the (postgres) database
     json_data["devtoolinfo"] = entry.devtoolinfo
     json_data["basepath"] = entry.basepath
+    json_data["baserepo"] = entry.baserepo
     return JsonResponse(json_data)
 
 
