@@ -2,7 +2,7 @@ import json
 
 from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q, F
+from django.db.models import F, Q
 from django.http import JsonResponse
 
 from hhub.models import Entry
