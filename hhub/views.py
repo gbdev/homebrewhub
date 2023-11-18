@@ -2,7 +2,7 @@ import json
 
 from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Q
+from django.db.models import Q, F
 from django.http import JsonResponse
 
 from hhub.models import Entry
@@ -214,16 +214,19 @@ def sort_and_order(entries, col_name, sort_by_param):
     col_name = col_name.lower().strip()
     sort_by_param = sort_by_param.lower().strip()
 
+    # If no column name has been passed, sort the results by most recent
+    if col_name == "":
+        col_name = "published_date"
+        sort_by_param = "desc"
+
     # if col_name has been specified and it is in allowed list of fields,
     # check if sort has been specified
-    if col_name in ["slug", "title"]:
+    if col_name in ["slug", "title", "published_date"]:
         if sort_by_param in ["", "asc", "desc"]:
             if sort_by_param == "asc" or not sort_by_param:
-                return entries.order_by(col_name)
+                return entries.order_by(F(col_name).asc(nulls_last=True))
             elif sort_by_param == "desc":
-                # minus here means "desc" order, according to
-                # https://docs.djangoproject.com/en/dev/ref/models/querysets/#order-by
-                return entries.order_by("-" + col_name)
+                return entries.order_by(F(col_name).desc(nulls_last=True))
         else:
             return entries.order_by(col_name)
     elif sort_by_param in ["", "asc", "desc"]:
