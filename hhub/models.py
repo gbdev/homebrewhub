@@ -14,6 +14,7 @@ class Entry(models.Model):
     # This is used to generate the "Improve metadata" links
     baserepo = models.TextField(null=True)
     devtoolinfo = models.JSONField(null=True)
+    published_date = models.DateField(default=None, null=True)
 
     class Meta:
         ordering = ["slug"]

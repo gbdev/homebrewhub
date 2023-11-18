@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import subprocess
+import dateutil.parser
 
 from hhub.models import Entry
 
@@ -112,6 +113,15 @@ def run():
                     print("Warning: no title")
                     data["title"] = ""
 
+            parsed_date = None
+
+            # If a "date" field is present, try to parse it as a date
+            if "date" in data:
+                try:
+                    parsed_date = dateutil.parser.parse(data["date"])
+                except Exception:
+                    parsed_date = None
+
             # Returns an (entry, bool) tuple. Here we don't need the object that was
             # either updated or created, we only want to know if it was created or not
             _, created = Entry.objects.update_or_create(
@@ -126,6 +136,7 @@ def run():
                     basepath=database_folder,
                     devtoolinfo=tools,
                     baserepo=git_pointers[database_folder],
+                    published_date=parsed_date,
                 ),
             )
 
