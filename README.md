@@ -8,12 +8,12 @@ Table of contents:
 
 - [API Documentation](#api-documentation)
 - [Local Development](#local-development)
-  - [1. Prerequisites](#prerequisites)
-  - [2. Pull the games databases](#pull-the-games-databases)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Pull the games databases](#2-pull-the-games-databases)
   - [3A. Docker based requirements](#3a-docker-based-requirements)
   - [3B. Manual requirements](#3b-manual-requirements)
   - [4. Synchronising the database](#4-synchronising-the-database)
-  - [5. Get the frontend running](#get-the-frontend-running)
+  - [5. Get the frontend running](#5-get-the-frontend-running)
 - [Legacy](#legacy)
 
 ## API Documentation
