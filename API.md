@@ -94,6 +94,28 @@ Every matching is case-insensitive.
 curl hh3.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
 ```
 
+### GET `/random`
+
+Return a random entry.
+
+The following query parameters can be used:
+
+- `type` (exact matching)
+- `developer` (exact matching)
+- `platform` (exact matching)
+- `tags` (exact matching, comma-separated array e.g. `/search?tags=Open Source,RPG`)
+
+More than one query parameter can be specified. They will be concatenated in "AND" statements, i.e. `/random?type=homebrew&platform=GBC` will return every Homebrew developed with GBC features.
+
+Every matching is case-insensitive.
+
+#### Examples
+
+```bash
+# Get every RPG released as Open Source with Game Boy Color features:
+curl hh3.gbdev.io/api/random?tags=Open Source,RPG&platform=GBC
+```
+
 ### Pagination
 
 Every result is paginated. These additional query params can be used in any of the previous routes:

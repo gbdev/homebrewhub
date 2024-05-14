@@ -28,6 +28,7 @@ urlpatterns = [
                 path("all", views.entries_all),
                 path("stats", views.stats),
                 path("search", views.search_entries),
+                path("random", views.random_entries),
             ]
         ),
     )
