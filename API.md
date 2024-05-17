@@ -95,7 +95,7 @@ curl hh3.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
 ```
 
 ```bash
-# Get random Game Boy Color games:
+# Get Game Boy Color games in a random order
 curl hh3.gbdev.io/api/search?random=true&platform=GBC
 ```
 
