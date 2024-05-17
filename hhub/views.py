@@ -174,7 +174,7 @@ def search_entries(request):
             # total number of pages
             "page_total": paginator.num_pages,
             # current request page
-            "page_current": page,
+            "page_current": int(page),
             # number of elements in this page
             "page_elements": len(serializer.data),
             # array of entries manifests
