@@ -1,5 +1,4 @@
 import json
-import random
 
 from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -78,105 +77,6 @@ def entries_all(request):
     )
     return JsonResponse(serializer.data, safe=False)
 
-
-def random_entries(request):
-    """
-    Returns a random entry matching some condition.
-
-    Similar to search
-    """
-    # Parse query params, providing defaults
-    # Filters
-    developer = request.GET.get("developer", "")
-    typetag = request.GET.get("typetag", "")
-    tags = request.GET.get("tags", "")
-    platform = request.GET.get("platform", "")
-
-    # Pagination
-    # Request a specific page
-    page = request.GET.get("page", "")
-    # Request a specific number of results (>1,<30)
-    num_elements = request.GET.get("results", 10)
-
-    # Order and sort
-    order_by_param = request.GET.get("order_by", "")
-    sort_by_param = request.GET.get("sort", "")
-
-    # Start by selecting everything
-    entries = Entry.objects.all()
-
-    # Boundaries for elements per page
-    # if num_elements <= 1:
-    #    num_elements = 1
-    # elif num_elements >= 30:
-    #    num_elements = 30
-
-    # change 3 to how many random items you want
-    entries = random.sample(list(entries), int(num_elements))
-
-    # sort and order
-    if sort_by_param:
-        entries = sort_and_order(entries, order_by_param, sort_by_param)
-
-    if developer:
-        entries = entries.filter(developer=developer)
-
-    if platform:
-        entries = entries.filter(platform=platform)
-
-    if typetag:
-        entries = entries.filter(typetag=typetag)
-
-    if tags:
-        # Read the value of tags as an array of tags separated by commas
-        tags = tags.split(",")
-        entries = entries.filter(tags__contains=tags)
-
-    results = len(entries)
-
-    # Prepare paginators and number of results
-    paginator = Paginator(entries, num_elements)
-
-    # Request the desired page of results
-    try:
-        entries = paginator.page(page)
-    except PageNotAnInteger:
-        entries = paginator.page(1)
-        page = 1
-    except EmptyPage:
-        entries = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    serializer = EntrySerializer(entries, many=True)
-
-    # Read from disks the manifests of the result entries
-    json_entries = []
-    for entry in entries:
-        data = open(f"db-sources/{entry.basepath}/{entry.slug}/game.json").read()
-        json_data = json.loads(data)
-        # Enrich the manifest with some values available only in the (postgres) database
-        json_data["basepath"] = entry.basepath
-        json_entries.append(json_data)
-
-    # Prepare final JSON response
-    return JsonResponse(
-        {
-            # total number of results from the query
-            "results": results,
-            # total number of pages
-            "page_total": paginator.num_pages,
-            # current request page
-            "page_current": page,
-            # number of elements in this page
-            "page_elements": len(serializer.data),
-            # array of entries manifests
-            "entries": json_entries,
-        },
-        # Allow non-dict instances to be passed and serialized
-        safe=False,
-    )
-
-
 def search_entries(request):
     """
     Returns every entry matching the conditions given in the query
@@ -192,6 +92,7 @@ def search_entries(request):
     tags = request.GET.get("tags", "")
     platform = request.GET.get("platform", "")
     text_query = request.GET.get("q", "")
+    random_query = request.GET.get("random", False)
 
     # Pagination
     # Request a specific page
@@ -237,6 +138,9 @@ def search_entries(request):
             Q(title__icontains=text_query) | Q(slug__icontains=text_query)
         )
     results = len(entries)
+
+    if random_query:
+        entries = entries.order_by("?")
 
     # Prepare paginators and number of results
     paginator = Paginator(entries, num_elements)
