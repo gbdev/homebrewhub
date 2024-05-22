@@ -77,7 +77,6 @@ def entries_all(request):
     )
     return JsonResponse(serializer.data, safe=False)
 
-
 def search_entries(request):
     """
     Returns every entry matching the conditions given in the query
@@ -93,6 +92,7 @@ def search_entries(request):
     tags = request.GET.get("tags", "")
     platform = request.GET.get("platform", "")
     text_query = request.GET.get("q", "")
+    random_query = request.GET.get("random", False)
 
     # Pagination
     # Request a specific page
@@ -139,6 +139,9 @@ def search_entries(request):
         )
     results = len(entries)
 
+    if random_query:
+        entries = entries.order_by("?")
+
     # Prepare paginators and number of results
     paginator = Paginator(entries, num_elements)
 
@@ -171,7 +174,7 @@ def search_entries(request):
             # total number of pages
             "page_total": paginator.num_pages,
             # current request page
-            "page_current": page,
+            "page_current": int(page),
             # number of elements in this page
             "page_elements": len(serializer.data),
             # array of entries manifests

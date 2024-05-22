@@ -76,12 +76,12 @@ Returns every entry in the database. Every entry is represented by its game mani
 Return every entry in the database matching the given conditions. Every entry is represented by its game manifest.
 
 The following query parameters can be used:
-
 - `type` (exact matching)
 - `developer` (exact matching)
 - `platform` (exact matching)
 - `tags` (exact matching, comma-separated array e.g. `/search?tags=Open Source,RPG`)
 - `title` ("contains" matching, e.g. `/search?title=brick` will return "**Brick**ster" and "**Brick**Breaker")
+- `random` (if true, the results will be in a random order)
 
 More than one query parameter can be specified. They will be concatenated in "AND" statements, i.e. `/search?type=homebrew&platform=GBC` will return every Homebrew developed with GBC features.
 
@@ -92,6 +92,11 @@ Every matching is case-insensitive.
 ```bash
 # Get every RPG released as Open Source with Game Boy Color features:
 curl hh3.gbdev.io/api/search?tags=Open Source,RPG&platform=GBC
+```
+
+```bash
+# Get Game Boy Color games in a random order
+curl hh3.gbdev.io/api/search?random=true&platform=GBC
 ```
 
 ### Pagination
