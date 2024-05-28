@@ -77,6 +77,7 @@ def entries_all(request):
     )
     return JsonResponse(serializer.data, safe=False)
 
+
 def search_entries(request):
     """
     Returns every entry matching the conditions given in the query
@@ -93,6 +94,7 @@ def search_entries(request):
     platform = request.GET.get("platform", "")
     text_query = request.GET.get("q", "")
     random_query = request.GET.get("random", False)
+    thirdparty = request.GET.get("thirdparty", "")
 
     # Pagination
     # Request a specific page
@@ -112,6 +114,11 @@ def search_entries(request):
     #    num_elements = 1
     # elif num_elements >= 30:
     #    num_elements = 30
+
+    # TODO: Implement filtering on the new schema field for distribution terms
+    #  to third parties. For now, make sameboy return empty
+    if thirdparty == "sameboy":
+        entries = []
 
     # sort and order
     if sort_by_param:
