@@ -22,3 +22,6 @@ init-db:
 
 shell:
 	docker exec -it hh_api bash
+
+prepare-gbtid:
+	cd scripts && wget https://github.com/bbbbbr/gbtoolsid/releases/download/v1.5.0/gbtoolsid_linux.zip && unzip gbtoolsid_linux.zip
