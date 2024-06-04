@@ -16,7 +16,7 @@ from hhub.models import Entry
 # Those should point to the "entries" subfolder of a "Homebrew Hub database"
 # e.g.: https://github.com/gbdev/database or https://github.com/gbadev-org/games
 
-basefolder = "db-sources/"
+basefolder = "db-sources"
 
 dirs = [
     "database-gb/entries",
@@ -61,7 +61,11 @@ def run():
         folder = f"{basefolder}/{database_folder}"
         d += 1
         print(f"Processing folder {folder}")
-        games = os.listdir(folder)
+        try:
+            games = os.listdir(folder)
+        except FileNotFoundError:
+            print("Folder not found, skipping it")
+            continue
 
         games_count = len(games)
         print(f"Found {games_count} games")
