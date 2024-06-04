@@ -2,7 +2,7 @@
 
 ![Github CI](https://github.com/gbdev/homebrewhub/actions/workflows/ci.yaml/badge.svg)
 
-This repository provides the source code of the new [HHub API](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
+This repository provides the source code of the [Homebrew Hub backend](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
 
 Table of contents:
 
@@ -24,7 +24,7 @@ Documentation about the exposed API and how to interact with the Homebrew Hub in
 
 To run a complete local instance of Homebrew Hub, let's start with:
 
-```
+```sh
 # Cloning the repo locally
 git clone https://github.com/gbdev/homebrewhub
 
@@ -36,24 +36,30 @@ cd homebrewhub
 
 No matter if you choose the local setup or the docker one, you will need a couple of pre-requirements on the system:
 
-- The executable `pre-commit`, available as a pip package.
-  E.g.:
-  ```
+- `pre-commit` <br>
+  E.g. Install it from pip:
+  ```bash
   python3 -m venv env
   sourc env/bin/activate
   pip install pre-commit
   ```
-  After it's installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly.
-- (Optional) The `gbtoolsid` ([Game Boy Toolchain ID](https://github.com/bbbbbr/gbtoolsid)) executable must be available in the project root to populate toolchain details for the imported entries. Get a build on the [Releases](https://github.com/bbbbbr/gbtoolsid/releases/latest) page and extract the zip.
+  After it's installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly. `pre-commit run --all-files` will run it against the whole repository.
+- (Optional) The `gbtoolsid` ([Game Boy Toolchain ID](https://github.com/bbbbbr/gbtoolsid)) executable must be available in the project root to populate toolchain details for the imported entries. Get a build on the [Releases](https://github.com/bbbbbr/gbtoolsid/releases/latest) page and extract the zip or run `make prepare-gbtid` from the root of the repository.
 
 ### 2. Pull the games database(s)
 
+To populate the database, we'll need some sources. Here's how to pull all the 'official' databases (you need at least one):
+
 ```bash
-# Clone the database repositories
 # GB/GBC
-git clone https://github.com/gbdev/database/
+git clone https://github.com/gbdev/database/ db-sources/database-gb
 # GBA
-git clone https://github.com/gbadev-org/games database-gba
+git clone https://github.com/gbadev-org/games db-sources/database-gba
+# NES
+git clone https://github.com/nesdev-org/homebrew-db db-sources/database-nes
+
+## or simply..
+make init-db
 ```
 
 ### 3A. Docker based requirements
@@ -141,13 +147,15 @@ The "real" database needs to be built (and updated when a commit gets pushed) fr
 
 > Keep in mind that the two are not equivalent, as the Django database will keep additional values about each entry (e.g. simple analytics).
 
-```sh
+Every time you want to trigger a database sync (e.g. you pulled some updates on the games database):
+
+```bash
 python3 manage.py runscript sync_db
 ```
 
 ### 5. Get the frontend running
 
-Now that you have your Homebrew Hub backend up and running, you can check [Virens](https://github.com/gbdev/virens), our Vue-powered Homebrew Hub frontend shipping web assembly builds of mGBA and binjgb to actually play all these entries directly on a browser :D
+Now that you have your Homebrew Hub backend up and running, you can check [Virens](https://github.com/gbdev/virens), our VueJS based frontend shipping web assembly builds of mGBA and binjgb to actually play all these entries directly on a browser :D
 
 ### Legacy
 
