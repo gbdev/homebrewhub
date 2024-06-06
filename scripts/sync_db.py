@@ -127,6 +127,15 @@ def run():
                 except Exception:
                     parsed_date = None
 
+            # Manually flag an entry as Open Source if it has an explicit license 
+            #  set or if it has a valid git repository
+            if "Open Source" not in data["tags"]:
+                if "repository" in data:
+                    if data["repository"] != "":
+                        data["tags"].append("Open Source")
+                if "gameLicense" in data:
+                    data["tags"].append("Open Source")
+
             # Returns an (entry, bool) tuple. Here we don't need the object that was
             # either updated or created, we only want to know if it was created or not
             _, created = Entry.objects.update_or_create(
