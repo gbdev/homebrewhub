@@ -127,7 +127,7 @@ def run():
                 except Exception:
                     parsed_date = None
 
-            # Manually flag an entry as Open Source if it has an explicit license 
+            # Manually flag an entry as Open Source if it has an explicit license
             #  set or if it has a valid git repository
             if "Open Source" not in data["tags"]:
                 if "repository" in data:
