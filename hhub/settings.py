@@ -32,9 +32,9 @@ ALLOWED_HOSTS = ["127.0.0.1", "hh3.gbdev.io", "localhost", "0.0.0.0"]
 
 # Allow the following hosts to consume the API
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1",
-    "https://hh2.gbdev.io",
     "https://hh.gbdev.io",
+    # For e.g. when you're serving Virens locally
+    "http://localhost:3000",
 ]
 
 # Application definition
