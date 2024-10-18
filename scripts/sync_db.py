@@ -104,6 +104,9 @@ def run():
                 if "tags" not in data:
                     data["tags"] = []
 
+                if "thirdparty" not in data:
+                    data["thirdparty"] = []
+
                 if "platform" not in data:
                     print("no platform")
                     data["platform"] = "GB"
@@ -147,6 +150,7 @@ def run():
                     typetag=data["typetag"],
                     title=data["title"],
                     tags=data["tags"],
+                    thirdparty=data["thirdparty"],
                     basepath=database_folder,
                     devtoolinfo=tools,
                     baserepo=git_pointers[database_folder],

@@ -115,10 +115,8 @@ def search_entries(request):
     # elif num_elements >= 30:
     #    num_elements = 30
 
-    # TODO: Implement filtering on the new schema field for distribution terms
-    #  to third parties. For now, make sameboy return empty
-    if thirdparty == "sameboy":
-        entries = []
+    if thirdparty:
+        entries = entries.filter(thirdparty__contains=[thirdparty])
 
     # sort and order
     if sort_by_param:
