@@ -40,7 +40,7 @@ Now, no matter if you choose the local setup or the docker one, you will need a 
   E.g. Install it from pip:
   ```bash
   python3 -m venv env
-  sourc env/bin/activate
+  source env/bin/activate
   pip install pre-commit
   ```
   After it's installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly. `pre-commit run --all-files` will run it against the whole repository.
@@ -77,7 +77,7 @@ After that, follow the steps below to get started running the project using cont
 docker compose up --build
 
 # Once that's finished, from another shell, query the /api/all route to see if everything's there
-curl https://localhost:8000/api/all
+curl http://localhost:8081/api/all
 ```
 
 ### 3B. Manual requirements
@@ -151,4 +151,4 @@ python3 manage.py runscript sync_db
 
 Now that you have your Homebrew Hub backend up and running, you can check [Virens](https://github.com/gbdev/virens), our VueJS based frontend shipping web assembly builds of mGBA and binjgb to actually play all these entries directly on a browser :D
 
-Remember to set `BASE_API_URL=http://localhost:8000` so the API calls from Virens will point to the backend we just brought up.
+Remember to set `BASE_API_URL=http://localhost:8081` so the API calls from Virens will point to the backend we just brought up.
