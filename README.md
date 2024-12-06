@@ -1,6 +1,7 @@
 # hhub
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 ![Github CI](https://github.com/gbdev/homebrewhub/actions/workflows/ci.yaml/badge.svg)
 
 This repository provides the source code of the [Homebrew Hub backend](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
