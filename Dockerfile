@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -19,7 +19,8 @@ RUN apt-get update && \
 
 # Install application-level dependencies
 COPY requirements.txt /src/
-RUN pip --disable-pip-version-check install -r requirements.txt
+RUN pip install uv
+RUN uv pip sync requirements.txt --system
 
 # Copy project files over to image
 COPY . /src/
