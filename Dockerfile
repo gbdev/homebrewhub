@@ -20,9 +20,8 @@ RUN apt-get update && \
 # Copy project files over to image
 COPY . /src/
 
-RUN pip install uv
+RUN pip install uv==0.5.6
 RUN uv pip install -r pyproject.toml --system
-
 
 
 # Expose 8000 port in container for Django use
