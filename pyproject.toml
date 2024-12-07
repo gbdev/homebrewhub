@@ -1,3 +1,21 @@
+[project]
+name = "homebrewhub"
+version = "1.0.0"
+description = "Digital repository of homebrew games"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.1.2,<5.2",
+    "djangorestframework>=3.15.2",
+    "drf-spectacular>=0.27.2",
+    "psycopg2>=2.9",
+    "dj-database-url>=2.3",
+    "django-cors-headers>=4.6",
+    "django-extensions>=3.2.3",
+    # Sync-db dependencies
+    "python-dateutil==2.9.0.post0",
+]
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [

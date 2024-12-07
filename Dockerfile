@@ -17,13 +17,13 @@ RUN apt-get update && \
         libpq-dev
 
 
-# Install application-level dependencies
-COPY requirements.txt /src/
-RUN pip install uv
-RUN uv pip sync requirements.txt --system
-
 # Copy project files over to image
 COPY . /src/
+
+RUN pip install uv
+RUN uv pip install -r pyproject.toml --system
+
+
 
 # Expose 8000 port in container for Django use
 EXPOSE 8000

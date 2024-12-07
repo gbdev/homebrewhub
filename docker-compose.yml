@@ -11,7 +11,7 @@ services:
       - web
   db:
     container_name: hh_psql
-    image: postgres:12-alpine
+    image: postgres:13-alpine
     environment:
       - POSTGRES_DB=hh
       - POSTGRES_USER=postgres
