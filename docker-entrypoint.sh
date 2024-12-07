@@ -23,6 +23,10 @@ until postgres_ready; do
 
 case "$1" in
   "dev_web_start")
+
+    echo "==> Generating OpenAPI schema..."
+    python manage.py spectacular --color --file schema.yml
+
     echo "==> Creating migrations..."
     python manage.py makemigrations hhub
 

@@ -8,6 +8,11 @@ from django.http import JsonResponse
 from hhub.models import Entry
 from hhub.serializers import EntrySerializer
 
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+
+from rest_framework.decorators import api_view
+
 
 def entry_manifest(request, pk):
     """
@@ -190,6 +195,12 @@ def search_entries(request):
     )
 
 
+@extend_schema(
+    summary="Get statistics about the entries in the database",
+    description="Retrieve aggregated counts of entries by type, tags, and platforms.",
+    responses={200: OpenApiTypes.OBJECT},
+)
+@api_view(["GET"])
 def stats(request):
     entries = Entry.objects
     data = {

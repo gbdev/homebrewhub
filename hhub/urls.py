@@ -15,6 +15,10 @@ Including another URLconf
 """
 
 from django.urls import include, path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+)
 
 from hhub import views
 
@@ -24,6 +28,14 @@ urlpatterns = [
         r"api/",
         include(
             [
+                # Serve the OpenAPI schema
+                path("schema/", SpectacularAPIView.as_view(), name="schema"),
+                # Serve the Swagger UI to browse the OpenAPI schema
+                path(
+                    "schema/swagger-ui/",
+                    SpectacularSwaggerView.as_view(url_name="schema"),
+                    name="swagger-ui",
+                ),
                 path("entry/<slug:pk>.json", views.entry_manifest),
                 path("all", views.entries_all),
                 path("stats", views.stats),

@@ -51,7 +51,21 @@ INSTALLED_APPS = [
     "corsheaders",
     # Used to run separate scripts that interact with the models (sync_db)
     "django_extensions",
+    "drf_spectacular",
 ]
+
+# REST Framework
+# https://www.django-rest-framework.org/api-guide/settings/
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Homebrew Hub",
+    "DESCRIPTION": " A digital repository of of homebrew games, patches, hackroms for old consoles.",
+    "VERSION": "1.0.0",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
