@@ -221,6 +221,7 @@ def stats(request):
             "gba": entries.filter(platform="GBA").count(),
             "gbc": entries.filter(platform="GBC").count(),
             "gb": entries.filter(platform="GB").count(),
+            "nes": entries.filter(platform="NES").count(),
         },
     }
 
