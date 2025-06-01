@@ -52,7 +52,22 @@ def _get_sha1_hash(game, romfile):
     except Exception:
         return ""
 
-
+def get_file_addition_date(file_path, repo_dir):
+    try:
+        result = subprocess.run(
+            ['git', 'log', '--diff-filter=A', '--follow', '--format=%ad', '--date=iso-strict', '--', file_path],
+            cwd=repo_dir,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
+        dates = result.stdout.strip().splitlines()
+        return dates[-1] if dates else None
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e.stderr}")
+        return None
+        
 def run():
     inserted = 0
     updated = 0
