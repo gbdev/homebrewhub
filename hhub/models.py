@@ -15,7 +15,7 @@ class Entry(models.Model):
     baserepo = models.TextField(null=True)
     devtoolinfo = models.JSONField(null=True)
     published_date = models.DateField(default=None, null=True)
-    firstadded_date = models.DateField(default=None, null=True)
+    firstadded_date = models.DateTimeField(default=None, null=True)
     thirdparty = ArrayField(models.TextField(), null=True, default=list)
 
     class Meta:
