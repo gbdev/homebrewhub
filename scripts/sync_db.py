@@ -16,19 +16,21 @@ from hhub.models import Entry
 # Those should point to the "entries" subfolder of a "Homebrew Hub database"
 # e.g.: https://github.com/gbdev/database or https://github.com/gbadev-org/games
 
+from pathlib import Path
+
 basefolder = "db-sources"
 
 dirs = [
-    "database-gb/entries",
-    "database-gba/entries",
-    "database-nes/entries",
+    "database-gb",
+    "database-gba",
+    "database-nes",
 ]
 
 
 git_pointers = {
-    "database-gb/entries": "https://github.com/gbdev/database",
-    "database-gba/entries": "https://github.com/gbadev-org/games",
-    "database-nes/entries": "https://github.com/nesdev-org/homebrew-db",
+    "database-gb": "https://github.com/gbdev/database",
+    "database-gba": "https://github.com/gbadev-org/games",
+    "database-nes": "https://github.com/nesdev-org/homebrew-db",
 }
 
 
@@ -54,13 +56,14 @@ def _get_sha1_hash(game, romfile):
 
 def get_file_addition_date(file_path, repo_dir):
     try:
+        command = ['git', 'log', '--diff-filter=A', '--follow', '--format=%ad', '--date=iso-strict', '--', file_path]
         result = subprocess.run(
-            ['git', 'log', '--diff-filter=A', '--follow', '--format=%ad', '--date=iso-strict', '--', file_path],
+            command,
             cwd=repo_dir,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            check=True
+            check=True,
         )
         dates = result.stdout.strip().splitlines()
         return dates[-1] if dates else None
@@ -73,11 +76,17 @@ def run():
     updated = 0
     d = 0
     for database_folder in dirs:
+
+        a = subprocess.run(
+            ["git", "config", "--global", "--add", "safe.directory", f"{Path.cwd()}/{basefolder}/{database_folder}"],
+            check=True
+        )
+
         folder = f"{basefolder}/{database_folder}"
         d += 1
         print(f"Processing folder {folder}")
         try:
-            games = os.listdir(folder)
+            games = os.listdir(f"{folder}/entries")
         except FileNotFoundError:
             print("Folder not found, skipping it")
             continue
@@ -86,9 +95,11 @@ def run():
         print(f"Found {games_count} games")
 
         for n, game in enumerate(games, start=1):
-            with open(f"{folder}/{game}/game.json") as json_file:
+            with open(f"{folder}/entries/{game}/game.json") as json_file:
                 data = json.load(json_file)
                 print(f"({d}/{len(dirs)}) ({n}/{games_count}) Processing entry {game}")
+
+                first_added = get_file_addition_date(f"entries/{game}/game.json", folder)
 
                 romfile = ""
 
@@ -103,10 +114,10 @@ def run():
 
                 # Just on the GB database, run the gbstoolsid to get
                 # some information about how the ROM was developed
-                if "database-gb/entries" in folder:
+                if "database-gb" in folder:
                     try:
                         gbtoolsid_out = subprocess.check_output(
-                            ["./gbtoolsid", "-oj", f"{folder}/{game}/{romfile}"]
+                            ["./scripts/gbtoolsid", "-oj", f"{folder}/entries/{game}/{romfile}"]
                         )
                         tools = json.loads(gbtoolsid_out)
                     except Exception:
@@ -170,6 +181,7 @@ def run():
                     devtoolinfo=tools,
                     baserepo=git_pointers[database_folder],
                     published_date=parsed_date,
+                    firstadded_date=first_added
                 ),
             )
 
