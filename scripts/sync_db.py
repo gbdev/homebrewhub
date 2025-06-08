@@ -54,9 +54,19 @@ def _get_sha1_hash(game, romfile):
     except Exception:
         return ""
 
+
 def get_file_addition_date(file_path, repo_dir):
     try:
-        command = ['git', 'log', '--diff-filter=A', '--follow', '--format=%ad', '--date=iso-strict', '--', file_path]
+        command = [
+            "git",
+            "log",
+            "--diff-filter=A",
+            "--follow",
+            "--format=%ad",
+            "--date=iso-strict",
+            "--",
+            file_path,
+        ]
         result = subprocess.run(
             command,
             cwd=repo_dir,
@@ -70,16 +80,23 @@ def get_file_addition_date(file_path, repo_dir):
     except subprocess.CalledProcessError as e:
         print(f"Error: {e.stderr}")
         return None
-        
+
+
 def run():
     inserted = 0
     updated = 0
     d = 0
     for database_folder in dirs:
-
-        a = subprocess.run(
-            ["git", "config", "--global", "--add", "safe.directory", f"{Path.cwd()}/{basefolder}/{database_folder}"],
-            check=True
+        subprocess.run(
+            [
+                "git",
+                "config",
+                "--global",
+                "--add",
+                "safe.directory",
+                f"{Path.cwd()}/{basefolder}/{database_folder}",
+            ],
+            check=True,
         )
 
         folder = f"{basefolder}/{database_folder}"
@@ -99,7 +116,9 @@ def run():
                 data = json.load(json_file)
                 print(f"({d}/{len(dirs)}) ({n}/{games_count}) Processing entry {game}")
 
-                first_added = get_file_addition_date(f"entries/{game}/game.json", folder)
+                first_added = get_file_addition_date(
+                    f"entries/{game}/game.json", folder
+                )
 
                 romfile = ""
 
@@ -117,7 +136,11 @@ def run():
                 if "database-gb" in folder:
                     try:
                         gbtoolsid_out = subprocess.check_output(
-                            ["./scripts/gbtoolsid", "-oj", f"{folder}/entries/{game}/{romfile}"]
+                            [
+                                "./scripts/gbtoolsid",
+                                "-oj",
+                                f"{folder}/entries/{game}/{romfile}",
+                            ]
                         )
                         tools = json.loads(gbtoolsid_out)
                     except Exception:
@@ -181,7 +204,7 @@ def run():
                     devtoolinfo=tools,
                     baserepo=git_pointers[database_folder],
                     published_date=parsed_date,
-                    firstadded_date=first_added
+                    firstadded_date=first_added,
                 ),
             )
 
