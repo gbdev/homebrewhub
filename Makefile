@@ -29,4 +29,4 @@ shell:
 
 # Pull gbtoolsid so it can be used in the sync-db
 prepare-gbtid:
-	cd scripts && wget https://github.com/bbbbbr/gbtoolsid/releases/download/v1.5.0/gbtoolsid_linux.zip && unzip gbtoolsid_linux.zip
+	cd scripts && wget https://github.com/bbbbbr/gbtoolsid/releases/download/v1.5.2/gbtoolsid_linux.zip && unzip gbtoolsid_linux.zip
