@@ -30,11 +30,8 @@ def entry_manifest(request, pk):
     data = open(f"db-sources/{entry.basepath}/entries/{pk}/game.json").read()
     json_data = json.loads(data)
 
-    # Enrich the manifest with some values available only in the (postgres) database
-    json_data["devtoolinfo"] = entry.devtoolinfo
-    json_data["basepath"] = entry.basepath
-    json_data["baserepo"] = entry.baserepo
-    return JsonResponse(json_data)
+    merged_json_data = merge_manifest_data(json_data, entry)
+    return JsonResponse(merged_json_data)
 
 
 def search_entries(request):
@@ -130,12 +127,10 @@ def search_entries(request):
             f"db-sources/{entry.basepath}/entries/{entry.slug}/game.json"
         ).read()
         json_data = json.loads(data)
-        # Enrich the manifest with some values available only in the (postgres) database
-        additional_json_data = {
-            "basebath": entry.basepath,
-            "firstadded_date": entry.firstadded_date,
-        }
-        json_entries.append({**json_data, **additional_json_data})
+
+        merged_json_data = merge_manifest_data(json_data, entry)
+
+        json_entries.append(merged_json_data)
 
     # Prepare final JSON response
     return JsonResponse(
@@ -189,6 +184,18 @@ def stats(request):
     }
 
     return JsonResponse(data)
+
+
+def merge_manifest_data(data, entry):
+    # Enrich the manifest with some values available only in the (postgres) database
+    additional_json_data = {
+        "basebath": entry.basepath,
+        "baserepo": entry.baserepo,
+        "firstadded_date": entry.firstadded_date,
+        "devtoolinfo": entry.devtoolinfo,
+    }
+
+    return {**data, **additional_json_data}
 
 
 # Utils
