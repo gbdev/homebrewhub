@@ -189,7 +189,7 @@ def stats(request):
 def merge_manifest_data(data, entry):
     # Enrich the manifest with some values available only in the (postgres) database
     additional_json_data = {
-        "basebath": entry.basepath,
+        "basepath": entry.basepath,
         "baserepo": entry.baserepo,
         "firstadded_date": entry.firstadded_date,
         "devtoolinfo": entry.devtoolinfo,
