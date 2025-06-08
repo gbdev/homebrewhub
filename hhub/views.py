@@ -1,6 +1,5 @@
 import json
 
-from django.core.exceptions import FieldError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import F, Q
 from django.http import JsonResponse
@@ -28,7 +27,7 @@ def entry_manifest(request, pk):
 
     # Manifests need to stay on disk (and not serialized/deserialized from db)
     # because that way they can be versioned and modified through PRs
-    data = open(f"db-sources/{entry.basepath}/{pk}/game.json").read()
+    data = open(f"db-sources/{entry.basepath}/entries/{pk}/game.json").read()
     json_data = json.loads(data)
 
     # Enrich the manifest with some values available only in the (postgres) database
@@ -36,51 +35,6 @@ def entry_manifest(request, pk):
     json_data["basepath"] = entry.basepath
     json_data["baserepo"] = entry.baserepo
     return JsonResponse(json_data)
-
-
-def entries_all(request):
-    sort_by_param = request.GET.get("sort", "")
-    order_by_param = request.GET.get("order_by", "")
-    num_elements = request.GET.get("results", 10)
-
-    entries = Entry.objects.all()
-
-    # sort and order
-    try:
-        entries = sort_and_order(entries, order_by_param, sort_by_param)
-    except FieldError as e:
-        return JsonResponse({"error": str(e)}, status=400)
-
-    paginator = Paginator(entries, num_elements)
-    page = request.GET.get("page", 1)
-
-    results = len(entries)
-    try:
-        entries = paginator.page(page)
-    except PageNotAnInteger:
-        entries = paginator.page(1)
-        page = 1
-    except EmptyPage:
-        entries = paginator.page(paginator.num_pages)
-        page = paginator.num_pages
-
-    serializer = EntrySerializer(entries, many=True)
-
-    json_entries = []
-    for entry in entries:
-        data = open(f"db-sources/{entry.basepath}/{entry.slug}/game.json").read()
-        json_entries.append(json.loads(data))
-    return JsonResponse(
-        {
-            "results": results,
-            "page_total": paginator.num_pages,
-            "page_current": page,
-            "page_elements": len(serializer.data),
-            "entries": json_entries,
-        },
-        safe=False,
-    )
-    return JsonResponse(serializer.data, safe=False)
 
 
 def search_entries(request):
@@ -108,8 +62,12 @@ def search_entries(request):
     num_elements = request.GET.get("results", 10)
 
     # Order and sort
-    order_by_param = request.GET.get("order_by", "")
-    sort_by_param = request.GET.get("sort", "")
+
+    # Ordering key
+    #  by default, sort by date of addition to the database
+    sort_key = request.GET.get("sort", "firstadded_date")
+    # Direction of desired ordering (ascending or descending)
+    order = request.GET.get("order", "desc")
 
     # Start by selecting everything
     entries = Entry.objects.all()
@@ -122,10 +80,6 @@ def search_entries(request):
 
     if thirdparty:
         entries = entries.filter(thirdparty__contains=[thirdparty])
-
-    # sort and order
-    if sort_by_param:
-        entries = sort_and_order(entries, order_by_param, sort_by_param)
 
     if developer:
         entries = entries.filter(developer=developer)
@@ -151,6 +105,8 @@ def search_entries(request):
 
     if random_query:
         entries = entries.order_by("?")
+    else:
+        entries = sort_entries(entries, sort_key, order)
 
     # Prepare paginators and number of results
     paginator = Paginator(entries, num_elements)
@@ -170,11 +126,16 @@ def search_entries(request):
     # Read from disks the manifests of the result entries
     json_entries = []
     for entry in entries:
-        data = open(f"db-sources/{entry.basepath}/{entry.slug}/game.json").read()
+        data = open(
+            f"db-sources/{entry.basepath}/entries/{entry.slug}/game.json"
+        ).read()
         json_data = json.loads(data)
         # Enrich the manifest with some values available only in the (postgres) database
-        json_data["basepath"] = entry.basepath
-        json_entries.append(json_data)
+        additional_json_data = {
+            "basebath": entry.basepath,
+            "firstadded_date": entry.firstadded_date,
+        }
+        json_entries.append({**json_data, **additional_json_data})
 
     # Prepare final JSON response
     return JsonResponse(
@@ -187,6 +148,8 @@ def search_entries(request):
             "page_current": int(page),
             # number of elements in this page
             "page_elements": len(serializer.data),
+            "sort": sort_key,
+            "order": order,
             # array of entries manifests
             "entries": json_entries,
         },
@@ -229,33 +192,21 @@ def stats(request):
 
 
 # Utils
-def sort_and_order(entries, col_name, sort_by_param):
+def sort_entries(entries, sort_key, direction="asc"):
     # regardless what user has submitted, we lowercase the input
-    col_name = col_name.lower().strip()
-    sort_by_param = sort_by_param.lower().strip()
+    sort_key = sort_key.lower().strip()
+    direction = direction.lower().strip()
 
-    # If no column name has been passed, sort the results by most recent
-    if col_name == "":
-        col_name = "published_date"
-        sort_by_param = "desc"
+    allowed_keys = ["slug", "title", "published_date", "firstadded_date"]
 
-    # if col_name has been specified and it is in allowed list of fields,
-    # check if sort has been specified
-    if col_name in ["slug", "title", "published_date"]:
-        if sort_by_param in ["", "asc", "desc"]:
-            if sort_by_param == "asc" or not sort_by_param:
-                return entries.order_by(F(col_name).asc(nulls_last=True))
-            elif sort_by_param == "desc":
-                return entries.order_by(F(col_name).desc(nulls_last=True))
-        else:
-            return entries.order_by(col_name)
-    elif sort_by_param in ["", "asc", "desc"]:
-        # default sorting: slug, asc order
-        if sort_by_param == "asc" or not sort_by_param:
-            return entries.order_by("slug")
-        elif sort_by_param == "desc":
-            # minus here means "desc" order, according to
-            # https://docs.djangoproject.com/en/dev/ref/models/querysets/#order-by
-            return entries.order_by("-slug")
+    if sort_key not in allowed_keys:
+        sort_key = "firstadded_date"
+    if direction not in ["asc", "desc"]:
+        direction = "asc"
+
+    if direction == "asc":
+        return entries.order_by(F(sort_key).asc(nulls_last=True))
+    else:
+        return entries.order_by(F(sort_key).desc(nulls_last=True))
 
     return entries
