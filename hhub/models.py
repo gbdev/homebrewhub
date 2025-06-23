@@ -20,3 +20,10 @@ class Entry(models.Model):
 
     class Meta:
         ordering = ["slug"]
+
+
+class File(models.Model):
+    entry = models.ForeignKey(Entry, related_name="files", on_delete=models.CASCADE)
+    name = models.TextField()
+    file_hash = models.CharField(max_length=64, db_index=True)
+    playable = models.BooleanField(default=False)
