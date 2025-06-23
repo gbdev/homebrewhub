@@ -87,6 +87,8 @@ def run():
     updated = 0
     d = 0
     for database_folder in dirs:
+        # Since we'd normally operate on the file system outside the container (e.g. git pulling database repos),
+        # this allows running git commands from inside the container (with a different user)
         subprocess.run(
             [
                 "git",
@@ -131,7 +133,7 @@ def run():
                     if "playable" in file:
                         romfile = file["filename"]
 
-                # Just on the GB database, run the gbstoolsid to get
+                # For the GB database only, run the gbstoolsid to get
                 # some information about how the ROM was developed
                 if "database-gb" in folder:
                     try:
