@@ -2,13 +2,12 @@ import json
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import F, Q
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
-from hhub.models import Entry
+from hhub.models import Entry, File
 from hhub.serializers import EntrySerializer
 
-from drf_spectacular.utils import extend_schema
-from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiTypes
 
 from rest_framework.decorators import api_view
 
@@ -32,6 +31,34 @@ def entry_manifest(request, pk):
 
     merged_json_data = merge_manifest_data(json_data, entry)
     return JsonResponse(merged_json_data)
+
+
+def search_hash(request, hash):
+    """
+    GET /search/<hash>/
+    -------------------
+    • 404  if no File rows match *hash*
+    • JSON list of File rows otherwise (length ≥ 1)
+
+    The response body is **always** a list.
+    Use `safe=False` so `JsonResponse` can emit a top-level JSON array.
+    """
+    qs = File.objects.filter(file_hash=hash).select_related("entry")
+
+    if not qs.exists():
+        raise Http404("No file found with given hash")
+
+    payload = [_file_payload(f) for f in qs]
+
+    return JsonResponse(payload, safe=False)
+
+
+def _file_payload(f):
+    """Serialize a File instance into a plain-dict."""
+    return {
+        "entry_id": f.entry_id,
+        "name": f.name,
+    }
 
 
 def search_entries(request):

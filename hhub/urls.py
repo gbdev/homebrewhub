@@ -37,6 +37,7 @@ urlpatterns = [
                     name="swagger-ui",
                 ),
                 path("entry/<slug:pk>.json", views.entry_manifest),
+                path("hash/<slug:hash>", views.search_hash),
                 path("stats", views.stats),
                 path("search", views.search_entries),
             ]
