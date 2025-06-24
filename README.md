@@ -38,17 +38,11 @@ cd homebrewhub
 
 Now, no matter if you choose the local setup or the docker one, you will need a couple of pre-requirements on the system:
 
-- `pre-commit` <br>
-  E.g. Install it from pip:
-  ```bash
-  python3 -m venv env
-  source env/bin/activate
-  pip install pre-commit
-  ```
-  After it's installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly. `pre-commit run --all-files` will run it against the whole repository.
-- (Optional) The `gbtoolsid` ([Game Boy Toolchain ID](https://github.com/bbbbbr/gbtoolsid)) executable must be available in the project root to populate toolchain details for the imported entries. Get a build on the [Releases](https://github.com/bbbbbr/gbtoolsid/releases/latest) page and extract the zip or run `make prepare-gbtid` from the root of the repository.
+1. `pre-commit` <br>
+  E.g. Install it with pip: `pip install pre-commit`. Once installed, run `pre-commit install` in the project root folder to see if everything gets initialised correctly. `pre-commit run --all-files` will run it against the whole repository.
+2. (Optional) The `gbtoolsid` ([Game Boy Toolchain ID](https://github.com/bbbbbr/gbtoolsid)) executable must be available in the project root to populate toolchain details for the imported GB/GBC entries. There's a provided script to do so you can run with `make prepare-gbtid` or you can get a build on the [Releases](https://github.com/bbbbbr/gbtoolsid/releases/latest) page of the project and extract the zip.
 
-### 2. Pull the games database(s)
+### 2. Pull the entry databases
 
 To populate the database, we'll need some sources. Here's how to pull all the 'official' databases (you need at least one):
 
@@ -84,12 +78,13 @@ curl http://localhost:8081/api/all
 
 ### 3B. Manual requirements
 
-You need Python 3 and a couple of packages to build `psycopg2` (database driver).
+You need Python 3, a couple of packages to build `psycopg2` (database driver) and `uv` to handle Python dependencies.
 
 On Linux, this command should install all requirements:
 
 ```bash
 apt install python3 libpq-dev python3-dev python3-venv
+pip install uv
 ```
 
 Next, install Postgres 12 ([download link](https://www.postgresql.org/download/)), create a user, password and a database named `hh`. Have it running in the background on port `5432`.
@@ -100,23 +95,17 @@ After that, follow the steps below to get started running the project manually:
 # Make sure you are in the cloned repository
 cd homebrewhub
 
-# Set up a virtual env
-python3 -m venv env
+# Set up a virtual env, install deps (including dev)
+uv sync
 
 # Activate it
-source env/bin/activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install Pre-Commit git hooks (for enforcing code style on git commit)
-pre-commit install
+source .venv/bin/activate
 
 # Prepare migrations for our Entry model
-python3 manage.py makemigrations hhub
+./manage.py makemigrations hhub
 
 # Sync the database for the first time
-python3 manage.py migrate
+./manage.py migrate
 
 # Populate with the entries from the database repository
 DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runscript sync_db
@@ -146,7 +135,7 @@ The "real" database needs to be built (and updated when a commit gets pushed) fr
 Every time you want to trigger a database sync (e.g. you pulled some updates on the games database), run:
 
 ```bash
-python3 manage.py runscript sync_db
+./manage.py runscript sync_db
 ```
 
 ### 5. Get the frontend running
