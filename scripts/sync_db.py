@@ -210,7 +210,7 @@ def run():
                 ),
             )
 
-            File.objects.create(
+            File.objects.update_or_create(
                 entry=entry, name=romfile, file_hash=hash, playable=True
             )
 
