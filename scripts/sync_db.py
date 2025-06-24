@@ -10,7 +10,7 @@ import subprocess
 
 import dateutil.parser
 
-from hhub.models import Entry
+from hhub.models import Entry, File
 
 # The list of the target directories that need to be processed
 # Those should point to the "entries" subfolder of a "Homebrew Hub database"
@@ -34,14 +34,14 @@ git_pointers = {
 }
 
 
-def _get_sha1_hash(game, romfile):
+def get_sha1_hash(file_path):
     """
     Compute the SHA1 of the passed file
     """
     try:
         sha1sum = hashlib.sha1()
 
-        with open(f"database/entries/{game}/{romfile}", "rb") as source:  # noqa: E501
+        with open(file_path, "rb") as source:  # noqa: E501
             block = source.read(2**16)
 
             while len(block) != 0:
@@ -150,7 +150,7 @@ def run():
                 else:
                     tools = ""
 
-                _get_sha1_hash(game, romfile)
+                hash = get_sha1_hash(f"{folder}/entries/{game}/{romfile}")
 
                 if "tags" not in data:
                     data["tags"] = []
@@ -192,7 +192,7 @@ def run():
 
             # Returns an (entry, bool) tuple. Here we don't need the object that was
             # either updated or created, we only want to know if it was created or not
-            _, created = Entry.objects.update_or_create(
+            entry, created = Entry.objects.update_or_create(
                 slug=data["slug"],
                 defaults=dict(
                     slug=data["slug"],
@@ -208,6 +208,10 @@ def run():
                     published_date=parsed_date,
                     firstadded_date=first_added,
                 ),
+            )
+
+            File.objects.create(
+                entry=entry, name=romfile, file_hash=hash, playable=True
             )
 
             if created:
