@@ -139,7 +139,7 @@ def run():
                     try:
                         gbtoolsid_out = subprocess.check_output(
                             [
-                                "./scripts/gbtoolsid",
+                                "./scripts/bin/gbtoolsid",
                                 "-oj",
                                 f"{folder}/entries/{game}/{romfile}",
                             ]
