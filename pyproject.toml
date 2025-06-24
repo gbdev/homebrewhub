@@ -16,6 +16,13 @@ dependencies = [
     "python-dateutil==2.9.0.post0",
 ]
 
+# Dev dependencies
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "ruff>=0.12.0",
+]
+
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.
 exclude = [
