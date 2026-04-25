@@ -60,6 +60,9 @@ git clone https://github.com/nesdev-org/homebrew-db db-sources/database-nes
 
 ## or simply..
 make init-db
+
+## later on, you can pull all the updates with
+make update-db
 ```
 
 ### 3A. Docker based requirements
@@ -123,11 +126,9 @@ curl http://localhost:8000/api/all
 
 ### 4. Synchronising the database
 
-The Homebrew Hub "source" database is simply a collection of folders, hosted as a git repository, each one containing an homebrew entry (ROM, screenshots, ..) and a "game.json" manifest file providing more details and metadata in a _consistent_ way (see the game.json JSON schema).
+Homebrew Hub aggregates entries from multiple community-maintained source databases, each covering a different platform (see [DATABASES.md](DATABASES.md) for the full list). All source databases share the same structure: each is a git repository containing one folder per entry, where each folder holds a metadata file, the binaries (ROM, screenshots, ..). Metadata files follow the [Entry JSON schema](https://github.com/gbdev/database/tree/master/schemas).
 
-For more information check the ["database" repository](https://github.com/gbdev/database) documentation.
-
-This enables the database to be "community-maintained", allowing everyone to add new entries (manually or by writing scrapers) or improve existing ones simply by opening Pull Requests.
+This shared structure enables all databases to be community-maintained in a similar way, allowing everyone to add new entries (manually or by writing scrapers) or improve existing ones simply by opening Pull Requests.
 
 The "real" database needs to be built (and updated when a commit gets pushed) from this collection of folders. This job is done by the **sync_db.py** script.
 
