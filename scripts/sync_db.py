@@ -116,7 +116,9 @@ def run():
         for n, game in enumerate(games, start=1):
             with open(f"{folder}/entries/{game}/game.json") as json_file:
                 data = json.load(json_file)
-                print(f"({d}/{len(dirs)}) ({n}/{games_count}) Processing entry {game}")
+                print(
+                    f"({d}/{len(dirs)} {database_folder} - {n}/{games_count}) Processing '{game}'"
+                )
 
                 first_added = get_file_addition_date(
                     f"entries/{game}/game.json", folder
@@ -146,6 +148,7 @@ def run():
                         )
                         tools = json.loads(gbtoolsid_out)
                     except Exception:
+                        print("Warning: couldn't run gbtoolsid, skipping tool info..")
                         tools = ""
                 else:
                     tools = ""
@@ -159,7 +162,7 @@ def run():
                     data["thirdparty"] = []
 
                 if "platform" not in data:
-                    print("no platform")
+                    print("Warning: no platform")
                     data["platform"] = "GB"
 
                 if "developer" not in data:
