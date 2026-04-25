@@ -3,8 +3,9 @@
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 ![Github CI](https://github.com/gbdev/homebrewhub/actions/workflows/ci.yaml/badge.svg)
+![](https://img.shields.io/badge/dynamic/json.svg?label=database&colorB=green&suffix=%20total%20entries&query=$.total&uri=https://hh3.gbdev.io/api/stats)
 
-This repository provides the source code of the [Homebrew Hub backend](https://hh3.gbdev.io/api), which powers [Homebrew Hub](https://hh.gbdev.io), the largest digital collection of Game Boy and Game Boy Color homebrews, playable natively in your browser.
+Source code of the [Homebrew Hub](https://hh.gbdev.io) backend - powering the largest digital archive of Game Boy, GBC, GBA, and NES [homebrew](https://en.wikipedia.org/wiki/Homebrew_(video_games)) software, playable natively in your browser.
 
 Table of contents:
 
@@ -107,17 +108,17 @@ source .venv/bin/activate
 # Sync the database for the first time
 ./manage.py migrate
 
-# Populate with the entries from the database repository
-DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runscript sync_db
+# Postgres credentials and location. E.g. if you're running the database with the provided compose setup:
+export DATABASE_URL=postgres://postgres:'overwritethisinprod!'@localhost:5432/hh
 
-# Optional note: You can export the environment variable to avoid typing it each time:
-EXPORT DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh
+# Run the database synchronisation job
+python3 manage.py runscript sync_db
 
 # Start the Django app
-DATABASE_URL=postgres://yourpostgresuserhere:yourpostgrespasswordhere@localhost:5432/hh python3 manage.py runserver
+python3 manage.py runserver
 
 # In another terminal, query the /api/all route to see if everything's there
-curl https://localhost:8000/api/all
+curl http://localhost:8000/api/all
 ```
 
 ### 4. Synchronising the database
