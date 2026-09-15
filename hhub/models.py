@@ -1,4 +1,5 @@
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
 from django.db import models
 
 
@@ -27,3 +28,20 @@ class File(models.Model):
     name = models.TextField()
     file_hash = models.CharField(max_length=64, db_index=True)
     playable = models.BooleanField(default=False)
+
+
+class Event(models.Model):
+    slug = models.TextField(
+        primary_key=True,
+        validators=[RegexValidator(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")],
+    )
+    name = models.TextField()
+    period_start = models.DateTimeField()
+    period_end = models.DateTimeField()
+    logo = models.TextField(null=True)
+    website = ArrayField(models.TextField(), null=True, default=list)
+    # Where is this event on disk?
+    basepath = models.TextField(default="")
+
+    class Meta:
+        ordering = ["slug"]

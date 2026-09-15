@@ -10,7 +10,7 @@ import subprocess
 
 import dateutil.parser
 
-from hhub.models import Entry, File
+from hhub.models import Entry, Event, File
 
 # The list of the target directories that need to be processed
 # Those should point to the "entries" subfolder of a "Homebrew Hub database"
@@ -85,6 +85,8 @@ def get_file_addition_date(file_path, repo_dir):
 def run():
     inserted = 0
     updated = 0
+    events_inserted = 0
+    events_updated = 0
     d = 0
     for database_folder in dirs:
         # Since we'd normally operate on the file system outside the container (e.g. git pulling database repos),
@@ -222,4 +224,58 @@ def run():
             else:
                 updated += 1
 
+        # Events are optional: not every database folder has an "events" subfolder,
+        # and it's fine if none exist.
+        try:
+            events = os.listdir(f"{folder}/events")
+        except FileNotFoundError:
+            events = []
+
+        if events:
+            print(f"Found {len(events)} events")
+
+        for event in events:
+            event_json_path = f"{folder}/events/{event}/event.json"
+            if not os.path.isfile(event_json_path):
+                continue
+
+            with open(event_json_path) as json_file:
+                data = json.load(json_file)
+
+            print(f"Processing event '{event}'")
+
+            try:
+                period_start = dateutil.parser.parse(data["period"]["start"])
+                period_end = dateutil.parser.parse(data["period"]["end"])
+            except Exception:
+                print(
+                    f"Warning: couldn't parse period for event '{event}', skipping..."
+                )
+                continue
+
+            website = data.get("website")
+            if isinstance(website, str):
+                website = [website]
+            elif not website:
+                website = []
+
+            # TODO: import "results" once there's a place to store them
+            _, created = Event.objects.update_or_create(
+                slug=data["slug"],
+                defaults=dict(
+                    name=data["name"],
+                    period_start=period_start,
+                    period_end=period_end,
+                    logo=data.get("logo"),
+                    website=website,
+                    basepath=database_folder,
+                ),
+            )
+
+            if created:
+                events_inserted += 1
+            else:
+                events_updated += 1
+
     print(f"{inserted} new entries inserted, {updated} updated")  # noqa: E501
+    print(f"{events_inserted} new events inserted, {events_updated} updated")  # noqa: E501
