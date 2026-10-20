@@ -1,7 +1,8 @@
 import json
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import F, Q
+from django.contrib.postgres.fields import ArrayField
+from django.db.models import F, Func, Q, TextField
 from django.http import JsonResponse, Http404
 
 from hhub.models import Entry, Event, File
@@ -16,6 +17,25 @@ from drf_spectacular.utils import (
 
 from rest_framework import serializers
 from rest_framework.decorators import api_view
+
+
+class LowerArray(Func):
+    """
+    Lowercase every element of a text array, so tags can be matched
+    case-insensitively (e.g. "platform" and "Platform")
+    """
+
+    template = "ARRAY(SELECT lower(tag) FROM unnest(%(expressions)s) AS tag)"
+    output_field = ArrayField(TextField())
+
+
+def filter_by_tags(queryset, tags):
+    """
+    Keep only the entries having all the given tags, ignoring case
+    """
+    return queryset.annotate(tags_lower=LowerArray("tags")).filter(
+        tags_lower__contains=[tag.lower() for tag in tags]
+    )
 
 
 def entry_manifest(request, pk):
@@ -237,8 +257,8 @@ def search_entries(request):
 
     if tags:
         # Read the value of tags as an array of tags separated by commas
-        tags = tags.split(",")
-        entries = entries.filter(tags__contains=tags)
+        tags = [tag.strip() for tag in tags.split(",") if tag.strip()]
+        entries = filter_by_tags(entries, tags)
     if text_query:
         entries = entries.filter(
             Q(title__icontains=text_query) | Q(slug__icontains=text_query)
@@ -443,10 +463,10 @@ def stats(request):
             "tools": entries.filter(typetag="homebrew").count(),
         },
         "tags": {
-            "oss": entries.filter(tags__contains=["Open Source"]).count(),
-            "puzzle": entries.filter(tags__contains=["Puzzle"]).count(),
-            "rpg": entries.filter(tags__contains=["RPG"]).count(),
-            "platform": entries.filter(tags__contains=["Platform"]).count(),
+            "oss": filter_by_tags(entries, ["Open Source"]).count(),
+            "puzzle": filter_by_tags(entries, ["Puzzle"]).count(),
+            "rpg": filter_by_tags(entries, ["RPG"]).count(),
+            "platform": filter_by_tags(entries, ["Platform"]).count(),
         },
         "platforms": {
             "gba": entries.filter(platform="GBA").count(),
